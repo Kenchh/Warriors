@@ -1,2 +1,3 @@
-# Warriors
-# Warriors
+# Warriors Plugin @ ReinforcedMC Network
+
+
