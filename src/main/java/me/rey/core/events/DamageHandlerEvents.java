@@ -88,7 +88,7 @@ public class DamageHandlerEvents implements Listener {
 			cache.startCombatTimer(e.getPlayer());
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(DamageEvent e) {
 		if(e.isCancelled()) return;
 		
