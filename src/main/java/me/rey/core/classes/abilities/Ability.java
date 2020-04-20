@@ -82,11 +82,6 @@ public abstract class Ability extends Cooldown implements Listener {
 			level = (level + 2) > (this.getMaxLevel() + 1) ? level + 1 : level + 2;
 		}
 		
-		// CALLING ABILITY EVENT
-		AbilityUseEvent abilityEvent = new AbilityUseEvent(p, this, level);
-		Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
-		if(abilityEvent.isCancelled()) return;
-		
 		// IN LIQUID
 		if(p.getLocation().getBlock() != null && p.getLocation().getBlock().isLiquid() && !this.inLiquid) {
 			String source = p.getLocation().getBlock().getType().name().toLowerCase().contains("water") ? "water" : "lava";
@@ -117,6 +112,11 @@ public abstract class Ability extends Cooldown implements Listener {
 			}
 		}
 		
+		
+		// CALLING ABILITY EVENT
+		AbilityUseEvent abilityEvent = new AbilityUseEvent(p, this, level);
+		Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
+		if(abilityEvent.isCancelled()) return;
 		
 		this.setSound(Sound.NOTE_PLING, 2.0F);
 		this.execute(user, p, level);
