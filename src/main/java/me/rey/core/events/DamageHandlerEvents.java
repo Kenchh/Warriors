@@ -64,7 +64,6 @@ public class DamageHandlerEvents implements Listener {
 			e.setCancelled(true);
 		
 		playerDamager.setLevel((int) Math.round(e.getDamage()));
-		playerDamager.setExp(0);
 
 		// ADDING TO THEIR HIT CACHE IF THEY'RE A PLAYER
 		if(!(e.getEntity() instanceof Player) || damageEvent.isCancelled()) return;

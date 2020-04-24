@@ -12,27 +12,32 @@ public enum ClassType {
 	
 	LEATHER("Ninja",
 			new DefaultBuild(new Leap().setTempDefaultLevel(4)),
+			false,
 			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS,
 			new PotionEffect(PotionEffectType.SPEED, 1000000, 1)
 	),
 	
 	CHAIN("Marksman",
 			new DefaultBuild(),
+			false,
 			Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS
 	),
 	
 	GOLD("Wizard",
 			new DefaultBuild(),
+			true,
 			Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS, Material.GOLD_BOOTS
 	),
 	
 	IRON("Knight",
 			new DefaultBuild(),
+			false,
 			Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS
 	),
 	
 	DIAMOND("Brute",
 			new DefaultBuild(),
+			false,
 			Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS
 	);
 	
@@ -40,8 +45,9 @@ public enum ClassType {
 	private Material helmet, chestplate, leggings, boots;
 	private PotionEffect[] effects;
 	private DefaultBuild defaultBuild;
+	private boolean useEnergy;
 	
-	ClassType(String name, DefaultBuild defaultBuild, Material helmet, Material chestplate, Material leggings, Material boots, PotionEffect... effects){
+	ClassType(String name, DefaultBuild defaultBuild, boolean useEnergy, Material helmet, Material chestplate, Material leggings, Material boots, PotionEffect... effects){
 		this.name = name;
 		this.helmet = helmet;
 		this.chestplate = chestplate;
@@ -49,6 +55,11 @@ public enum ClassType {
 		this.boots = boots;
 		this.effects = effects;
 		this.defaultBuild = defaultBuild;
+		this.useEnergy = useEnergy;
+	}
+	
+	public boolean useEnergy() {
+		return useEnergy;
 	}
 
 	public String getName() {

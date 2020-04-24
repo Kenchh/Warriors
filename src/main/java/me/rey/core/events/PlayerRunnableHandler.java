@@ -6,19 +6,21 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
+import me.rey.core.players.EnergyHandler;
 import me.rey.core.players.User;
 
-public class EquipClassRunnable extends BukkitRunnable {
+public class PlayerRunnableHandler extends BukkitRunnable {
 	
 	private Plugin plugin;
+	private EnergyHandler energyHandler = new EnergyHandler();
 	
-	public EquipClassRunnable(Plugin plugin) {
+	public PlayerRunnableHandler(Plugin plugin) {
 		this.plugin = plugin;
 		this.start();
 	}
 	
 	public void start() {
-		this.runTaskTimer(plugin, 0, 2);
+		this.runTaskTimer(plugin, 0, 1);
 	}
 	
 	@Override
@@ -27,6 +29,16 @@ public class EquipClassRunnable extends BukkitRunnable {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			
 			User user = new User(p);
+			
+			// ENERGY
+			if(!user.getPlayer().isDead()){
+				if(user.getEnergy() <= EnergyHandler.MAX_ENERGY && !energyHandler.isEnergyPaused(user.getUniqueId()))
+					energyHandler.setEnergy(user.getUniqueId(), user.getEnergy()+0.4);
+				
+				user.getPlayer().setExp(user.getEnergyExp());
+			}
+			
+			// CLASS UPDATE
 			user.updateClassEffects();
 			if(Warriors.userCache.containsKey(p)) {
 				
@@ -58,6 +70,7 @@ public class EquipClassRunnable extends BukkitRunnable {
 				user.sendBuildEquippedMessage(user.getWearingClass());
 				
 			}
+			
 		}
 	}
 	

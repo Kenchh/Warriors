@@ -38,7 +38,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private int maxLevel, tempDefaultLevel, tokenCost;
 	private long id;
 	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir;
-	private double cooldown, resetCooldown;
+	private double cooldown, resetCooldown, energyCost;
 	public String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
 	public Ability(long id, String name, ClassType classType, AbilityType abilityType, int tokenCost, int maxLevel, double cooldown, List<String> description) {
@@ -56,6 +56,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.cooldownCanceled = false;
 		this.id = id;
 		this.tokenCost = tokenCost;
+		this.energyCost = 0.00;
 		this.description = new String[description.size()];
 		
 		int index = 0;
@@ -117,6 +118,15 @@ public abstract class Ability extends Cooldown implements Listener {
 		AbilityUseEvent abilityEvent = new AbilityUseEvent(p, this, level);
 		Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
 		if(abilityEvent.isCancelled()) return;
+		
+		if(this.energyCost > 0) {
+			if(user.getEnergy() < this.energyCost) {
+				user.sendMessageWithPrefix("Error", String.format("You don't have enough energy to use &a%s&7!", this.getName()));
+				return;
+			} else {
+				user.consumeEnergy(this.energyCost);
+			}
+		}
 		
 		this.setSound(Sound.NOTE_PLING, 2.0F);
 		this.execute(user, p, level);
@@ -252,6 +262,10 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.cooldownCanceled = canceled;
 	}
 	
+	public void setEnergyCost(double energy) {
+		this.energyCost = energy;
+	}
+	
 	@EventHandler
 	public void onDamage(DamageEvent e) {
 		if(!(this instanceof DamageTrigger) || !(new User(e.getDamager()).isUsingAbility(this))) return;
@@ -269,7 +283,7 @@ public abstract class Ability extends Cooldown implements Listener {
  	}
 	
 	@EventHandler
-	public void ontgDropEvent(PlayerDropItemEvent e) {
+	public void onDropEvent(PlayerDropItemEvent e) {
 		
 		if(this.getAbilityType().getEventType().equals(EventType.DROP_ITEM)) {
 			

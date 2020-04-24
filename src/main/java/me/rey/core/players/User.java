@@ -2,6 +2,7 @@ package me.rey.core.players;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -23,6 +24,7 @@ public class User {
 	private Player player;
 	private Warriors plugin = Warriors.getInstance();
 	private SQLManager sql;
+	private EnergyHandler energyHandler = new EnergyHandler();
 	
 	public User(Player player) {
 		this.player = player;
@@ -32,6 +34,23 @@ public class User {
 	
 	public Player getPlayer() {
 		return this.player;
+	}
+	 
+	public UUID getUniqueId() {
+		return getPlayer().getUniqueId();
+	}
+	
+	public double getEnergy() {
+		return energyHandler.getUserEnergy(this.getUniqueId());
+	}
+	
+	public void consumeEnergy(double energy) {
+		double toSet = getEnergy()-energy;
+		energyHandler.setEnergy(this.getUniqueId(), toSet < 0 ? 0 : toSet);
+	}
+	
+	public float getEnergyExp() {
+		return Math.min(0.999F, (float) this.getEnergy() / (float) EnergyHandler.MAX_ENERGY);
 	}
 	
 	public boolean isUsingAbility(Ability ability) {

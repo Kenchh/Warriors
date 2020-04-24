@@ -29,7 +29,7 @@ import me.rey.core.database.SQLManager;
 import me.rey.core.events.ClassEditorClickEvent;
 import me.rey.core.events.DurabilityChangeEvent;
 import me.rey.core.events.EquipClassEvent;
-import me.rey.core.events.EquipClassRunnable;
+import me.rey.core.events.PlayerRunnableHandler;
 import me.rey.core.events.PlayerDeathEvent;
 import me.rey.core.events.DamageHandlerEvents;
 import me.rey.core.events.UseSoupEvent;
@@ -84,7 +84,7 @@ public class Warriors extends JavaPlugin {
 		
 		guiHelp = new GuiHelp(this);
 		
-		new EquipClassRunnable(this);
+		new PlayerRunnableHandler(this);
 
 		buildCache = new HashMap<>();
 		userCache = new HashMap<>();
