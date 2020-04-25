@@ -23,7 +23,6 @@ public class DurabilityChangeEvent implements Listener {
 		if(e.getCurrentItem() == null) return;
 		
 		Utils.updateItem(e.getCurrentItem());
-		
 	}
 	
 }

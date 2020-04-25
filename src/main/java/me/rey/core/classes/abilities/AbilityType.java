@@ -13,7 +13,7 @@ public enum AbilityType {
 	BOW(EventType.LEFT_CLICK, new Item(ToolType.STANDARD_BOW.getType()), ToolType.STANDARD_BOW),
 	PASSIVE_A(EventType.CONSTANT, new Item(Material.INK_SACK).setDurability(1),ToolType.POWER_SWORD, ToolType.POWER_AXE, ToolType.STANDARD_SWORD, ToolType.STANDARD_AXE, ToolType.BOOSTER_SWORD, ToolType.BOOSTER_AXE),
 	PASSIVE_B(EventType.CONSTANT, new Item(Material.INK_SACK).setDurability(14), ToolType.POWER_SWORD, ToolType.POWER_AXE, ToolType.STANDARD_SWORD, ToolType.STANDARD_AXE, ToolType.BOOSTER_SWORD, ToolType.BOOSTER_AXE),
-	GLOBAL_PASSIVE(EventType.CONSTANT, new Item(Material.INK_SACK).setDurability(11));
+	PASSIVE_C(EventType.CONSTANT, new Item(Material.INK_SACK).setDurability(11));
 	
 	private ToolType[] toolType;
 	private EventType eventType;

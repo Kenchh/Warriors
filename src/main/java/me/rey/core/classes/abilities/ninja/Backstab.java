@@ -11,11 +11,11 @@ import org.bukkit.util.Vector;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.classes.abilities.DamageTrigger;
+import me.rey.core.classes.abilities.IDamageTrigger;
 import me.rey.core.events.customevents.DamageEvent;
 import me.rey.core.players.User;
 
-public class Backstab extends Ability implements DamageTrigger {
+public class Backstab extends Ability implements IDamageTrigger {
 
 	public Backstab() {
 		super(4, "Backstab", ClassType.LEATHER, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
@@ -26,12 +26,9 @@ public class Backstab extends Ability implements DamageTrigger {
 	}
 
 	@Override
-	public void execute(User u, Player p, int level) {
-		// ignore
-	}
-
-	@Override
-	public boolean damageTrigger(DamageEvent e, int level) {
+	protected boolean execute(User u, Player p, int level, Object... conditions) {
+		DamageEvent e = (DamageEvent) conditions[0];
+		
 		Player damager = e.getDamager();
 		LivingEntity damagee = e.getDamagee();
 		
@@ -57,5 +54,4 @@ public class Backstab extends Ability implements DamageTrigger {
 		}
 		return false;
 	}
-
 }

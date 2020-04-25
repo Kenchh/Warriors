@@ -38,7 +38,7 @@ public class Immunity extends Ability {
 	}
 
 	@Override
-	public void execute(User u, final Player p, int level) {
+	protected boolean execute(User u, final Player p, int level, Object... conditions) {
 		int seconds = 5+level;
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, seconds * 20 - 4, 6));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, seconds * 20 - 4, 200, false, false));
@@ -114,6 +114,7 @@ public class Immunity extends Ability {
 		
 		this.sendUsedMessageToPlayer(p, this.getName());
 		this.setCooldown(2.5*level+30);
+		return true;
 	}
 	
 	@EventHandler

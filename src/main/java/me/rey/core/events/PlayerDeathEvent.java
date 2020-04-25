@@ -41,11 +41,10 @@ public class PlayerDeathEvent implements Listener {
 			// SENIDNG THEM THEIR DEATH SUMMARY
 			int index = 1;
 			for(PlayerHit hit : playerCache) {
-				double damage = hit.getDamage();
 				String cause = hit.hasCause() ? hit.getCause() : null;
 								
 				new User(player).sendMessage(String.format("&2#%s: &e%s &7[&e%s&7] &7[&a%s&7] &7[&a%s Seconds Prior&7]&r", index, hit.getDamager(),
-						damage, cause == null ? "None" : cause, hit.getLongAgo(System.currentTimeMillis())));
+						String.format("%.1f", hit.getDamage()), cause == null ? "None" : cause, hit.getLongAgo(System.currentTimeMillis())));
 				
 				index++;
 			}

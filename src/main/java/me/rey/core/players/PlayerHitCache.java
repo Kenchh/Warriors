@@ -87,7 +87,7 @@ public class PlayerHitCache implements Listener {
 			
 			@Override
 			public void run() {
-				if(getCombatTimer(target).getTimeIssued() == start.getTimeIssued())
+				if(getCombatTimer(target) != null && getCombatTimer(target).getTimeIssued() == start.getTimeIssued())
 					combatTimers.remove(target);
 				this.cancel();
 				

@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
+import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.EnergyHandler;
 import me.rey.core.players.User;
 
@@ -25,6 +26,9 @@ public class PlayerRunnableHandler extends BukkitRunnable {
 	
 	@Override
 	public void run() {
+		
+		UpdateEvent updateEvent = new UpdateEvent();
+		Bukkit.getServer().getPluginManager().callEvent(updateEvent);
 		
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			

@@ -72,6 +72,7 @@ public class Utils {
     
     public static void updateItem(ItemStack item) {
 		if(item.getType().equals(Material.AIR)) return;
+		if(item.getMaxStackSize() > 1) return;
 		
 		if(item.hasItemMeta() && item.getItemMeta().hasDisplayName()) return;
 				

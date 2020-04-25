@@ -30,7 +30,7 @@ public class Dash extends Ability {
 	}
 
 	@Override
-	public void execute(User u, final Player p, int level) {
+	protected boolean execute(User u, final Player p, int level, Object... conditions) {
 		p.setVelocity(p.getLocation().getDirection().multiply(5).setY(0));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 10, 200, false ,false));
 		
@@ -65,6 +65,7 @@ public class Dash extends Ability {
 			}
 			
 		}.runTaskTimer(Warriors.getInstance(), 0, periodTicks);
+		return true;
 	}
 
 }

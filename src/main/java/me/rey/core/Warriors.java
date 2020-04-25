@@ -13,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.spigotmc.*;
 
+import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.knight.HoldPosition;
@@ -23,15 +25,18 @@ import me.rey.core.classes.abilities.ninja.Blink;
 import me.rey.core.classes.abilities.ninja.Dash;
 import me.rey.core.classes.abilities.ninja.Leap;
 import me.rey.core.classes.abilities.wizard.FireBlast;
+import me.rey.core.classes.abilities.wizard.MagmaBlade;
+import me.rey.core.classes.abilities.wizard.NullBlade;
+import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
 import me.rey.core.database.SQLManager;
 import me.rey.core.events.ClassEditorClickEvent;
+import me.rey.core.events.DamageHandlerEvents;
 import me.rey.core.events.DurabilityChangeEvent;
 import me.rey.core.events.EquipClassEvent;
-import me.rey.core.events.PlayerRunnableHandler;
 import me.rey.core.events.PlayerDeathEvent;
-import me.rey.core.events.DamageHandlerEvents;
+import me.rey.core.events.PlayerRunnableHandler;
 import me.rey.core.events.UseSoupEvent;
 import me.rey.core.gui.GuiHelp;
 import me.rey.core.items.Glow;
@@ -53,6 +58,7 @@ public class Warriors extends JavaPlugin {
 	
 	// Cache
 	public static ArrayList<Ability> abilityCache;
+	public static ArrayList<ClassCondition> classConditions;
 	public static Map<Player, ClassType> userCache;
 	public static Map<Player, HashMap<ClassType, Build>> buildCache;
 	public static PlayerHitCache hitCache;
@@ -89,9 +95,12 @@ public class Warriors extends JavaPlugin {
 		buildCache = new HashMap<>();
 		userCache = new HashMap<>();
 		this.initAbilityCache();
+		this.initConditionCache();
 		
 		
 		registerEnchantments();
+		
+		// HUNGER RATES
 		
 		deathMessagesEnabled = this.getConfig().getBoolean("kill-death-messages");
 		logger.warning("Search for any errors in CONSOLE, they may be fatal to player gameplay");
@@ -170,16 +179,36 @@ public class Warriors extends JavaPlugin {
 	/*
 	 * Initialize all ability listeners
 	 */
+	public void initConditionCache() {
+		classConditions = new ArrayList<>(Arrays.asList(
+				// NINJA
+				// WIZARD
+				new ArcaneRepair()
+				// MARKSMAN
+				// KNIGHT
+				// BRUTEd
+				));
+		
+		for(ClassCondition condition : classConditions) {
+			Bukkit.getPluginManager().registerEvents(condition, this);
+		}
+	}
+	
+	/*
+	 * Initialize all ability listeners
+	 */
 	public void initAbilityCache() {
 		abilityCache = new ArrayList<>(Arrays.asList(
 				//NINJA
-				new Leap(),
-				new Dash(),
-				new Blink(),
 				new Backstab(),
+				new Blink(),
+				new Dash(),
+				new Leap(),
 				
 				//WIZARD
 				new FireBlast(),
+				new MagmaBlade(),
+				new NullBlade(),
 				
 				//MAKRSMAN
 				

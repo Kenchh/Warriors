@@ -44,7 +44,7 @@ public class Blink extends Ability {
 	}
 
 	@Override
-	public void execute(User u, final Player p, int level) {
+	protected boolean execute(User u, final Player p, int level, Object... conditions) {
 		Location loc = p.getLocation();
 		Location init = loc.clone();
 		double range = 3*level+9;
@@ -92,6 +92,7 @@ public class Blink extends Ability {
 			}
 			
 		}.runTaskLater(Warriors.getInstance(), deblinkSeconds * 20);
+		return true;
 	}
 	
 	@EventHandler

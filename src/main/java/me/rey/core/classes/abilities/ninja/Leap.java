@@ -41,8 +41,8 @@ public class Leap extends Ability {
 	}
 
 	@Override
-	public void execute(User u, Player p, int level) {
-		leap(p, level, false);
+	protected boolean execute(User u, Player p, int level, Object... conditions) {
+		return leap(p, level, false);
 	}
 	
 	@EventHandler

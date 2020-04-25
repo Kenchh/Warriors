@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -22,6 +23,7 @@ import me.rey.core.classes.abilities.AbilityType.EventType;
 import me.rey.core.events.customevents.AbilityUseEvent;
 import me.rey.core.events.customevents.AbilityUseWhileCooldownEvent;
 import me.rey.core.events.customevents.DamageEvent;
+import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.PlayerHit;
 import me.rey.core.players.User;
 import me.rey.core.pvp.Build;
@@ -66,20 +68,20 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 	}
 	
-	public void run(Player p, ToolType toolType) {
+	public boolean run(Player p, ToolType toolType, Object... conditions) {
 
 		User user = new User(p);
-		if(user.getWearingClass() == null || !(user.getWearingClass().equals(this.getClassType()))) return;
+		if(user.getWearingClass() == null || !(user.getWearingClass().equals(this.getClassType()))) return false;
 		
 		Build b = user.getSelectedBuild(this.getClassType());
 		if(b == null) b = this.getClassType().getDefaultBuild();
-		if(b.getAbility(this.getAbilityType()) == null || b.getAbility(this.getAbilityType()).getIdLong() != this.getIdLong()) return;
+		if(b.getAbility(this.getAbilityType()) == null || b.getAbility(this.getAbilityType()).getIdLong() != this.getIdLong()) return false;
 		
 		/*
 		 * BOOSTER WEAPONS
 		 */
 		int level = b.getAbilityLevel(this.getAbilityType());
-		if(toolType == ToolType.BOOSTER_AXE || toolType == ToolType.BOOSTER_SWORD) {
+		if(toolType != null && (toolType == ToolType.BOOSTER_AXE || toolType == ToolType.BOOSTER_SWORD)) {
 			level = (level + 2) > (this.getMaxLevel() + 1) ? level + 1 : level + 2;
 		}
 		
@@ -87,19 +89,19 @@ public abstract class Ability extends Cooldown implements Listener {
 		if(p.getLocation().getBlock() != null && p.getLocation().getBlock().isLiquid() && !this.inLiquid) {
 			String source = p.getLocation().getBlock().getType().name().toLowerCase().contains("water") ? "water" : "lava";
 			new User(p).sendMessageWithPrefix(this.getName(), String.format("You cannot use &a" + this.getName() + "&7 in %s.", source));
-			return;
+			return false;
 		}
 		
 		// WHILE SLOWED
 		if(user.hasPotionEffect(PotionEffectType.SLOW) && !whileSlowed) {
 			new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 while slowed.");
-			return;
+			return false;
 		}
 		
 		// IN THE AIR
 		if(!((Entity) p).isOnGround() && !inAir) {
 			new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 in the air.");
-			return;
+			return false;
 		}
 		
 		if(this.hasCooldown(p)) {
@@ -109,7 +111,7 @@ public abstract class Ability extends Cooldown implements Listener {
 				if(!cooldownEvent.isMessageCancelled())
 					user.sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 for &a" + this.getPlayerCooldown(p) + " &7seconds.");
 				
-				return;
+				return false;
 			}
 		}
 		
@@ -117,19 +119,19 @@ public abstract class Ability extends Cooldown implements Listener {
 		// CALLING ABILITY EVENT
 		AbilityUseEvent abilityEvent = new AbilityUseEvent(p, this, level);
 		Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
-		if(abilityEvent.isCancelled()) return;
+		if(abilityEvent.isCancelled()) return false;
 		
 		if(this.energyCost > 0) {
 			if(user.getEnergy() < this.energyCost) {
 				user.sendMessageWithPrefix("Error", String.format("You don't have enough energy to use &a%s&7!", this.getName()));
-				return;
+				return false;
 			} else {
 				user.consumeEnergy(this.energyCost);
 			}
 		}
 		
 		this.setSound(Sound.NOTE_PLING, 2.0F);
-		this.execute(user, p, level);
+		boolean success = this.execute(user, p, level, conditions);
 		
 		if(!ignoresCooldown && !cooldownCanceled) {
 			this.setCooldownForPlayer(p, this.cooldown);
@@ -137,9 +139,10 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 		this.resetCooldown();
 		this.setCooldownCanceled(false);
+		return success;
 	}
 	
-	public abstract void execute(User u, final Player p, final int level);
+	protected abstract boolean execute(User u, final Player p, final int level, Object... conditions);
 	
 	public String[] getDescription(int level) {
 		String[] desc = this.description.clone();
@@ -148,7 +151,19 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 		for(int i = 0; i < desc.length; i++) {
 			String s = desc[i];
-			if(s == null) continue;
+			if(s == null) continue;				
+			
+			//ADDING <VARIABLE> </VARIABLE> COLORS AND CALCULATING
+			Pattern p2 = Pattern.compile("(?<=\\<variable\\>)(\\s*.*\\s*)(?=\\<\\/variable\\>)");
+			Matcher m2 = p2.matcher(s);
+			int finds = 0;
+			while(m2.find()) {
+				String match = m2.group(finds).replaceAll("\\s+", "").toLowerCase().replaceAll("l", level + "");
+				String result = String.valueOf(Text.eval(match));
+				
+				s = s.replace(m2.group(), result.replace(".0", ""));
+				finds++;
+			}	
 			
 			// EDITING in VARIABLES INSIDE ()
 			Pattern p1 = Pattern.compile("\\(.*?\\)");
@@ -157,19 +172,7 @@ public abstract class Ability extends Cooldown implements Listener {
 				String match = m1.group().subSequence(1,  m1.group().length()-1).toString();
 				
 				s = selected ? s.replace(" (" + match + ")", "") : s.replace("(" + match + ")", MAIN + "(<secondary>"+ match + "<main>)");
-			}				
-			
-			//ADDING <VARIABLE> </VARIABLE> COLORS AND CALCULATING
-			Pattern p2 = Pattern.compile("(?<=\\<variable\\>)(\\s*.*\\s*)(?=\\<\\/variable\\>)");
-			Matcher m2 = p2.matcher(s);
-			int finds = 0;
-			while(m2.find()) {
-				String match = m2.group(finds).replaceAll("\\s+", "").toLowerCase().replaceAll("l", level + "");
-				String result = Text.calc(match);
-				
-				s = s.replace(m2.group(), result + "");
-				finds++;
-			}				
+			}
 			
 			if(selected) {
 				desc[i] = Text.color(MAIN + s.replaceAll("<main>", MAIN).replaceAll("</variable>", MAIN)
@@ -178,6 +181,7 @@ public abstract class Ability extends Cooldown implements Listener {
 				desc[i] = Text.color(MAIN + s.replaceAll("<main>", MAIN).replaceAll("</variable>", MAIN)
 						.replaceAll("<variable>", SECONDARY).replaceAll("<secondary>", VARIABLE));
 			}
+			
 		}
 		
 		return desc;
@@ -266,13 +270,16 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.energyCost = energy;
 	}
 	
+	
+	/*
+	 * DAMAGE TRIGGER
+	 */
 	@EventHandler
 	public void onDamage(DamageEvent e) {
-		if(!(this instanceof DamageTrigger) || !(new User(e.getDamager()).isUsingAbility(this))) return;
-		int level = new User(e.getDamager()).getSelectedBuild(new User(e.getDamager()).getWearingClass()).getAbilityLevel(this.getAbilityType());
+		if(!(this instanceof IDamageTrigger) || !(new User(e.getDamager()).isUsingAbility(this))) return;
 		
 		if(!e.isCancelled()) {
-			boolean success = ((DamageTrigger) this).damageTrigger(e, level);
+			boolean success = this.run(e.getDamager(), null, e);
 			
 			if(!(e.getDamagee() instanceof Player)) return;
 			if(!success) return;
@@ -281,6 +288,20 @@ public abstract class Ability extends Cooldown implements Listener {
 			e.setHit(hit);
 		}
  	}
+	
+	/*
+	 * CONSTANT PASSIVES
+	 */
+	@EventHandler
+	public void onUpdate(UpdateEvent e) {
+		if(!(this instanceof IConstant)) return;
+		
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			if(!(new User(p).isUsingAbility(this))) continue;
+			
+			this.run(p, null);
+		}
+	}
 	
 	@EventHandler
 	public void onDropEvent(PlayerDropItemEvent e) {

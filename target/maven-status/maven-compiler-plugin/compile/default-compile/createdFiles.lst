@@ -1,5 +1,6 @@
 me\rey\core\Warriors.class
 me\rey\core\gui\anvil\AnvilGUI$AnvilSlot.class
+me\rey\core\utils\Text$1.class
 me\rey\core\classes\abilities\knight\HoldPosition.class
 me\rey\core\gui\GuiClassEditor$3.class
 me\rey\core\classes\abilities\wizard\FireBlast.class
@@ -7,8 +8,10 @@ me\rey\core\commands\Help.class
 me\rey\core\gui\GuiHelp$9.class
 me\rey\core\gui\anvil\AnvilGUI$1.class
 me\rey\core\classes\ClassType.class
+me\rey\core\classes\conditions\ArcaneRepair.class
 me\rey\core\pvp\Build$BuildSet.class
 me\rey\core\items\Glow.class
+me\rey\core\classes\abilities\wizard\MagmaBlade.class
 me\rey\core\events\UseSoupEvent.class
 me\rey\core\gui\GuiHelp$1.class
 me\rey\core\pvp\Build$DefaultBuild.class
@@ -23,6 +26,8 @@ me\rey\core\gui\GuiClassEditor$11.class
 me\rey\core\gui\GuiClassEditor$9.class
 me\rey\core\commands\Skill.class
 me\rey\core\gui\GuiClassEditor$8.class
+me\rey\core\classes\abilities\IConstant.class
+me\rey\core\events\customevents\UpdateEvent.class
 me\rey\core\database\SQLManager.class
 me\rey\core\gui\GuiClassEditor$1.class
 me\rey\core\classes\abilities\knight\Immunity.class
@@ -36,7 +41,9 @@ me\rey\core\gui\GuiClassAbilitiesEditor$2.class
 me\rey\core\players\EnergyHandler.class
 me\rey\core\classes\abilities\ninja\Backstab.class
 me\rey\core\gui\GuiHelp$3.class
+me\rey\core\classes\abilities\IDamageTrigger.class
 me\rey\core\events\PlayerDeathEvent.class
+me\rey\core\classes\abilities\wizard\NullBlade.class
 me\rey\core\gui\GuiClassEditor$7.class
 me\rey\core\utils\References.class
 me\rey\core\commands\CommandType.class
@@ -52,9 +59,11 @@ me\rey\core\classes\abilities\AbilityType.class
 me\rey\core\classes\abilities\knight\Immunity$1.class
 me\rey\core\gui\GuiClassAbilitiesEditor.class
 me\rey\core\events\customevents\CombatTimerTickEvent.class
+me\rey\core\classes\ClassCondition.class
 me\rey\core\events\customevents\CombatTimerEndEvent.class
 me\rey\core\utils\Cooldown.class
 me\rey\core\gui\GuiHelp$2.class
+me\rey\core\classes\abilities\wizard\MagmaBlade$1.class
 me\rey\core\gui\GuiClassEditor$2.class
 me\rey\core\gui\GuiHelp$8.class
 me\rey\core\players\PlayerHitCache.class
@@ -78,6 +87,7 @@ me\rey\core\classes\abilities\Ability.class
 me\rey\core\classes\abilities\ninja\Blink.class
 me\rey\core\gui\GuiClassEditor$5.class
 me\rey\core\players\PlayerHitCache$1.class
+me\rey\core\classes\conditions\ArcaneRepair$1.class
 me\rey\core\gui\GuiHelp$7.class
 me\rey\core\pvp\Build.class
 me\rey\core\classes\abilities\ninja\Blink$1.class
@@ -86,7 +96,6 @@ me\rey\core\classes\abilities\ninja\Leap.class
 me\rey\core\pvp\ToolType.class
 me\rey\core\database\ConnectionPoolManager.class
 me\rey\core\gui\anvil\AnvilGUI.class
-me\rey\core\classes\abilities\DamageTrigger.class
 me\rey\core\classes\abilities\knight\HoldPosition$1.class
 me\rey\core\gui\Gui$Item.class
 me\rey\core\gui\GuiClassEditor$10.class

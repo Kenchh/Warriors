@@ -25,6 +25,7 @@ public class User {
 	private Warriors plugin = Warriors.getInstance();
 	private SQLManager sql;
 	private EnergyHandler energyHandler = new EnergyHandler();
+	private PlayerHitCache cache = Warriors.getInstance().getHitCache();
 	
 	public User(Player player) {
 		this.player = player;
@@ -40,13 +41,22 @@ public class User {
 		return getPlayer().getUniqueId();
 	}
 	
+	public boolean isInCombat() {
+		return cache.hasCombatTimer(this.getPlayer());
+	}
+	
 	public double getEnergy() {
 		return energyHandler.getUserEnergy(this.getUniqueId());
 	}
 	
 	public void consumeEnergy(double energy) {
 		double toSet = getEnergy()-energy;
-		energyHandler.setEnergy(this.getUniqueId(), toSet < 0 ? 0 : toSet);
+		energyHandler.setEnergy(this.getUniqueId(), toSet);
+	}
+	
+	public void addEnergy(double energy) {
+		double toSet = getEnergy()+energy;
+		energyHandler.setEnergy(this.getUniqueId(), toSet);
 	}
 	
 	public float getEnergyExp() {

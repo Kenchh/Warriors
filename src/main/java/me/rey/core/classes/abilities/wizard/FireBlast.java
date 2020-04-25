@@ -41,7 +41,7 @@ public class FireBlast extends Ability {
 	}
 
 	@Override
-	public void execute(User u, final Player p, int level) {
+	protected boolean execute(User u, final Player p, int level, Object... conditions) {
 		Location direction = p.getEyeLocation().toVector().add(p.getLocation().getDirection().multiply(1)).toLocation(p.getWorld(),
 				p.getLocation().getYaw(), p.getLocation().getPitch());
 		final Fireball fireball = p.launchProjectile(Fireball.class);
@@ -76,6 +76,7 @@ public class FireBlast extends Ability {
 		}.runTaskTimer(Warriors.getPlugin(Warriors.class), 0, 20);
 		
 		this.setCooldown(-1*level+13);
+		return true;
 	}
 	
 	@EventHandler

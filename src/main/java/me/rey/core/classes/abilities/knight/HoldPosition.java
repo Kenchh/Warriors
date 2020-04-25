@@ -37,7 +37,7 @@ public class HoldPosition extends Ability {
 	}
 
 	@Override
-	public void execute(User u, final Player p, int level) {
+	protected boolean execute(User u, final Player p, int level, Object... conditions) {
 		int seconds = level + 3, cooldown = 2 * level + 16;
 		
 		p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, seconds * 20, 3));
@@ -55,6 +55,7 @@ public class HoldPosition extends Ability {
 		
 		this.sendUsedMessageToPlayer(p, this.getName());
 		this.setCooldown(cooldown);
+		return true;
 	}
 	
 	@EventHandler
