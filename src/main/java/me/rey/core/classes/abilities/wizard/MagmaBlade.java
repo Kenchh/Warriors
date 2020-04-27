@@ -27,9 +27,9 @@ public class MagmaBlade extends Ability implements IDamageTrigger {
 				"Your sword deals an additional",
 				"<variable>1</variable> damage to burning opponents,",
 				"but also extinguishes them.", "",
-				"When the opponent is not in fire, you",
-				"ignite them for <variable>1</variable> second",
-				"with a <variable>5.5-(0.5*l)</variable> (-0.5) second cooldown."
+				"When the opponent is not in fire,",
+				"you ignite them for <variable>1</variable> second with",
+				"a <variable>5.5-(0.5*l)</variable> (-0.5) second cooldown."
 				));
 		
 		this.cooldowns = new ArrayList<>();

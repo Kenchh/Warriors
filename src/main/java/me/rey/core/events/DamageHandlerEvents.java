@@ -138,7 +138,10 @@ public class DamageHandlerEvents implements Listener {
 		if(e.isCancelled()) return; 
 		if(e.getEntity() instanceof Player) {
 			ClassType wearing = new User((Player) e.getEntity()).getWearingClass();
-			e.setDamage(DamageModifier.ARMOR, 0);
+			
+			if(e.isApplicable(DamageModifier.ARMOR))
+				e.setDamage(DamageModifier.ARMOR, 0);
+			
 			if(wearing != null) {
 				Player entity = (Player) e.getEntity();
 				double damage = (entity.getMaxHealth() / wearing.getHealth()) * e.getDamage();

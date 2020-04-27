@@ -38,25 +38,25 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 		for(int i = 0; i < AbilityType.values().length; i++) {
 			
 			AbilityType abilityType = AbilityType.values()[i];
-			int place = 9 * (i + 1) - 9;
+			int row = 9 * (i + 1) - 9;
 			setItem(new GuiItem(abilityType.getIcon().setName("&a&l" + abilityType.getName() + " Skills")) {
 				@Override
 				public void onUse(Player player, ClickType type, int slot) {
 					// IGNORE
 				}
 				
-			}, place);
+			}, row);
 
 			
 			/*
 			 *  SETTING ABILITIES
 			 */
-			int position = 0;
+			int abilityCount = 0;
 			for(int index = 0; index < w.getAbilitiesInCache().size(); index++) {
 				
 				Ability ability = w.getAbilitiesInCache().get(index);
 				
-				if(ability.getClassType().equals(classType) && ability.getAbilityType().equals(abilityType) && index < 7) {
+				if(ability.getClassType().equals(classType) && ability.getAbilityType().equals(abilityType) && abilityCount <= 7) {
 					
 					boolean isInBuild = toEdit.getAbility(ability.getAbilityType()) != null && toEdit.getAbility(ability.getAbilityType()).getIdLong() == ability.getIdLong();
 					Material material = isInBuild ? Material.WRITTEN_BOOK : Material.BOOK;
@@ -70,11 +70,10 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 					List<String> lore = this.formatLore(Arrays.asList(ability.getDescription(level)), level, toEdit, ability, actionOnClick);
 					int tokens = toEdit.getTokensRemaining();
 					
-					setItem(new GuiItem(new Item(material).setName(name).setLore(lore)) {
+					setItem(new GuiItem(new Item(material).setName(name).setAmount(Math.max(1, level)).setLore(lore)) {
 						
 						@Override
 						public void onUse(Player player, ClickType type, int slot) {
-
 							
 							if(type == ClickType.LEFT) {
 								Build newBuild = toEdit;
@@ -97,7 +96,7 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 								Build newBuild = toEdit;
 								
 								if(isInBuild && (newBuild.getAbilityLevel(abilityType)) > 0) {
-								
+									
 									if(newBuild.getAbilityLevel(abilityType) == 1) {
 										newBuild.remove(newBuild.getAbility(abilityType));
 										new User(player).editBuild(toEdit, newBuild, classType);
@@ -115,9 +114,9 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 							
 						}
 						
-					}, place + 1 + position);	
+					}, (row + 1) + abilityCount);	
 					
-					position++;
+					abilityCount++;
 				}	
 				
 			}

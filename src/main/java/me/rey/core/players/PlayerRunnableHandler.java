@@ -1,4 +1,4 @@
-package me.rey.core.events;
+package me.rey.core.players;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -6,9 +6,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
+import me.rey.core.energy.EnergyHandler;
+import me.rey.core.events.customevents.EnergyUpdateEvent;
 import me.rey.core.events.customevents.UpdateEvent;
-import me.rey.core.players.EnergyHandler;
-import me.rey.core.players.User;
 
 public class PlayerRunnableHandler extends BukkitRunnable {
 	
@@ -36,17 +36,30 @@ public class PlayerRunnableHandler extends BukkitRunnable {
 			
 			// ENERGY
 			if(!user.getPlayer().isDead()){
-				if(user.getEnergy() <= EnergyHandler.MAX_ENERGY && !energyHandler.isEnergyPaused(user.getUniqueId()))
-					energyHandler.setEnergy(user.getUniqueId(), user.getEnergy()+0.4);
+				EnergyUpdateEvent e = new EnergyUpdateEvent(p, user.getEnergy(), energyHandler);
+				Bukkit.getServer().getPluginManager().callEvent(e);
+				
+				double toSet = user.getEnergy();
+				if(user.getEnergy() <= energyHandler.getCapacity(user.getUniqueId()) && !energyHandler.isEnergyPaused(user.getUniqueId())) {
+					
+					toSet += (EnergyHandler.INCREMENT * energyHandler.getSpeed(user.getUniqueId()));
+				}
+				energyHandler.setEnergy(user.getUniqueId(), toSet);
 				
 				user.getPlayer().setExp(user.getEnergyExp());
+
+				energyHandler.resetSpeed(user.getUniqueId());
+				energyHandler.resetCapacity(user.getUniqueId());
 			}
+			// END
 			
 			// CLASS UPDATE
 			user.updateClassEffects();
+					
 			if(Warriors.userCache.containsKey(p)) {
 				
 				if(user.getWearingClass() == null) {
+					
 					Warriors.userCache.remove(p);
 					user.resetEffects();
 					user.sendMessageWithPrefix("Class", "You took off your armor set.");
@@ -54,6 +67,7 @@ public class PlayerRunnableHandler extends BukkitRunnable {
 				}
 				
 				if(!Warriors.userCache.get(p).equals(user.getWearingClass())) {
+					
 					Warriors.userCache.remove(p);
 					Warriors.userCache.put(p, user.getWearingClass());
 					user.resetEffects();
@@ -74,6 +88,7 @@ public class PlayerRunnableHandler extends BukkitRunnable {
 				user.sendBuildEquippedMessage(user.getWearingClass());
 				
 			}
+				
 			
 		}
 	}

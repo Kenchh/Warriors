@@ -9,6 +9,7 @@ me\rey\core\gui\GuiHelp$9.class
 me\rey\core\gui\anvil\AnvilGUI$1.class
 me\rey\core\classes\ClassType.class
 me\rey\core\classes\conditions\ArcaneRepair.class
+me\rey\core\classes\abilities\wizard\EnergyRegeneration.class
 me\rey\core\pvp\Build$BuildSet.class
 me\rey\core\items\Glow.class
 me\rey\core\classes\abilities\wizard\MagmaBlade.class
@@ -20,6 +21,7 @@ me\rey\core\AbilityIdentifierException.class
 me\rey\core\classes\abilities\ninja\Dash$1.class
 me\rey\core\gui\GuiClassEditor$6.class
 me\rey\core\players\DeathMessage.class
+me\rey\core\classes\abilities\IConstant$Togglable.class
 me\rey\core\events\EquipClassEvent.class
 me\rey\core\players\PlayerHitCache$2.class
 me\rey\core\gui\GuiClassEditor$11.class
@@ -38,11 +40,11 @@ me\rey\core\gui\anvil\AnvilGUI$AnvilClickEvent.class
 me\rey\core\players\CombatTimer.class
 me\rey\core\gui\GuiClassEditor$9$1.class
 me\rey\core\gui\GuiClassAbilitiesEditor$2.class
-me\rey\core\players\EnergyHandler.class
 me\rey\core\classes\abilities\ninja\Backstab.class
 me\rey\core\gui\GuiHelp$3.class
 me\rey\core\classes\abilities\IDamageTrigger.class
 me\rey\core\events\PlayerDeathEvent.class
+me\rey\core\classes\abilities\wizard\EnergyPool.class
 me\rey\core\classes\abilities\wizard\NullBlade.class
 me\rey\core\gui\GuiClassEditor$7.class
 me\rey\core\utils\References.class
@@ -52,7 +54,6 @@ me\rey\core\gui\anvil\AnvilGUI$AnvilClickEventHandler.class
 me\rey\core\utils\Utils.class
 me\rey\core\gui\GuiEditable.class
 me\rey\core\gui\GuiClassAbilitiesEditor$1.class
-me\rey\core\events\PlayerRunnableHandler.class
 me\rey\core\classes\abilities\ninja\Leap$1.class
 me\rey\core\events\ClassEditorClickEvent.class
 me\rey\core\classes\abilities\AbilityType.class
@@ -77,9 +78,11 @@ me\rey\core\classes\abilities\wizard\FireBlast$1.class
 me\rey\core\gui\GuiHelp.class
 me\rey\core\players\User.class
 me\rey\core\gui\GuiClassAbilitiesEditor$3.class
+me\rey\core\energy\EnergyHandler.class
 me\rey\core\players\PlayerHit.class
 me\rey\core\utils\Text.class
 me\rey\core\gui\anvil\NMSManager.class
+me\rey\core\events\customevents\EnergyUpdateEvent.class
 me\rey\core\utils\Cooldown$1.class
 me\rey\core\gui\Gui.class
 me\rey\core\events\customevents\AbilityUseWhileCooldownEvent.class
@@ -94,11 +97,13 @@ me\rey\core\classes\abilities\ninja\Blink$1.class
 me\rey\core\events\DamageHandlerEvents.class
 me\rey\core\classes\abilities\ninja\Leap.class
 me\rey\core\pvp\ToolType.class
+me\rey\core\energy\IEnergyEditor.class
 me\rey\core\database\ConnectionPoolManager.class
 me\rey\core\gui\anvil\AnvilGUI.class
 me\rey\core\classes\abilities\knight\HoldPosition$1.class
 me\rey\core\gui\Gui$Item.class
 me\rey\core\gui\GuiClassEditor$10.class
+me\rey\core\players\PlayerRunnableHandler.class
 me\rey\core\gui\GuiHelp$6.class
 me\rey\core\classes\abilities\knight\Immunity$2.class
 me\rey\core\gui\GuiClassEditor$4.class

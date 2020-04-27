@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -20,9 +19,11 @@ import org.bukkit.potion.PotionEffectType;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.AbilityType.EventType;
+import me.rey.core.energy.IEnergyEditor;
 import me.rey.core.events.customevents.AbilityUseEvent;
 import me.rey.core.events.customevents.AbilityUseWhileCooldownEvent;
 import me.rey.core.events.customevents.DamageEvent;
+import me.rey.core.events.customevents.EnergyUpdateEvent;
 import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.PlayerHit;
 import me.rey.core.players.User;
@@ -270,6 +271,17 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.energyCost = energy;
 	}
 	
+	/*
+	 * UPDATING ENERGY
+	 */
+	@EventHandler	
+	public void onEnergyUpdate(EnergyUpdateEvent e) {
+		if(!(this instanceof IEnergyEditor)) return;
+		if(!(new User(e.getPlayer()).isUsingAbility(this))) return;
+		
+		this.run(e.getPlayer(), null, e);
+	}
+	
 	
 	/*
 	 * DAMAGE TRIGGER
@@ -294,7 +306,8 @@ public abstract class Ability extends Cooldown implements Listener {
 	 */
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
-		if(!(this instanceof IConstant)) return;
+		if(!(this instanceof IConstant) || this instanceof IEnergyEditor ) return;
+		this.setMessage(null);
 		
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			if(!(new User(p).isUsingAbility(this))) continue;

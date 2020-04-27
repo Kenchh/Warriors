@@ -15,6 +15,7 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.commands.CommandType;
 import me.rey.core.database.SQLManager;
+import me.rey.core.energy.EnergyHandler;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.BuildSet;
 import me.rey.core.utils.Text;
@@ -60,7 +61,7 @@ public class User {
 	}
 	
 	public float getEnergyExp() {
-		return Math.min(0.999F, (float) this.getEnergy() / (float) EnergyHandler.MAX_ENERGY);
+		return Math.min(0.999F, ((float) EnergyHandler.MAX_ENERGY * (float) this.getEnergy() / (float) energyHandler.getCapacity(this.getUniqueId())) / (float) EnergyHandler.MAX_ENERGY);
 	}
 	
 	public boolean isUsingAbility(Ability ability) {
@@ -193,6 +194,7 @@ public class User {
 	}
 	
 	public void selectBuild(Build build, ClassType classType) {
+		
 		selectBuild(build, classType, true);
 	}
 	
@@ -231,6 +233,7 @@ public class User {
 				b = newBuild;
 				sql.deletePlayerBuild(this.getPlayer().getUniqueId(), b, classType);
 				sql.createPlayerBuild(this.getPlayer().getUniqueId(), b, classType);
+				
 			}			
 		}
 	}

@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.*;
 
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
@@ -24,6 +23,8 @@ import me.rey.core.classes.abilities.ninja.Backstab;
 import me.rey.core.classes.abilities.ninja.Blink;
 import me.rey.core.classes.abilities.ninja.Dash;
 import me.rey.core.classes.abilities.ninja.Leap;
+import me.rey.core.classes.abilities.wizard.EnergyPool;
+import me.rey.core.classes.abilities.wizard.EnergyRegeneration;
 import me.rey.core.classes.abilities.wizard.FireBlast;
 import me.rey.core.classes.abilities.wizard.MagmaBlade;
 import me.rey.core.classes.abilities.wizard.NullBlade;
@@ -36,11 +37,11 @@ import me.rey.core.events.DamageHandlerEvents;
 import me.rey.core.events.DurabilityChangeEvent;
 import me.rey.core.events.EquipClassEvent;
 import me.rey.core.events.PlayerDeathEvent;
-import me.rey.core.events.PlayerRunnableHandler;
 import me.rey.core.events.UseSoupEvent;
 import me.rey.core.gui.GuiHelp;
 import me.rey.core.items.Glow;
 import me.rey.core.players.PlayerHitCache;
+import me.rey.core.players.PlayerRunnableHandler;
 import me.rey.core.pvp.Build;
 import me.rey.core.utils.Text;
 
@@ -206,6 +207,8 @@ public class Warriors extends JavaPlugin {
 				new Leap(),
 				
 				//WIZARD
+				new EnergyRegeneration(),
+				new EnergyPool(),
 				new FireBlast(),
 				new MagmaBlade(),
 				new NullBlade(),
@@ -221,6 +224,7 @@ public class Warriors extends JavaPlugin {
 		
 		for(Ability ability : abilityCache) {
 			Bukkit.getPluginManager().registerEvents(ability, this);
+			Text.log(this, String.format("Successfully loaded ability [%s]", ability.getName()));
 		}
 	}
 	

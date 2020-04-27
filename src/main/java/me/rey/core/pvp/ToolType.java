@@ -3,6 +3,7 @@ package me.rey.core.pvp;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import me.rey.core.gui.Gui.Item;
 import me.rey.core.utils.Text;
 import net.md_5.bungee.api.ChatColor;
 
@@ -41,7 +42,7 @@ public enum ToolType {
 		return item;
 	}
 	public ItemStack getItemStack() {
-		return new ItemStack(getType(), 1);
+		return new Item(getType()).setName("&r&f" + this.getName()).setAmount(1).get();
 	}
 	
 	public enum HitType {
