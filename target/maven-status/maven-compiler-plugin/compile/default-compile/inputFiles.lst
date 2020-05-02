@@ -29,6 +29,7 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\even
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\pvp\Build.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\ClassCondition.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiEditable.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\conditions\AssasinKB.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\ClassEditorClickEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\database\ConnectionPoolManager.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiClassAbilitiesEditor.java
@@ -50,6 +51,7 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\anvil\NMSManager.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\energy\EnergyHandler.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\Warriors.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\commands\Equip.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\CustomKnockbackEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\wizard\Void.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\EquipClassEvent.java

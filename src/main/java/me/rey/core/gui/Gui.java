@@ -239,7 +239,7 @@ public abstract class Gui implements Listener {
         }
         
         public String getName() {
-        	return name != null ? name : Text.formatName(material.name());
+        	return name != null ? Text.color(name) : Text.color(Text.formatName(material.name()));
         }
      
         @SuppressWarnings("deprecation")

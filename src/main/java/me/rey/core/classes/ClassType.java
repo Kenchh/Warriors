@@ -18,7 +18,7 @@ public enum ClassType {
 			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS
 	),
 	
-	CHAIN(36, "Berserker",
+	CHAIN(36, "Marskman",
 			new DefaultBuild(),
 			Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS
 	),
@@ -38,11 +38,21 @@ public enum ClassType {
 			Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS
 	),
 	
-	BANDIT(30, "Bandit",
+	BLACK(28, "Bandit",
 			new DefaultBuild(),
-			Utils.getColoredArmor(Material.LEATHER_HELMET, 0, 0, 255), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 0, 0, 255),
-			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 0, 0, 255), Utils.getColoredArmor(Material.LEATHER_BOOTS, 0, 0, 255),
+			Utils.getColoredArmor(Material.LEATHER_HELMET, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 0, 0, 0),
+			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_BOOTS, 0, 0, 0),
 			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 1)
+			),
+	GREEN(34, "Seer",
+			new DefaultBuild(),
+			Utils.getColoredArmor(Material.LEATHER_HELMET, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 39, 174, 96),
+			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_BOOTS, 39, 174, 96)
+			),
+	RED(36, "Berserker",
+			new DefaultBuild(),
+			Utils.getColoredArmor(Material.LEATHER_HELMET, 231, 76, 60), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 231, 76, 60),
+			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 231, 76, 60), Utils.getColoredArmor(Material.LEATHER_BOOTS, 231, 76, 60)
 			);
 	
 	private String name;
