@@ -120,7 +120,7 @@ public class Utils {
 			if(Utils.compareItems(item, classType.getBoots().get())) name = classType.getName() + " Boots";
 			edit = true;
 		}
-
+		
 		ItemMeta meta = item.getItemMeta();
 		if(edit) {
 			item.setDurability((short)0);
