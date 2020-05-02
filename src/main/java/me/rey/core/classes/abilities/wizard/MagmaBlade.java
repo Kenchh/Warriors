@@ -13,10 +13,11 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IDamageTrigger;
+import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
 import me.rey.core.events.customevents.DamageEvent;
 import me.rey.core.players.User;
 
-public class MagmaBlade extends Ability implements IDamageTrigger {
+public class MagmaBlade extends Ability implements IPlayerDamagedEntity {
 	
 	private ArrayList<UUID> cooldowns;
 	private double igniteSeconds = 2;
@@ -34,6 +35,7 @@ public class MagmaBlade extends Ability implements IDamageTrigger {
 		
 		this.cooldowns = new ArrayList<>();
 		this.setIgnoresCooldown(true);
+		this.setInLiquid(true);
 	}
 
 	@Override

@@ -68,7 +68,7 @@ public class HoldPosition extends Ability {
 	}
 	
 	@EventHandler
-	public void onVelocityEVent(PlayerVelocityEvent e) {
+	public void onVelocityEvent(PlayerVelocityEvent e) {
 		if(!this.players.contains(e.getPlayer().getUniqueId())) return;
 		
 		e.setCancelled(true);

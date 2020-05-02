@@ -1,7 +1,5 @@
 package me.rey.core.utils;
 
-import java.text.DecimalFormat;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -130,5 +128,16 @@ public class Text {
             }
         }.parse();
     }
+    
+    public static String formatName(String text) {
+		String[] name = text.replaceAll("_", " ").toLowerCase().split(" ");
+		StringBuilder message = new StringBuilder();
+		for(String s : name) {
+			s = s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+			message.append(s).append(" ");
+		}
+		return message.toString().trim();
+    }
+    
 
 }

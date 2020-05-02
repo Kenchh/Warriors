@@ -3,6 +3,7 @@ package me.rey.core.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.BuildSet;
+import me.rey.core.utils.Text;
 
 public class SQLManager {
 	
@@ -33,20 +35,64 @@ public class SQLManager {
 	private void makeTable() {
 		Connection conn = null;
 		PreparedStatement ps = null;
+		ResultSet rs = null;
 		
 		try {
+			String jsonList = "";
+			String[] classNames = new String[ClassType.values().length];
+			int count = 0;
+			for(ClassType type : ClassType.values()) {
+				jsonList += ", " + type.name().toLowerCase() + "_buildset JSON";
+				classNames[count] = type.name().toLowerCase() + "_buildset";
+				count++;
+			}
+			
+			/*
+			 * CREATING WHOLE TABLE
+			 */
+			String statement = "CREATE TABLE IF NOT EXISTS `" + playerDataTable + "` " +
+					"(" + 
+					"uuid TEXT" + jsonList +
+					")";
+			
 			conn = pool.getConnection();
-			ps = conn.prepareStatement(
-					"CREATE TABLE IF NOT EXISTS `" + playerDataTable + "` " +
-						"(" + 
-						"uuid TEXT, iron_buildset JSON, gold_buildset JSON, leather_buildset JSON, diamond_buildset JSON, chain_buildset JSON" +
-						")"
-					);
+			ps = conn.prepareStatement(statement);
 			ps.executeUpdate();
+			
+			
+			/*
+			 * ADDING ROW IF NOT EXIST
+			 */
+			for(String name : classNames) {
+
+				String sql = "SELECT * FROM " + this.playerDataTable;
+				rs = ps.executeQuery(sql);
+				ResultSetMetaData metaData = rs.getMetaData();
+			  	int rowCount = metaData.getColumnCount();
+			  
+				boolean isMyColumnPresent = false;
+				String myColumnName = name;
+				for (int i = 1; i <= rowCount; i++) {
+					  if (myColumnName.equals(metaData.getColumnName(i))) {
+					    isMyColumnPresent = true;
+					  }
+				}
+
+				if (!isMyColumnPresent) {
+				  String myColumnType = "JSON";
+				  ps.executeUpdate("ALTER TABLE " + this.playerDataTable + " ADD " + myColumnName + " " + myColumnType);
+				  Text.log(Warriors.getInstance(), "Sucessfully created column: " + name);
+				} else {
+					Text.log(Warriors.getInstance(), "Skipped creation of column: " + name);
+				}
+				
+			}
+			
+			Text.log(Warriors.getInstance(), "Sucessfully executed statement: " + statement);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.close(conn, ps, null);
+			pool.close(conn, ps, rs);
 		}
 	}
 	

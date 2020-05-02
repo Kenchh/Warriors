@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import me.rey.core.enums.State;
+
 public class EnergyHandler {
 
 	public static double MAX_ENERGY = 180, INCREMENT = 0.4;
@@ -19,11 +21,11 @@ public class EnergyHandler {
 		energy.put(player, Math.max(Math.min(value, this.getCapacity(player)), 0));
 	}
 	
-	public void togglePauseEnergy(UUID player) {
-		if(isEnergyPaused(player))
-			paused.remove(player);
-		else
+	public void togglePauseEnergy(State state, UUID player) {
+		if(state == State.ENABLED)
 			paused.add(player);
+		else
+			paused.remove(player);
 	}
 	
 	public boolean isEnergyPaused(UUID player) {

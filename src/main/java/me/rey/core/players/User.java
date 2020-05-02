@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -19,6 +20,7 @@ import me.rey.core.energy.EnergyHandler;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.BuildSet;
 import me.rey.core.utils.Text;
+import me.rey.core.utils.Utils;
 
 public class User {
 	
@@ -70,6 +72,7 @@ public class User {
 			return true;
 		return false;
 	}
+	
 	public boolean hasPotionEffect(PotionEffectType effect) {
 		if(player.getActivePotionEffects().isEmpty()) return false;
 		
@@ -136,10 +139,11 @@ public class User {
 		
 		for(ClassType classType : ClassType.values()) {
 			try {
-				if(!inventory.getHelmet().getType().equals(classType.getHelmet())) continue;
-				if(!inventory.getChestplate().getType().equals(classType.getChestplate())) continue;
-				if(!inventory.getLeggings().getType().equals(classType.getLeggings())) continue;
-				if(!inventory.getBoots().getType().equals(classType.getBoots())) continue;
+				
+				if(!Utils.compareItems(inventory.getHelmet(), classType.getHelmet().get())) continue;
+				if(!Utils.compareItems(inventory.getChestplate(), classType.getChestplate().get())) continue;
+				if(!Utils.compareItems(inventory.getLeggings(), classType.getLeggings().get())) continue;
+				if(!Utils.compareItems(inventory.getBoots(), classType.getBoots().get())) continue;
 				return classType;
 			} catch (NullPointerException e) {
 				return null;

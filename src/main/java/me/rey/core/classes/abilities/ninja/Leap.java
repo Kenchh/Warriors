@@ -38,6 +38,7 @@ public class Leap extends Ability {
 				"Recharge: <variable>0-1.5*L+10.5</variable> (-1.5) Seconds"));
 		
 		this.wallkickPlayers = new ArrayList<>();
+		this.setWhileSlowed(false);
 	}
 
 	@Override

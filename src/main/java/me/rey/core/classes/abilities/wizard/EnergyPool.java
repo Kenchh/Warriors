@@ -24,6 +24,7 @@ public class EnergyPool extends Ability implements IConstant, IEnergyEditor {
 				));
 		
 		this.setIgnoresCooldown(true);
+		this.setInLiquid(true);
 	}
 
 	@Override

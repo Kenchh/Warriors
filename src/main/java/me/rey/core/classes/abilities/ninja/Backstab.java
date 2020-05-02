@@ -12,10 +12,11 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IDamageTrigger;
+import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
 import me.rey.core.events.customevents.DamageEvent;
 import me.rey.core.players.User;
 
-public class Backstab extends Ability implements IDamageTrigger {
+public class Backstab extends Ability implements IPlayerDamagedEntity {
 
 	public Backstab() {
 		super(4, "Backstab", ClassType.LEATHER, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
@@ -23,6 +24,7 @@ public class Backstab extends Ability implements IDamageTrigger {
 				"deal <variable>1.5*l+1.5</variable> (+1.5) additional damage."
 				));
 		this.setIgnoresCooldown(true);
+		this.setInLiquid(true);
 	}
 
 	@Override

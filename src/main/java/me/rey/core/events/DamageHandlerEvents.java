@@ -18,7 +18,9 @@ import org.bukkit.util.Vector;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.events.customevents.AbilityUseEvent;
+import me.rey.core.events.customevents.CustomKnockbackEvent;
 import me.rey.core.events.customevents.DamageEvent;
+import me.rey.core.events.customevents.DamagedByEntityEvent;
 import me.rey.core.players.PlayerHit;
 import me.rey.core.players.PlayerHitCache;
 import me.rey.core.players.User;
@@ -33,12 +35,14 @@ public class DamageHandlerEvents implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageByEntityEvent e) {
 		if(!(e.getEntity() instanceof LivingEntity)) return;
+		DamageEvent damageEvent = null;
+		DamagedByEntityEvent byEntityEvent = null;
 		
 		/*
 		 * SETTING ENTITY TO SHOOTER
 		 */
 		HitType hitType = HitType.MELEE;
-		Entity damager = e.getDamager();
+		Entity damager = e.getDamager(), damagee = e.getEntity();;
 		if(damager instanceof Projectile && ((Projectile) damager).getShooter() != null && ((Projectile) damager).getShooter() instanceof LivingEntity) {
 			damager = (LivingEntity) ((Projectile) damager).getShooter();
 			hitType = HitType.RANGED;
@@ -53,7 +57,7 @@ public class DamageHandlerEvents implements Listener {
 		}
 		
 		/*
-		 * TOOL DAMAGE
+		 * TOOL DAMAGE && CALL DAMAGE EVENT
 		 */
 		if(damager instanceof Player) {
 				
@@ -69,23 +73,30 @@ public class DamageHandlerEvents implements Listener {
 				}
 			}
 			
-			DamageEvent damageEvent = new DamageEvent(e, playerDamager, (LivingEntity) e.getEntity(), e.getDamage(), hold);
+			damageEvent = new DamageEvent(e, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 			
 			playerDamager.setLevel((int) Math.round(e.getDamage()));
-	
-			
-			/*
-			 * SCALING DAMAGE FOR KITS
-			 */
 			
 			// ADDING TO THEIR HIT CACHE IF THEY'RE A PLAYER
-			if(e.getEntity() instanceof Player && !damageEvent.isCancelled())
+			if(damagee instanceof Player && !damageEvent.isCancelled())
 				cache.addToPlayerCache((Player) e.getEntity(), damageEvent.getHit());
 			
+		}
+		
+		/*
+		 * ENTITY DAMAGED PLAYER
+		 */
+		
+		if(damagee instanceof Player && damageEvent == null  && damager instanceof LivingEntity) {
+			byEntityEvent = new DamagedByEntityEvent(e, (LivingEntity) damager, (Player) damagee, e.getDamage(), ((LivingEntity) damagee).getEquipment().getItemInHand());
+			Bukkit.getServer().getPluginManager().callEvent(byEntityEvent);
+			
+			if(byEntityEvent.isCancelled())
+				e.setCancelled(true);
 		}
 		
 		// ARMOR VALUES
@@ -94,8 +105,20 @@ public class DamageHandlerEvents implements Listener {
 		/*
 		 * KNOCKBACK
 		 */
+		double multiplier = 1;
 		if(e.isCancelled()) return;
-		kb(e.getEntity(), e.getDamager(), e.getDamage());
+		if(damageEvent != null)
+			multiplier = damageEvent.getKnockbackMult();
+		if(byEntityEvent != null)
+			multiplier = byEntityEvent.getKnockbackMult();
+		
+		CustomKnockbackEvent kbEvent = new CustomKnockbackEvent(damagee, damager, e.getDamage(), multiplier);
+		Bukkit.getServer().getPluginManager().callEvent(kbEvent);
+		
+		if(kbEvent.isCancelled())
+			kbEvent.setMult(0);
+		
+		kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
 	}
 	
 	@EventHandler
@@ -150,9 +173,9 @@ public class DamageHandlerEvents implements Listener {
 		}
 	}
 	
-	private void kb(Entity entity, Entity hitter, double damage) {
+	private void kb(Entity entity, Entity hitter, double damage, double multiplier) {
 		
-		if(entity instanceof Player) {
+		if(entity instanceof Player && cache.getLastBlow((Player) entity) != null) {
 			long difference = cache.getLastBlow((Player) entity).getTimeIssued() - System.currentTimeMillis();
 			if(difference < 400) return;
 		}
@@ -161,12 +184,16 @@ public class DamageHandlerEvents implements Listener {
 		if (damage < 2.0D) damage = 2.0D;
 		damage = Math.log10(damage);
 		
-		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector());
+		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
 		trajectory.multiply(0.05D * damage);
-		trajectory.setY(Math.abs(trajectory.getY()) * 0.8D);
-       
-		entity.setVelocity(trajectory.multiply(0.3D + trajectory.length() * 0.05D));
-	   
+		trajectory.setY((Math.abs(trajectory.getY()) * 0.8d));
+		
+		setVelocity(entity, trajectory.multiply(0.3D + trajectory.length() * 0.05D));
+	}
+	
+	private void setVelocity(Entity entity, Vector velocity) {
+		double multiply = 0.05;
+		entity.setVelocity(velocity.normalize().multiply(multiply));
 	}
 	
 //    @EventHandler

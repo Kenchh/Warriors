@@ -21,6 +21,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 
 import me.rey.core.items.Glow;
+import me.rey.core.utils.Text;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class Gui implements Listener {
@@ -145,6 +146,7 @@ public abstract class Gui implements Listener {
 		}
 	}
 	
+
 	public static class Item {
 	     
 		private boolean glow;
@@ -164,9 +166,20 @@ public abstract class Gui implements Listener {
             this.enchantements = new HashMap<Enchantment, Integer>();
             this.glow = false;
         }
+        
+        public Item(ItemStack item){
+            this.item = item;
+            this.amount = item.getAmount();
+            this.durability = item.getDurability();
+            this.material = item.getType();
+            this.lore = item.hasItemMeta() && item.getItemMeta().hasLore() ? item.getItemMeta().getLore() : new ArrayList<>();
+            this.enchantements = item.getEnchantments();
+            this.name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : null;
+            this.glow = false;
+        }
      
         public Item setName(String name){
-            this.name = ChatColor.translateAlternateColorCodes('&', name);
+            this.name = name;
             return this;
         }
      
@@ -179,9 +192,14 @@ public abstract class Gui implements Listener {
             return this;
         }
      
-        public Item addLore(String lore){
+        public Item addLore(String lore) {
             this.lore.add(ChatColor.translateAlternateColorCodes('&', lore));
             return this;
+        }
+        
+        public Item setData(int data) {
+        	this.data = data;
+        	return this;
         }
         
         public Item setDefaultLore(String... lore) {
@@ -221,17 +239,21 @@ public abstract class Gui implements Listener {
         }
         
         public String getName() {
-        	return name != null ? name : "";
+        	return name != null ? name : Text.formatName(material.name());
         }
      
         @SuppressWarnings("deprecation")
         public ItemStack get(){
-            ItemStack item = new ItemStack(material, amount, (byte) durability);
-            if(this.item != null)item = this.item.clone();
-            item.setData(new MaterialData(material, (byte)data));
+            ItemStack item = null;
+            if(this.item != null) {
+            	item = this.item.clone();
+            } else {
+            	item = new ItemStack(material, amount, (byte) durability);
+            	item.setData(new MaterialData(material, (byte)data));
+            }
             ItemMeta meta = item.getItemMeta();
-            if(name != null)meta.setDisplayName(name);
-            if(lore != null && !lore.isEmpty())meta.setLore(lore);
+            if(name != null) meta.setDisplayName(Text.color(name));
+            if(lore != null && !lore.isEmpty()) meta.setLore(lore);
             if(glow) {
             	Glow glow = new Glow(255);
             	meta.addEnchant(glow, 1, true);

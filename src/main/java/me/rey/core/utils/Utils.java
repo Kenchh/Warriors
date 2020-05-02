@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -14,12 +15,40 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
 import me.rey.core.classes.ClassType;
 import me.rey.core.pvp.ToolType;
 
 public class Utils {
+	
+	public static boolean compareItems(ItemStack a, ItemStack b) {
+		try {
+			LeatherArmorMeta meta1 = (LeatherArmorMeta)a.getItemMeta();
+			LeatherArmorMeta meta2 = (LeatherArmorMeta)b.getItemMeta();
+			
+			if(meta1.getColor().asRGB() == meta2.getColor().asRGB())
+				return true;
+			
+		} catch (Exception e) {
+		    if(a == null || b == null)
+		        return false;
+		    if(a.getType() != b.getType())
+		        return false;
+		    return true;
+					
+		}
+		return false;
+	}
+	
+	public static ItemStack getColoredArmor(Material LEATHER_ARMOR, int red, int green, int blue) {
+		ItemStack larmor = new ItemStack(LEATHER_ARMOR, 1);
+		LeatherArmorMeta lam = (LeatherArmorMeta)larmor.getItemMeta();
+		lam.setColor(Color.fromRGB(red, green, blue));
+		larmor.setItemMeta(lam);
+		return larmor;
+	}
 	
 	public static Vector getDirectionBetweenLocations(Location start, Location end) {
 		Vector from = start.toVector();
@@ -70,11 +99,11 @@ public class Utils {
         } return nearbyPlayers;
     }
     
-    public static void updateItem(ItemStack item) {
-		if(item.getType().equals(Material.AIR)) return;
-		if(item.getMaxStackSize() > 1) return;
+    public static ItemStack updateItem(ItemStack item) {
+		if(item.getType().equals(Material.AIR)) return item;
+		if(item.getMaxStackSize() > 1) return item;
 		
-		if(item.hasItemMeta() && item.getItemMeta().hasDisplayName()) return;
+		if(item.hasItemMeta() && item.getItemMeta().hasDisplayName()) return item;
 				
 		String name = null;
 		boolean edit = false;
@@ -85,10 +114,10 @@ public class Utils {
 		}
 		
 		for(ClassType classType : ClassType.values()) {
-			if(item.getType().equals(classType.getHelmet())) name = classType.getName() + " Helmet";
-			if(item.getType().equals(classType.getChestplate())) name = classType.getName() + " Chestplate";
-			if(item.getType().equals(classType.getLeggings())) name = classType.getName() + " Leggings";
-			if(item.getType().equals(classType.getBoots())) name = classType.getName() + " Boots";
+			if(Utils.compareItems(item, classType.getHelmet().get())) name = classType.getName() + " Helmet";
+			if(Utils.compareItems(item, classType.getChestplate().get())) name = classType.getName() + " Chestplate";
+			if(Utils.compareItems(item, classType.getLeggings().get())) name = classType.getName() + " Leggings";
+			if(Utils.compareItems(item, classType.getBoots().get())) name = classType.getName() + " Boots";
 			edit = true;
 		}
 
@@ -99,9 +128,10 @@ public class Utils {
 			item.setItemMeta(meta);	
 		}
 		
-		if(name == null) return;
+		if(name == null) return item;
 		meta.setDisplayName(ChatColor.RESET + name);
 		item.setItemMeta(meta);
+		return item;
 	}
 
     

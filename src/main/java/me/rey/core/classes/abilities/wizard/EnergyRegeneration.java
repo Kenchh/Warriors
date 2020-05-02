@@ -24,6 +24,7 @@ public class EnergyRegeneration extends Ability implements IConstant, IEnergyEdi
 				"Max of 100% speed bonus."
 				));
 		this.setIgnoresCooldown(true);
+		this.setInLiquid(true);
 	}
 
 	@Override

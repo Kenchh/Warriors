@@ -29,6 +29,8 @@ import me.rey.core.classes.abilities.wizard.FireBlast;
 import me.rey.core.classes.abilities.wizard.MagmaBlade;
 import me.rey.core.classes.abilities.wizard.NullBlade;
 import me.rey.core.classes.conditions.ArcaneRepair;
+import me.rey.core.classes.conditions.AssasinKB;
+import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
 import me.rey.core.database.SQLManager;
@@ -154,6 +156,7 @@ public class Warriors extends JavaPlugin {
 	public void registerCommands() {
 		this.getCommand("help").setExecutor(new Help());
 		this.getCommand("skill").setExecutor(new Skill());
+		this.getCommand("equip").setExecutor(new Equip());
 	}
 	
 	
@@ -183,11 +186,12 @@ public class Warriors extends JavaPlugin {
 	public void initConditionCache() {
 		classConditions = new ArrayList<>(Arrays.asList(
 				// NINJA
+				new AssasinKB(),
 				// WIZARD
 				new ArcaneRepair()
 				// MARKSMAN
 				// KNIGHT
-				// BRUTEd
+				// BRUTE
 				));
 		
 		for(ClassCondition condition : classConditions) {
@@ -212,6 +216,7 @@ public class Warriors extends JavaPlugin {
 				new FireBlast(),
 				new MagmaBlade(),
 				new NullBlade(),
+				new me.rey.core.classes.abilities.wizard.Void(),
 				
 				//MAKRSMAN
 				

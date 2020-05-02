@@ -40,7 +40,8 @@ public class PlayerRunnableHandler extends BukkitRunnable {
 				Bukkit.getServer().getPluginManager().callEvent(e);
 				
 				double toSet = user.getEnergy();
-				if(user.getEnergy() <= energyHandler.getCapacity(user.getUniqueId()) && !energyHandler.isEnergyPaused(user.getUniqueId())) {
+				if(!energyHandler.isEnergyPaused(user.getUniqueId()) && user.getEnergy() <= energyHandler.getCapacity(user.getUniqueId())
+						&& !energyHandler.isEnergyPaused(user.getUniqueId())) {
 					
 					toSet += (EnergyHandler.INCREMENT * energyHandler.getSpeed(user.getUniqueId()));
 				}

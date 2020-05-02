@@ -1,9 +1,14 @@
 package me.rey.core.classes.abilities;
 
+import org.bukkit.entity.Player;
+
 public interface IConstant {
 	
 	
-	public interface Togglable {
+	public interface ITogglable {
+		
+		public boolean off(Player p);
+		public boolean on(Player p);
 		
 	}
 }

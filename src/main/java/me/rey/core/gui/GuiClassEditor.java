@@ -154,25 +154,25 @@ public class GuiClassEditor extends GuiEditable {
 			}
 		}, 0);
 			
-		setItem(new GuiItem(new Item(classType.getHelmet()).setName("&f&l" + classType.getName())) {
+		setItem(new GuiItem(classType.getHelmet().setName("&f&l" + classType.getName())) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 			}
 		}, 18);
 		
-		setItem(new GuiItem(new Item(classType.getChestplate()).setName("&f&l" + classType.getName())) {
+		setItem(new GuiItem(classType.getChestplate().setName("&f&l" + classType.getName())) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 			}
 		}, 27);
 		
-		setItem(new GuiItem(new Item(classType.getLeggings()).setName("&f&l" + classType.getName())) {
+		setItem(new GuiItem(classType.getLeggings().setName("&f&l" + classType.getName())) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 			}
 		}, 36);
 		
-		setItem(new GuiItem(new Item(classType.getBoots()).setName("&f&l" + classType.getName())) {
+		setItem(new GuiItem(classType.getBoots().setName("&f&l" + classType.getName())) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 				
@@ -256,11 +256,12 @@ public class GuiClassEditor extends GuiEditable {
 		setItem(new GuiItem(new Item(Material.ANVIL).setName("&7Edit")) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
-				
+			
 				if(getItem(slot-9) != null) {
 					
+					String itemName = ChatColor.stripColor(Text.color(getItem(slot-9).getFromItem().getName()));
+					
 					for(Build b : new User(player).getBuilds(classType)) {
-						String itemName = ChatColor.stripColor(getItem(slot-9).getFromItem().getName());
 						
 						if(itemName.equals(b.getNameWithoutColors())) {
 							
@@ -283,7 +284,7 @@ public class GuiClassEditor extends GuiEditable {
 				if(getItem(slot-27) != null) {
 					
 					for(Build b : new User(player).getBuilds(classType)) {
-						String itemName= ChatColor.stripColor(getItem(slot-27).getFromItem().getName());
+						String itemName= ChatColor.stripColor(Text.color(getItem(slot-27).getFromItem().getName()));
 						
 						if(itemName.equals(b.getNameWithoutColors())) {
 							

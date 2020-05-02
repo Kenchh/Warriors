@@ -16,8 +16,12 @@ public abstract class ClassCondition implements Listener {
 		this.classType = classType;
 	}
 	
+	public ClassType getClassType() {
+		return classType;
+	}
+	
 	@EventHandler
-	public void onArcaneRepair(UpdateEvent e) {
+	public void onUpdate(UpdateEvent e) {
 		
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			if(new User(p).getWearingClass() != this.classType) continue;

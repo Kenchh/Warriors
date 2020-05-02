@@ -9,11 +9,12 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IDamageTrigger;
+import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
 import me.rey.core.events.customevents.DamageEvent;
 import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
 
-public class NullBlade extends Ability implements IDamageTrigger {
+public class NullBlade extends Ability implements IPlayerDamagedEntity {
 
 	public NullBlade() {
 		super(102, "Null Blade", ClassType.GOLD, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
@@ -22,6 +23,7 @@ public class NullBlade extends Ability implements IDamageTrigger {
 				));
 		
 		this.setIgnoresCooldown(true);
+		this.setInLiquid(true);
 	}
 
 	@Override

@@ -41,6 +41,7 @@ public class Blink extends Ability {
 				));
 		
 		canDeblink = new HashMap<>();
+		this.setWhileSlowed(false);
 	}
 
 	@Override

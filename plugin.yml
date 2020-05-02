@@ -7,3 +7,5 @@ commands:
         usage: /<command>
     skill:
         usage: /<command>
+    equip:
+        usage: /<command>

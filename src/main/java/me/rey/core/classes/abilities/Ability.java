@@ -1,6 +1,9 @@
 package me.rey.core.classes.abilities;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,15 +17,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.AbilityType.EventType;
+import me.rey.core.classes.abilities.IConstant.ITogglable;
+import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedByEntity;
+import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
 import me.rey.core.energy.IEnergyEditor;
+import me.rey.core.enums.State;
 import me.rey.core.events.customevents.AbilityUseEvent;
 import me.rey.core.events.customevents.AbilityUseWhileCooldownEvent;
 import me.rey.core.events.customevents.DamageEvent;
+import me.rey.core.events.customevents.DamagedByEntityEvent;
 import me.rey.core.events.customevents.EnergyUpdateEvent;
 import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.PlayerHit;
@@ -34,6 +44,9 @@ import me.rey.core.utils.Text;
 
 public abstract class Ability extends Cooldown implements Listener {
 	
+	// Droppable
+	private Set<UUID> playersEnabled;
+	
 	private String name;
 	private AbilityType abilityType;
 	private ClassType classType;
@@ -42,7 +55,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private long id;
 	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir;
 	private double cooldown, resetCooldown, energyCost;
-	public String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
+	private String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
 	public Ability(long id, String name, ClassType classType, AbilityType abilityType, int tokenCost, int maxLevel, double cooldown, List<String> description) {
 		super(Warriors.getInstance(), Text.format(name, "You can use &a" + name + "&7."));
@@ -54,7 +67,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.cooldown = cooldown;
 		this.resetCooldown = cooldown;
 		this.inLiquid = false;
-		this.whileSlowed = false;
+		this.whileSlowed = true;
 		this.inAir = true;
 		this.cooldownCanceled = false;
 		this.id = id;
@@ -67,9 +80,17 @@ public abstract class Ability extends Cooldown implements Listener {
 			this.description[index] = s;
 			index++;
 		}
+		
+		if(this instanceof ITogglable)
+			this.playersEnabled = new HashSet<>();
+
 	}
 	
-	public boolean run(Player p, ToolType toolType, Object... conditions) {
+	public boolean run(Player p, ToolType toolType, boolean messages, Object... conditions) {
+		return run(true, false, p, toolType, messages, conditions);
+	}
+	
+	public boolean run(boolean useEnergy, boolean ignoreEvents, Player p, ToolType toolType, boolean messages, Object... conditions) {
 
 		User user = new User(p);
 		if(user.getWearingClass() == null || !(user.getWearingClass().equals(this.getClassType()))) return false;
@@ -83,25 +104,29 @@ public abstract class Ability extends Cooldown implements Listener {
 		 */
 		int level = b.getAbilityLevel(this.getAbilityType());
 		if(toolType != null && (toolType == ToolType.BOOSTER_AXE || toolType == ToolType.BOOSTER_SWORD)) {
-			level = (level + 2) > (this.getMaxLevel() + 1) ? level + 1 : level + 2;
+			level = Math.min(this.getMaxLevel() + 1, level + 2);
 		}
 		
 		// IN LIQUID
 		if(p.getLocation().getBlock() != null && p.getLocation().getBlock().isLiquid() && !this.inLiquid) {
 			String source = p.getLocation().getBlock().getType().name().toLowerCase().contains("water") ? "water" : "lava";
-			new User(p).sendMessageWithPrefix(this.getName(), String.format("You cannot use &a" + this.getName() + "&7 in %s.", source));
+			if(messages)
+				new User(p).sendMessageWithPrefix(this.getName(), String.format("You cannot use &a" + this.getName() + "&7 in %s.", source));
 			return false;
 		}
 		
 		// WHILE SLOWED
 		if(user.hasPotionEffect(PotionEffectType.SLOW) && !whileSlowed) {
-			new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 while slowed.");
+			if(messages)
+				new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 while slowed.");
 			return false;
 		}
 		
 		// IN THE AIR
 		if(!((Entity) p).isOnGround() && !inAir) {
-			new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 in the air.");
+
+			if(messages)
+				new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 in the air.");
 			return false;
 		}
 		
@@ -110,7 +135,8 @@ public abstract class Ability extends Cooldown implements Listener {
 			Bukkit.getServer().getPluginManager().callEvent(cooldownEvent);
 			if(!cooldownEvent.isCancelled()) {
 				if(!cooldownEvent.isMessageCancelled())
-					user.sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 for &a" + this.getPlayerCooldown(p) + " &7seconds.");
+					if(messages)
+						user.sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 for &a" + this.getPlayerCooldown(p) + " &7seconds.");
 				
 				return false;
 			}
@@ -118,13 +144,22 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 		
 		// CALLING ABILITY EVENT
-		AbilityUseEvent abilityEvent = new AbilityUseEvent(p, this, level);
-		Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
-		if(abilityEvent.isCancelled()) return false;
+		if(!ignoreEvents) {
+			AbilityUseEvent abilityEvent = new AbilityUseEvent(p, this, level);
+			Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
+			if(abilityEvent.isCancelled()) return false;
+		}
 		
-		if(this.energyCost > 0) {
+		if(useEnergy && this.energyCost > 0) {
 			if(user.getEnergy() < this.energyCost) {
-				user.sendMessageWithPrefix("Error", String.format("You don't have enough energy to use &a%s&7!", this.getName()));
+
+				if(messages)
+					user.sendMessageWithPrefix("Error", String.format("You don't have enough energy to use &a%s&7!", this.getName()));
+				
+				if(this instanceof ITogglable) {
+					this.playersEnabled.remove(p.getUniqueId());
+					((ITogglable) this).off(p);
+				}
 				return false;
 			} else {
 				user.consumeEnergy(this.energyCost);
@@ -271,27 +306,38 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.energyCost = energy;
 	}
 	
+	public Set<UUID> getEnabledPlayers(){
+		return this.playersEnabled;
+	}
+	
+	public void toggle(Player player, State state) {
+		new User(player).sendMessageWithPrefix(this.getName(), this.getName() + ": " + state.getName());
+	}
+	
 	/*
 	 * UPDATING ENERGY
 	 */
 	@EventHandler	
 	public void onEnergyUpdate(EnergyUpdateEvent e) {
-		if(!(this instanceof IEnergyEditor)) return;
+		if(!(this instanceof IEnergyEditor) || !(this instanceof IConstant)) return;
 		if(!(new User(e.getPlayer()).isUsingAbility(this))) return;
 		
-		this.run(e.getPlayer(), null, e);
+		this.run(true, true, e.getPlayer(), null, true, e);
 	}
 	
 	
 	/*
-	 * DAMAGE TRIGGER
+	 * DAMAGE EVENT TRIGGER
 	 */
 	@EventHandler
 	public void onDamage(DamageEvent e) {
-		if(!(this instanceof IDamageTrigger) || !(new User(e.getDamager()).isUsingAbility(this))) return;
+		if(!(new User(e.getDamager()).isUsingAbility(this))) return;
+		if(this instanceof IPlayerDamagedByEntity) return;
+		if(!(this instanceof IDamageTrigger)) return;
+		
 		
 		if(!e.isCancelled()) {
-			boolean success = this.run(e.getDamager(), null, e);
+			boolean success = this.run(false, true, e.getDamager(), null, false, e);
 			
 			if(!(e.getDamagee() instanceof Player)) return;
 			if(!success) return;
@@ -302,36 +348,96 @@ public abstract class Ability extends Cooldown implements Listener {
  	}
 	
 	/*
+	 * DAMAGE BY ENTITY EVENT TRIGGER
+	 */
+	@EventHandler
+	public void onDamageByEntity(DamagedByEntityEvent e) {
+		if(!(new User(e.getDamagee()).isUsingAbility(this))) return;
+		if(this instanceof IPlayerDamagedEntity) return;
+		if(!(this instanceof IDamageTrigger)) return;
+		
+		
+		if(!e.isCancelled()) {
+			boolean success = this.run(false, true, e.getDamagee(), null, false, e);
+			
+			if(!(e.getDamager() instanceof Player)) return;
+			if(!success) return;
+			PlayerHit hit = new PlayerHit((Player) e.getDamager(), (Player) e.getDamagee(), e.getDamage(), null);
+			hit.setCause("&a" + this.getName());
+			e.setHit(hit);
+		}
+	}
+	
+	/*
 	 * CONSTANT PASSIVES
 	 */
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
 		if(!(this instanceof IConstant) || this instanceof IEnergyEditor ) return;
 		this.setMessage(null);
-		
+	
+			
 		for(Player p : Bukkit.getOnlinePlayers()) {
+			if(this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId()) && !new User(p).isUsingAbility(this)){
+				this.playersEnabled.remove(p.getUniqueId());
+				((ITogglable) this).off(p);
+				this.toggle(p, State.DISABLED);
+				continue;
+			}
+			
 			if(!(new User(p).isUsingAbility(this))) continue;
 			
-			this.run(p, null);
+			boolean messages = true;
+			if(this instanceof ITogglable && !this.playersEnabled.contains(p.getUniqueId())) continue;
+			if(this instanceof IConstant && !(this instanceof ITogglable)) messages = false;
+			
+			boolean success = this.run(p, null, messages, e);
+			if(!success && this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId())) {
+				((ITogglable) this).off(p);
+				this.playersEnabled.remove(p.getUniqueId());
+				this.toggle(p, State.DISABLED);
+			}
 		}
 	}
 	
+	/*
+	 * DROPPABLE/TOGGLEABLE ITEMS
+	 */
 	@EventHandler
 	public void onDropEvent(PlayerDropItemEvent e) {
+		if(!(this instanceof ITogglable)) return;
+		if(!(new User(e.getPlayer()).isUsingAbility(this))) return;
 		
-		if(this.getAbilityType().getEventType().equals(EventType.DROP_ITEM)) {
-			
-			Material item = e.getItemDrop() == null ? Material.AIR : e.getItemDrop().getItemStack().getType();
-			
-			for(ToolType type : this.getAbilityType().getToolTypes()) {
-				
-				if(type.getType().equals(item)) {
-					run(e.getPlayer(), type);	
-					return;
-				}
-			}
+		ItemStack holding = e.getItemDrop().getItemStack();
+		if(this.match(holding) == null) return;
+		
+		e.setCancelled(true);
+		
+		// TOGGLING STATE AND SAVING
+		UUID uuid = e.getPlayer().getUniqueId();
+		State newState = this.playersEnabled.contains(uuid) ? State.DISABLED : State.ENABLED;
+
+		
+		// RUNNING IF ENABLED
+		boolean success = true;
+		if(newState == State.ENABLED) {
+			success = this.run(e.getPlayer(), match(holding), true, e);
+		}
+
+		if(!success) return;
+		
+		if(playersEnabled.contains(e.getPlayer().getUniqueId())) {
+			playersEnabled.remove(e.getPlayer().getUniqueId());
+			newState = State.DISABLED;
+			((ITogglable) this).off(e.getPlayer());
+		} else {
+			playersEnabled.add(e.getPlayer().getUniqueId());
+			newState = State.ENABLED;
+			((ITogglable) this).on(e.getPlayer());
 		}
 		
+		// SENDING MESSAGE IF NOT NULL
+		this.toggle(e.getPlayer(), newState);
 	}
 	
 	@EventHandler
@@ -342,26 +448,44 @@ public abstract class Ability extends Cooldown implements Listener {
 			
 			Material item = e.getItem() == null ? Material.AIR : e.getItem().getType();
 			
-			for(ToolType type : this.getAbilityType().getToolTypes()) {
-				
-				if(type.getType().equals(item)) {
-					run(e.getPlayer(), type);					
-					return;
-				}
-			}
+			ToolType match = match(item);
+			if(match == null) return;
+			
+			run(e.getPlayer(), match, true);
 		}
 		
 		if(this.getAbilityType().getEventType().equals(EventType.LEFT_CLICK)
 				&& (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
 			
 			Material item = e.getItem() == null ? Material.AIR : e.getItem().getType();
+			ToolType match = match(item);
+			if(match == null) return;
 			
-			for(ToolType type : this.getAbilityType().getToolTypes()) {
-				
-				if(type.getType().equals(item)) {
-					run(e.getPlayer(), type);					
-				}
-			}
+			run(e.getPlayer(), match, true);
+		}
+	}
+	
+	private ToolType match(Material item) {
+		ToolType toolType = null;
+		for(ToolType type : this.getAbilityType().getToolTypes())
+			if(type.getType().equals(item))
+				toolType = type;
+		
+		return toolType;
+	}
+	
+	private ToolType match(ItemStack item) {
+		return match(item.getType());
+	}
+	
+	/*
+	 * CLEAR ENABLED PLAYERS ON LOG OFF
+	 */
+	@EventHandler
+	public void onLeave(PlayerQuitEvent e) {
+		if(this instanceof ITogglable && this.playersEnabled.contains(e.getPlayer().getUniqueId())){
+			((ITogglable) this).off(e.getPlayer());
+			this.playersEnabled.remove(e.getPlayer().getUniqueId());
 		}
 	}
 

@@ -27,6 +27,7 @@ public class Dash extends Ability {
 				));
 		
 		this.setWhileInAir(false);
+		this.setWhileSlowed(false);
 	}
 
 	@Override
