@@ -18,7 +18,7 @@ public enum ClassType {
 			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS
 	),
 	
-	CHAIN(36, "Marskman",
+	CHAIN(36, "Marksman",
 			new DefaultBuild(),
 			Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS
 	),
