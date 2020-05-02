@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.google.common.primitives.Ints;
+
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
@@ -46,7 +48,19 @@ public class GuiClassEditor extends GuiEditable {
 		
 		User u = new User(this.getPlayer());
 		
-		setItem(new GuiItem(new Item(Material.GOLD_BLOCK).setName("&6&lDefault").setGlow(new User(this.getPlayer()).getSelectedBuild(classType) == null)) {
+		int column = 2;
+		for(int i = 0; i < this.getRows(); i++) {
+			
+			setItem(new GuiItem(new Item(Material.STAINED_GLASS_PANE).setDurability(15)) {
+				@Override
+				public void onUse(Player player, ClickType type, int slot) {
+					// ignore
+					
+				}
+			}, column - 1 + (9 * i));
+		}
+		
+		setItem(new GuiItem(new Item(Material.QUARTZ).setName("&6&lDefault").setGlow(new User(this.getPlayer()).getSelectedBuild(classType) == null)) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 				if(!getItem(slot).getFromItem().hasGlow()) {
@@ -77,19 +91,22 @@ public class GuiClassEditor extends GuiEditable {
 		
 				new Item(Material.INK_SACK).setDurability(1),
 				new Item(Material.INK_SACK).setDurability(11),
+				new Item(Material.INK_SACK).setDurability(14),
 				new Item(Material.INK_SACK).setDurability(10),
-				new Item(Material.INK_SACK).setDurability(4)
+				new Item(Material.INK_SACK).setDurability(12),
+				new Item(Material.INK_SACK).setDurability(6),
+				new Item(Material.INK_SACK).setDurability(5)
 				
 		};
 		
 		
-		int max_builds = 4;
+		int[] buildPositions = {2, 4, 6, 8, 30, 32, 34};
 		for(int i = 0; i < u.getBuilds(this.classType).size(); i++) {
 			
 			Build b = u.getBuilds(classType).get(i);
 			int position = b.getPosition() <= -1 ? i+1 : b.getPosition();
 					
-			if(i > (max_builds - 1)) break;
+			if(i > buildPositions.length - 1) break;
 			
 			Item item = u.getSelectedBuild(classType) != null && b.getUniqueId().toString().trim().equals(u.getSelectedBuild(classType).getUniqueId().toString().trim())
 					? buildItems[position-1].setGlow(true) : buildItems[position-1];
@@ -110,21 +127,28 @@ public class GuiClassEditor extends GuiEditable {
 					}
 				}
 				
-			}, 2 * (position) + 9);
+			}, buildPositions[position-1]);
+			
+			this.setEditItem(u, b, buildPositions[position-1]+9);
+			this.setOptionsItem(u, b, buildPositions[position-1]+9*2);
 		}
 		
-		for(int i = 0; i < max_builds; i++) {
+		for(int i = 0; i < buildPositions.length; i++) {
+			
+			this.setEditItem(u, null, buildPositions[i]+9);
+			this.setOptionsItem(u, null, buildPositions[i]+9*2);
+			
 			setItem(new GuiItem(emptyBuild) {
 				@Override
 				public void onUse(Player player, ClickType type, int slot) {
-					if(sql.getPlayerBuilds(player.getUniqueId(), classType).size() == max_builds) return;
-				
-					int position = (slot - 9) / 2;
+					if(sql.getPlayerBuilds(player.getUniqueId(), classType).size() >= buildPositions.length) return;
+									
+					int position = Ints.indexOf(buildPositions, slot) + 1;
 					Build def = new Build("", UUID.randomUUID(), position, new HashMap<Ability, Integer>());
 					String name = "Build ";
 					int number = position;
 					
-					for(int index = 0; index < max_builds+1; index++) {
+					for(int index = 0; index <= buildPositions.length; index++) {
 						boolean repeated = false;
 						for(Build b : u.getBuilds(classType)) {
 							if((name + index).equalsIgnoreCase(b.getRawName())) {
@@ -144,7 +168,8 @@ public class GuiClassEditor extends GuiEditable {
 					
 					updateInventory();
 				}
-			}, 2* (i+1) + 9);
+			}, buildPositions[i]);
+			
 		}
 		
 		
@@ -179,127 +204,41 @@ public class GuiClassEditor extends GuiEditable {
 			}
 		}, 45);
 		
-		setItem(new GuiItem(new Item(Material.BOOK_AND_QUILL).setName("&9Rename")) {
-			@Override
-			public void onUse(Player player, ClickType type, int slot) {
-				
-				if(getItem(slot-18) != null) {
-					
-					for(Build b : new User(player).getBuilds(classType)) {
-						String itemName = ChatColor.stripColor(getItem(slot-18).getFromItem().getName());
-						
-						if(itemName.equals(b.getNameWithoutColors())) {
-
-							AnvilGUI gui = new AnvilGUI(Warriors.getInstance(), u.getPlayer(), new AnvilGUI.AnvilClickEventHandler() {
-								
-								@Override
-								public void onAnvilClick(AnvilClickEvent event) {
-									event.setWillClose(event.getSlot() == AnvilSlot.OUTPUT);
-									event.setWillDestroy(event.getSlot() == AnvilSlot.OUTPUT);
-									
-									if(event.getSlot() == AnvilSlot.OUTPUT && event.getName() != null && event.getName().trim() != "") {
-										
-										if(ChatColor.stripColor(Text.color(event.getName().toString())).length() > 10) {
-											u.sendMessageWithPrefix("Build", "Invalid name!");
-											return;
-										}
-										
-										if(event.getName().trim().equals(b.getRawName().trim())) {
-											u.sendMessageWithPrefix("Build", "Invalid name!");
-											return;
-										}
-										
-										for(Build query : u.getBuilds(classType)) {
-											if(query.getNameWithoutColors().trim().equals(ChatColor.stripColor(Text.color(event.getName().toString())))){
-												u.sendMessageWithPrefix("Build", "Invalid name!");
-												return;
-											}
-										}
-										
-										if(ChatColor.stripColor(Text.color(event.getName().toString())).startsWith("Build ")) {
-											u.sendMessageWithPrefix("Build", "Invalid name!");
-											return;
-										}
-										
-										String oldName = b.getName();
-										Build newBuild = b;
-										newBuild.setName(event.getName());
-										u.sendMessageWithPrefix("Build", "Sucessfully renamed &e" + oldName + " &7to &e" + newBuild.getName() + "&7!");
-										u.editBuild(b, newBuild, classType);
-									}
-								}
-								
-							});
-							
-							Item text = new Item(Material.BOOK_AND_QUILL).setName(b.getName());
-							gui.setSlot(AnvilSlot.INPUT_LEFT, text.get());
-							
-							try {
-								gui.open();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							
-							
-						}
-					}
-					
-				}
-			}
-		}, 29, 31, 33, 35);
-		
 	}
 
 	@Override
 	public void init() {
-		
-		setItem(new GuiItem(new Item(Material.ANVIL).setName("&7Edit")) {
-			@Override
-			public void onUse(Player player, ClickType type, int slot) {
-			
-				if(getItem(slot-9) != null) {
-					
-					String itemName = ChatColor.stripColor(Text.color(getItem(slot-9).getFromItem().getName()));
-					
-					for(Build b : new User(player).getBuilds(classType)) {
-						
-						if(itemName.equals(b.getNameWithoutColors())) {
-							
-							GuiClassAbilitiesEditor editor = new GuiClassAbilitiesEditor(player, classType, b);
-							editor.setup();
-							editor.open(player);
-							
-						}
-						
-					}
-				}
-			}
-		}, 20, 22, 24, 26);
-		
-		
-		setItem(new GuiItem(new Item(Material.REDSTONE_BLOCK).setName("&c&lDELETE")) {
+		// IGNORE
+	}
+	
+	private void setOptionsItem(User u, Build b, int slot) {
+		setItem(new GuiItem(new Item(Material.BOOK_AND_QUILL).setName("&7Options")) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 				
-				if(getItem(slot-27) != null) {
-					
-					for(Build b : new User(player).getBuilds(classType)) {
-						String itemName= ChatColor.stripColor(Text.color(getItem(slot-27).getFromItem().getName()));
-						
-						if(itemName.equals(b.getNameWithoutColors())) {
-							
-							sql.deletePlayerBuild(player.getUniqueId(), b, classType);
-							
-							updateInventory();
-							break;
-						}
-					}
-					
+				if(b != null) {
+					GuiBuildOptions gui = new GuiBuildOptions(u.getPlayer(), b, classType);
+					gui.setup();
+					gui.open(u.getPlayer());
 				}
-				
+							
 			}
-		}, 38, 40, 42, 44);
-		
+		}, slot);
+	}
+	
+	private void setEditItem(User u, Build b, int slot) {
+		setItem(new GuiItem(new Item(Material.ANVIL).setName("&7Edit: &e" + (b == null ? "None" : b.getName()))) {
+			@Override
+			public void onUse(Player player, ClickType type, int slot) {
+				
+				if(b != null) {
+					GuiClassAbilitiesEditor editor = new GuiClassAbilitiesEditor(player, classType, b);
+					editor.setup();
+					editor.open(u.getPlayer());
+				}
+							
+			}
+		}, slot);
 	}
 	
 	

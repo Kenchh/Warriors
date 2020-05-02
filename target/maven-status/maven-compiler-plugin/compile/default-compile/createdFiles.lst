@@ -13,7 +13,9 @@ me\rey\core\enums\State.class
 me\rey\core\classes\conditions\ArcaneRepair.class
 me\rey\core\classes\abilities\wizard\EnergyRegeneration.class
 me\rey\core\pvp\Build$BuildSet.class
+me\rey\core\gui\GuiBuildOptions$2.class
 me\rey\core\items\Glow.class
+me\rey\core\gui\GuiBuildOptions.class
 me\rey\core\classes\abilities\wizard\MagmaBlade.class
 me\rey\core\events\UseSoupEvent.class
 me\rey\core\gui\GuiHelp$1.class
@@ -34,12 +36,12 @@ me\rey\core\events\customevents\UpdateEvent.class
 me\rey\core\database\SQLManager.class
 me\rey\core\gui\GuiClassEditor$1.class
 me\rey\core\classes\abilities\knight\Immunity.class
+me\rey\core\gui\GuiBuildOptions$1.class
 me\rey\core\gui\GuiHelp$4.class
 me\rey\core\events\customevents\CooldownEndEvent.class
 me\rey\core\events\customevents\AbilityUseEvent.class
 me\rey\core\gui\anvil\AnvilGUI$AnvilClickEvent.class
 me\rey\core\players\CombatTimer.class
-me\rey\core\gui\GuiClassEditor$9$1.class
 me\rey\core\gui\GuiClassAbilitiesEditor$2.class
 me\rey\core\classes\abilities\ninja\Backstab.class
 me\rey\core\gui\GuiHelp$3.class
@@ -56,6 +58,7 @@ me\rey\core\classes\abilities\wizard\Void.class
 me\rey\core\utils\Utils.class
 me\rey\core\gui\GuiEditable.class
 me\rey\core\gui\GuiClassAbilitiesEditor$1.class
+me\rey\core\gui\GuiBuildOptions$3.class
 me\rey\core\commands\Equip.class
 me\rey\core\classes\abilities\ninja\Leap$1.class
 me\rey\core\events\ClassEditorClickEvent.class
@@ -94,6 +97,7 @@ me\rey\core\events\customevents\CustomKnockbackEvent.class
 me\rey\core\classes\abilities\Ability.class
 me\rey\core\classes\abilities\IDamageTrigger$IPlayerDamagedEntity.class
 me\rey\core\classes\abilities\ninja\Blink.class
+me\rey\core\gui\GuiBuildOptions$1$1.class
 me\rey\core\gui\GuiClassEditor$5.class
 me\rey\core\players\PlayerHitCache$1.class
 me\rey\core\classes\conditions\ArcaneRepair$1.class
