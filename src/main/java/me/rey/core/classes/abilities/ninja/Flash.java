@@ -7,7 +7,6 @@ import me.rey.core.players.User;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class Flash extends Ability {
 
