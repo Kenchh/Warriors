@@ -24,7 +24,7 @@ public class AssasinKB extends ClassCondition {
 		if(!(e.getDamager() instanceof Player)) return;
 		if(new User((Player) e.getDamager()).getWearingClass() != this.getClassType()) return;
 
-		e.setMult(0.001);
+		e.setCancelled(true);
 	}
 
 }
