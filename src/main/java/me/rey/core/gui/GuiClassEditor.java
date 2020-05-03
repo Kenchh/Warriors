@@ -51,7 +51,7 @@ public class GuiClassEditor extends GuiEditable {
 		int column = 2;
 		for(int i = 0; i < this.getRows(); i++) {
 			
-			setItem(new GuiItem(new Item(Material.STAINED_GLASS_PANE).setDurability(15)) {
+			setItem(new GuiItem(new Item(Material.STAINED_GLASS_PANE).setDurability(15).setName("&r")) {
 				@Override
 				public void onUse(Player player, ClickType type, int slot) {
 					// ignore

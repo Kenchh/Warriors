@@ -11,4 +11,8 @@ public interface IConstant {
 		public boolean on(Player p);
 		
 	}
+	
+	public interface IDroppable {
+		
+	}
 }

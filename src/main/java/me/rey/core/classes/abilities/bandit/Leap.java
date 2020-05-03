@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.bandit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,8 @@ import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.events.customevents.AbilityUseWhileCooldownEvent;
+import me.rey.core.enums.AbilityFail;
+import me.rey.core.events.customevents.AbilityFailEvent;
 import me.rey.core.players.User;
 
 public class Leap extends Ability {
@@ -27,7 +28,7 @@ public class Leap extends Ability {
 	private ArrayList<UUID> wallkickPlayers;
 	
 	public Leap() {
-		super(1, "Leap", ClassType.LEATHER, AbilityType.AXE, 1, 4, 9.00, Arrays.asList(
+		super(702, "Leap", ClassType.BLACK, AbilityType.AXE, 1, 4, 9.00, Arrays.asList(
 				"Take a great leap forwards",
 				"",
 				"Wall Kick by using Leap with your",
@@ -47,10 +48,9 @@ public class Leap extends Ability {
 	}
 	
 	@EventHandler
-	public void CooldownEvent(AbilityUseWhileCooldownEvent e) {
-		if(e.getAbility() != this) return;
-		
-		e.setCancelled(leap(e.getPlayer(), e.getLevel(), true));
+	public void CooldownEvent(AbilityFailEvent e) {
+		if(e.getAbility() == this && e.getFail() == AbilityFail.COOLDOWN)
+			e.setCancelled(leap(e.getPlayer(), e.getLevel(), true));
 	}
 
 	private boolean leap(final Player p, int level, boolean wallKickOnly) {

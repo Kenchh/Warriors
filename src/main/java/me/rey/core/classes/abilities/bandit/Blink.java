@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.bandit;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +19,8 @@ import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.events.customevents.AbilityUseWhileCooldownEvent;
+import me.rey.core.enums.AbilityFail;
+import me.rey.core.events.customevents.AbilityFailEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.Utils;
 
@@ -30,7 +31,7 @@ public class Blink extends Ability {
 	private final String deblink = "De-Blink";
 
 	public Blink() {
-		super(3, "Blink", ClassType.LEATHER, AbilityType.AXE, 1, 4, 12, Arrays.asList(
+		super(701, "Blink", ClassType.BLACK, AbilityType.AXE, 1, 4, 12, Arrays.asList(
 				"Instantly teleport forwards <variable>3*l+9</variable> (+3) Blocks.",
 				"",
 				"Using again within <variable>4</variable> seconds De-Blinks,",
@@ -97,8 +98,8 @@ public class Blink extends Ability {
 	}
 	
 	@EventHandler
-	public void onDeblink(AbilityUseWhileCooldownEvent e) {
-		if(e.getAbility() != this) return;
+	public void onDeblink(AbilityFailEvent e) {
+		if(e.getAbility() != this || e.getFail() != AbilityFail.COOLDOWN) return;
 		if(!this.canDeblink.containsKey(e.getPlayer().getUniqueId())) return;
 		
 		Location to = this.canDeblink.get(e.getPlayer().getUniqueId());
@@ -111,7 +112,7 @@ public class Blink extends Ability {
 		e.getPlayer().setFallDistance(0);
 		this.canDeblink.remove(e.getPlayer().getUniqueId());
 		this.sendUsedMessageToPlayer(e.getPlayer(), this.deblink);
-		e.cancelMessage(true);
+		e.setMessageCancelled(true);
 	}
 	
 	private void makeParticlesBetween(Location init, Location loc) {

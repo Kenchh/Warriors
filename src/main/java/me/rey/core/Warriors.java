@@ -17,12 +17,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
+import me.rey.core.classes.abilities.bandit.Blink;
+import me.rey.core.classes.abilities.bandit.Leap;
+import me.rey.core.classes.abilities.bandit.Recall;
 import me.rey.core.classes.abilities.knight.HoldPosition;
 import me.rey.core.classes.abilities.knight.Immunity;
 import me.rey.core.classes.abilities.ninja.Backstab;
-import me.rey.core.classes.abilities.ninja.Blink;
 import me.rey.core.classes.abilities.ninja.Dash;
-import me.rey.core.classes.abilities.ninja.Leap;
 import me.rey.core.classes.abilities.wizard.EnergyPool;
 import me.rey.core.classes.abilities.wizard.EnergyRegeneration;
 import me.rey.core.classes.abilities.wizard.FireBlast;
@@ -204,11 +205,14 @@ public class Warriors extends JavaPlugin {
 	 */
 	public void initAbilityCache() {
 		abilityCache = new ArrayList<>(Arrays.asList(
+				//BANDIT
+				new Blink(),
+				new Leap(),
+				new Recall(),
+				
 				//NINJA
 				new Backstab(),
-				new Blink(),
 				new Dash(),
-				new Leap(),
 				
 				//WIZARD
 				new EnergyRegeneration(),

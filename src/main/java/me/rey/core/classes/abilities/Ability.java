@@ -24,13 +24,15 @@ import org.bukkit.potion.PotionEffectType;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.AbilityType.EventType;
+import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IConstant.ITogglable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedByEntity;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
 import me.rey.core.energy.IEnergyEditor;
+import me.rey.core.enums.AbilityFail;
 import me.rey.core.enums.State;
+import me.rey.core.events.customevents.AbilityFailEvent;
 import me.rey.core.events.customevents.AbilityUseEvent;
-import me.rey.core.events.customevents.AbilityUseWhileCooldownEvent;
 import me.rey.core.events.customevents.DamageEvent;
 import me.rey.core.events.customevents.DamagedByEntityEvent;
 import me.rey.core.events.customevents.EnergyUpdateEvent;
@@ -107,41 +109,60 @@ public abstract class Ability extends Cooldown implements Listener {
 			level = Math.min(this.getMaxLevel() + 1, level + 2);
 		}
 		
-		// IN LIQUID
-		if(p.getLocation().getBlock() != null && p.getLocation().getBlock().isLiquid() && !this.inLiquid) {
-			String source = p.getLocation().getBlock().getType().name().toLowerCase().contains("water") ? "water" : "lava";
-			if(messages)
-				new User(p).sendMessageWithPrefix(this.getName(), String.format("You cannot use &a" + this.getName() + "&7 in %s.", source));
-			return false;
-		}
+		AbilityFailEvent event = null;
 		
-		// WHILE SLOWED
-		if(user.hasPotionEffect(PotionEffectType.SLOW) && !whileSlowed) {
-			if(messages)
-				new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 while slowed.");
-			return false;
-		}
-		
-		// IN THE AIR
-		if(!((Entity) p).isOnGround() && !inAir) {
-
-			if(messages)
-				new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 in the air.");
-			return false;
-		}
-		
+		// WHILE COOLDOWN
 		if(this.hasCooldown(p)) {
-			AbilityUseWhileCooldownEvent cooldownEvent = new AbilityUseWhileCooldownEvent(p, this, level);
-			Bukkit.getServer().getPluginManager().callEvent(cooldownEvent);
-			if(!cooldownEvent.isCancelled()) {
-				if(!cooldownEvent.isMessageCancelled())
-					if(messages)
+			event = new AbilityFailEvent(AbilityFail.COOLDOWN, p, this, level);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			
+			if(!event.isCancelled()) {
+				if(!event.isMessageCancelled() && messages)
 						user.sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 for &a" + this.getPlayerCooldown(p) + " &7seconds.");
 				
 				return false;
 			}
 		}
 		
+		// IN LIQUID
+		if(p.getLocation().getBlock() != null && p.getLocation().getBlock().isLiquid() && !this.inLiquid) {
+			
+			event = new AbilityFailEvent(AbilityFail.LIQUID, p, this, level);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			
+			if(!event.isCancelled()) {
+				String source = p.getLocation().getBlock().getType().name().toLowerCase().contains("water") ? "water" : "lava";
+				if(messages && !event.isMessageCancelled())
+					new User(p).sendMessageWithPrefix(this.getName(), String.format("You cannot use &a" + this.getName() + "&7 in %s.", source));
+				return false;
+			}
+		}
+		
+		// WHILE SLOWED
+		if(user.hasPotionEffect(PotionEffectType.SLOW) && !whileSlowed) {
+			
+			event = new AbilityFailEvent(AbilityFail.SLOWED, p, this, level);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			
+			if(!event.isCancelled()) {
+				if(messages && !event.isMessageCancelled())
+					new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 while slowed.");
+				return false;
+			}
+		}
+		
+		// IN THE AIR
+		if(!((Entity) p).isOnGround() && !inAir) {
+
+			event = new AbilityFailEvent(AbilityFail.AIR, p, this, level);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			
+			if(!event.isCancelled()) {
+				if(messages && !event.isMessageCancelled())
+					new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 in the air.");
+				return false;
+			}
+		}
 		
 		// CALLING ABILITY EVENT
 		if(!ignoreEvents) {
@@ -169,12 +190,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.setSound(Sound.NOTE_PLING, 2.0F);
 		boolean success = this.execute(user, p, level, conditions);
 		
-		if(!ignoresCooldown && !cooldownCanceled) {
-			this.setCooldownForPlayer(p, this.cooldown);
-		}
-		
-		this.resetCooldown();
-		this.setCooldownCanceled(false);
+		this.applyCooldown(p);
 		return success;
 	}
 	
@@ -225,6 +241,15 @@ public abstract class Ability extends Cooldown implements Listener {
 	
 	public String[] getDescription() {
 		return getDescription(-1);
+	}
+	
+	public void applyCooldown(Player p) {
+		if(!ignoresCooldown && !cooldownCanceled) {
+			this.setCooldownForPlayer(p, this.cooldown);
+		}
+		
+		this.resetCooldown();
+		this.setCooldownCanceled(false);
 	}
 	
 	public int getSkillTokenCost() {
@@ -405,39 +430,48 @@ public abstract class Ability extends Cooldown implements Listener {
 	 */
 	@EventHandler
 	public void onDropEvent(PlayerDropItemEvent e) {
-		if(!(this instanceof ITogglable)) return;
 		if(!(new User(e.getPlayer()).isUsingAbility(this))) return;
-		
-		ItemStack holding = e.getItemDrop().getItemStack();
-		if(this.match(holding) == null) return;
-		
-		e.setCancelled(true);
-		
-		// TOGGLING STATE AND SAVING
-		UUID uuid = e.getPlayer().getUniqueId();
-		State newState = this.playersEnabled.contains(uuid) ? State.DISABLED : State.ENABLED;
-
-		
-		// RUNNING IF ENABLED
-		boolean success = true;
-		if(newState == State.ENABLED) {
-			success = this.run(e.getPlayer(), match(holding), true, e);
+		if(this instanceof ITogglable) {
+			
+			ItemStack holding = e.getItemDrop().getItemStack();
+			if(this.match(holding) == null) return;
+			
+			e.setCancelled(true);
+			
+			// TOGGLING STATE AND SAVING
+			UUID uuid = e.getPlayer().getUniqueId();
+			State newState = this.playersEnabled.contains(uuid) ? State.DISABLED : State.ENABLED;
+	
+			
+			// RUNNING IF ENABLED
+			boolean success = true;
+			if(newState == State.ENABLED) {
+				success = this.run(e.getPlayer(), match(holding), true, e);
+			}
+	
+			if(!success) return;
+			
+			if(playersEnabled.contains(e.getPlayer().getUniqueId())) {
+				playersEnabled.remove(e.getPlayer().getUniqueId());
+				newState = State.DISABLED;
+				((ITogglable) this).off(e.getPlayer());
+			} else {
+				playersEnabled.add(e.getPlayer().getUniqueId());
+				newState = State.ENABLED;
+				((ITogglable) this).on(e.getPlayer());
+			}
+			
+			// SENDING MESSAGE IF NOT NULL
+			this.toggle(e.getPlayer(), newState);
+			
+		} else if (this instanceof IDroppable) {
+			ItemStack holding = e.getItemDrop().getItemStack();
+			if(this.match(holding) == null) return;
+			
+			e.setCancelled(true);
+			
+			this.run(e.getPlayer(), this.match(holding), true);
 		}
-
-		if(!success) return;
-		
-		if(playersEnabled.contains(e.getPlayer().getUniqueId())) {
-			playersEnabled.remove(e.getPlayer().getUniqueId());
-			newState = State.DISABLED;
-			((ITogglable) this).off(e.getPlayer());
-		} else {
-			playersEnabled.add(e.getPlayer().getUniqueId());
-			newState = State.ENABLED;
-			((ITogglable) this).on(e.getPlayer());
-		}
-		
-		// SENDING MESSAGE IF NOT NULL
-		this.toggle(e.getPlayer(), newState);
 	}
 	
 	@EventHandler
