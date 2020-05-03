@@ -32,7 +32,7 @@ public class Dash extends Ability {
 
 	@Override
 	protected boolean execute(User u, final Player p, int level, Object... conditions) {
-		p.setVelocity(p.getLocation().getDirection().multiply(5).setY(0));
+		p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 35, false ,false));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 10, 200, false ,false));
 		
 		this.sendUsedMessageToPlayer(p, this.getName());

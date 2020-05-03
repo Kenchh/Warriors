@@ -33,18 +33,8 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 		
 		Player damager = e.getDamager();
 		LivingEntity damagee = e.getDamagee();
-		
-		Vector look = damagee.getLocation().getDirection();
-		look.setY(0);
-		look.normalize();
-		
-		Vector from = damager.getLocation().toVector().subtract(damagee.getLocation().toVector());
-		from.setY(0);
-		look.normalize();
-		
-		Vector check = new Vector(look.getX() * -1, 0, look.getZ() * -1);
-		double checkDec = check.subtract(from).length();
-		if(checkDec < 0.8) {
+
+		if(isBehind(damager, damagee)) {
 			
 			// DAMAGE
 			e.addMod(1.5*level+1.5);
@@ -55,5 +45,9 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 			return true;
 		}
 		return false;
+	}
+
+	private boolean isBehind(final Player attacker, final LivingEntity target) {
+		return attacker.getLocation().getDirection().dot(target.getLocation().getDirection()) > 0.8;
 	}
 }

@@ -18,13 +18,13 @@ public class AssasinKB extends ClassCondition {
 	protected void execute(User user, Player player) {
 		// IGNORE
 	}
-	
+
 	@EventHandler
 	public void onCustomKB(CustomKnockbackEvent e) {
 		if(!(e.getDamager() instanceof Player)) return;
 		if(new User((Player) e.getDamager()).getWearingClass() != this.getClassType()) return;
-		
-		e.setMult(0);
+
+		e.setMult(0.001);
 	}
 
 }
