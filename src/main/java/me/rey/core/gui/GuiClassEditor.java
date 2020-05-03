@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -18,9 +17,6 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.database.SQLManager;
-import me.rey.core.gui.anvil.AnvilGUI;
-import me.rey.core.gui.anvil.AnvilGUI.AnvilClickEvent;
-import me.rey.core.gui.anvil.AnvilGUI.AnvilSlot;
 import me.rey.core.players.User;
 import me.rey.core.pvp.Build;
 import me.rey.core.utils.Text;
