@@ -116,7 +116,7 @@ public class DamageHandlerEvents implements Listener {
 		Bukkit.getServer().getPluginManager().callEvent(kbEvent);
 		
 		if(kbEvent.isCancelled())
-			kbEvent.setMult(0);
+			kbEvent.setMult(0.001);
 		
 		kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
 	}

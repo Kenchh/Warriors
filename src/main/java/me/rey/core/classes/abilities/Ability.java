@@ -405,8 +405,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	public void onUpdate(UpdateEvent e) {
 		if(!(this instanceof IConstant) || this instanceof IEnergyEditor ) return;
 		this.setMessage(null);
-	
-			
+
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			if(this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId()) && !new User(p).isUsingAbility(this)){
 				this.playersEnabled.remove(p.getUniqueId());

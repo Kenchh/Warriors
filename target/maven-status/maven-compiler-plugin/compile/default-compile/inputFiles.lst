@@ -39,6 +39,7 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\data
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiClassAbilitiesEditor.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\players\PlayerHitCache.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\players\PlayerHit.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\PlayerInteractChecker.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\players\PlayerRunnableHandler.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\AbilityUseEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\AbilityType.java
@@ -68,6 +69,7 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\enum
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\DurabilityChangeEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\players\DeathMessage.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\utils\Cooldown.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\CustomPlayerInteractEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\items\Glow.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\utils\Text.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\Ability.java

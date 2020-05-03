@@ -10,9 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,8 +19,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant.IDroppable;
-import me.rey.core.events.customevents.AbilityUseEvent;
-import me.rey.core.events.customevents.DamageEvent;
+import me.rey.core.events.customevents.CustomPlayerInteractEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.Utils;
 
@@ -85,38 +81,10 @@ public class SmokeBomb extends Ability implements IDroppable {
 	}
 	
 	@EventHandler
-	public void onDamage(EntityDamageEvent e) {
-		if(!(e.getEntity() instanceof Player)) return;
-		if(!this.enabled.contains(((Player) e.getEntity()).getUniqueId())) return;
-		
-		this.sendNoLongerInvis(((Player) e.getEntity()));
-	}
-	
-	@EventHandler
-	public void onPlayerHit(DamageEvent e) {
-		if(!this.enabled.contains(e.getDamager().getUniqueId())) return;
-		
-		this.sendNoLongerInvis(e.getDamager());
-	}
-	
-	@EventHandler
-	public void onAbility(AbilityUseEvent e) {
+	public void onDamage(CustomPlayerInteractEvent e) {
 		if(!this.enabled.contains(e.getPlayer().getUniqueId())) return;
 		
 		this.sendNoLongerInvis(e.getPlayer());
-	}
-	
-	@EventHandler
-	public void onInteract(PlayerInteractEvent e) {
-		if(!this.enabled.contains(e.getPlayer().getUniqueId())) return;
-		
-		this.sendNoLongerInvis(e.getPlayer());
-	}
-	
-	@EventHandler
-	public void onPlayerLeave(PlayerQuitEvent e) {
-		if(this.enabled.contains(e.getPlayer().getUniqueId()))
-			this.sendNoLongerInvis(e.getPlayer());
 	}
 	
 	private void sendNoLongerInvis(Player p) {

@@ -18,6 +18,7 @@ import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.bandit.Blink;
+import me.rey.core.classes.abilities.bandit.HiddenAssault;
 import me.rey.core.classes.abilities.bandit.Leap;
 import me.rey.core.classes.abilities.bandit.Recall;
 import me.rey.core.classes.abilities.bandit.SmokeBomb;
@@ -41,6 +42,7 @@ import me.rey.core.events.DamageHandlerEvents;
 import me.rey.core.events.DurabilityChangeEvent;
 import me.rey.core.events.EquipClassEvent;
 import me.rey.core.events.PlayerDeathEvent;
+import me.rey.core.events.PlayerInteractChecker;
 import me.rey.core.events.UseSoupEvent;
 import me.rey.core.gui.GuiHelp;
 import me.rey.core.items.Glow;
@@ -173,6 +175,7 @@ public class Warriors extends JavaPlugin {
 		pm.registerEvents(new DurabilityChangeEvent(), this);
 		pm.registerEvents(new DamageHandlerEvents(), this);
 		pm.registerEvents(new UseSoupEvent(), this);
+		pm.registerEvents(new PlayerInteractChecker(), this);
 	}
 
 	/*
@@ -208,10 +211,10 @@ public class Warriors extends JavaPlugin {
 		abilityCache = new ArrayList<>(Arrays.asList(
 				//BANDIT
 				new Blink(),
-				//new HiddenAssault(),
 				new Leap(),
 				new Recall(),
 				new SmokeBomb(),
+				new HiddenAssault(),
 				
 				//NINJA
 				new Backstab(),

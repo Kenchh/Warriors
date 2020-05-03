@@ -1,30 +1,33 @@
 package me.rey.core.classes.abilities.bandit;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
+import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant;
-import me.rey.core.events.customevents.AbilityUseEvent;
-import me.rey.core.events.customevents.DamageEvent;
+import me.rey.core.events.customevents.CustomPlayerInteractEvent;
 import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.Utils;
 
 public class HiddenAssault extends Ability implements IConstant {
 	
-	private HashMap<UUID, Double> shifting = new HashMap<>();
+	private Set<UUID> shifting = new HashSet<>(), loading = new HashSet<UUID>();
 
 	public HiddenAssault() {
 		super(705, "Hidden Assault", ClassType.BLACK, AbilityType.PASSIVE_A, 1, 3, 0.00, Arrays.asList(
@@ -32,82 +35,108 @@ public class HiddenAssault extends Ability implements IConstant {
 				"you to become completely invisible.", "",
 				"You become visible when you unshift."
 				));
+		
+		this.setIgnoresCooldown(true);
 	}
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
 		boolean isShifting = p.isSneaking();
+		double requiredShiftTime = 3.5 - (0.5 * level);
 	
 		if(!isShifting) {
-			System.out.println("not shifting");
-			this.shifting.remove(p.getUniqueId());
+			if(this.isUsing(p))
+				this.remove(p);
 			return false;
 		}
 		
-		double timeShifting = shifting.containsKey(p.getUniqueId()) ? shifting.get(p.getUniqueId()) : 0.00;
-		System.out.println(timeShifting + " shifting");
+		if(isShifting && !this.shifting.contains(p.getUniqueId()) && !loading.contains(p.getUniqueId())) {
+			loading.add(p.getUniqueId());
+			
+			BukkitTask task = new BukkitRunnable() {
+				@Override
+				public void run() {
+					if(loading.contains(p.getUniqueId()) && !shifting.contains(p.getUniqueId())) {
+						shifting.add(p.getUniqueId());
+						loading.remove(p.getUniqueId());
+						p.removePotionEffect(PotionEffectType.INVISIBILITY);
+						sendAbilityMessage(p, "You are now invisible.");
+						p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 100000, 1, false, false));
+						Utils.hidePlayer(p);
+						
+						Location loc = p.getEyeLocation();
+						loc.setY(loc.getY() + 1);
+						p.getWorld().spigot().playEffect(loc, Effect.LARGE_SMOKE, 0, 0, 0.1F, 0.3F, 0.1F, 0F, 50, 50);
+					}
+				}
+			}.runTaskLater(Warriors.getInstance(), (int) (requiredShiftTime * 20));
+			
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if(!p.isSneaking()) {
+						loading.remove(p.getUniqueId());
+						shifting.remove(p.getUniqueId());
+						task.cancel();
+						this.cancel();
+						return;
+					} else if (!loading.contains(p.getUniqueId())) {
+						task.cancel();
+						this.cancel();
+					}
+					
+				}
+			}.runTaskTimer(Warriors.getInstance(), 0, 1);
+			
+		}
 		
-		if(timeShifting == 0.05)
-			this.sendAbilityMessage(p, "You are now invisible.");
-		
-		double INCREMENT = 1 / 20;
-		shifting.put(p.getUniqueId(), timeShifting + INCREMENT);
+		if(isShifting && this.shifting.contains(p.getUniqueId())) {
+			Utils.hidePlayer(p);
+		}
 		
 		return true;
 	}
 	
 	@EventHandler
-	public void onUpdate(UpdateEvent e) {
-		for(UUID uuid : shifting.keySet()) {
+	public void hidingPlayers(UpdateEvent e) {
+		for(UUID uuid : shifting) {
 			Player p = Bukkit.getServer().getPlayer(uuid);
 			if(p == null || !p.isOnline()) {
 				this.shifting.remove(uuid);
 				continue;
 			}
 			
-			Utils.hidePlayer(p);
+			if(!p.isSneaking()) {
+				this.sendNoLongerInvis(p);
+				continue;
+			}
 		}
 	}
-
-	@EventHandler
-	public void onDamage(EntityDamageEvent e) {
-		if(!(e.getEntity() instanceof Player)) return;
-		if(!this.shifting.containsKey(((Player) e.getEntity()).getUniqueId())) return;
-		
-		this.sendNoLongerInvis(((Player) e.getEntity()));
-	}
 	
 	@EventHandler
-	public void onPlayerHit(DamageEvent e) {
-		if(!this.shifting.containsKey(e.getDamager().getUniqueId())) return;
-		
-		this.sendNoLongerInvis(e.getDamager());
+	public void onPlayerHit(CustomPlayerInteractEvent e) {
+		if(this.isUsing(e.getPlayer()))
+			this.remove(e.getPlayer());
 	}
 	
-	@EventHandler
-	public void onAbility(AbilityUseEvent e) {
-		if(!this.shifting.containsKey(e.getPlayer().getUniqueId())) return;
-		
-		this.sendNoLongerInvis(e.getPlayer());
-	}
-	
-	@EventHandler
-	public void onInteract(PlayerInteractEvent e) {
-		if(!this.shifting.containsKey(e.getPlayer().getUniqueId())) return;
-		
-		this.sendNoLongerInvis(e.getPlayer());
-	}
-	
-	@EventHandler
-	public void onPlayerLeave(PlayerQuitEvent e) {
-		if(this.shifting.containsKey(e.getPlayer().getUniqueId()))
-			this.sendNoLongerInvis(e.getPlayer());
+	private void remove(Player p) {
+		if(this.isUsing(p)) {
+			if(this.shifting.contains(p.getUniqueId()))
+				this.sendNoLongerInvis(p);
+			this.shifting.remove(p.getUniqueId());
+			this.loading.remove(p.getUniqueId());
+		}
 	}
 	
 	private void sendNoLongerInvis(Player p) {
 		Utils.showPlayer(p);
 		this.shifting.remove(p.getUniqueId());
+		this.loading.remove(p.getUniqueId());
 		p.removePotionEffect(PotionEffectType.INVISIBILITY);
 		sendAbilityMessage(p, "You are no longer invisible.");
+	}
+	
+	private boolean isUsing(Player p) {
+		return this.shifting.contains(p.getUniqueId()) || this.loading.contains(p.getUniqueId());
 	}
 }

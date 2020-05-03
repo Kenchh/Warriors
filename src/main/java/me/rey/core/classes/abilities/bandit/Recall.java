@@ -51,7 +51,7 @@ public class Recall extends Ability implements IDroppable {
 	}
 	
 	@EventHandler
-	public void onUpdate(UpdateEvent e) {
+	public void positionSaving(UpdateEvent e) {
 		
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			if(!(new User(p).isUsingAbility(this))) return;
