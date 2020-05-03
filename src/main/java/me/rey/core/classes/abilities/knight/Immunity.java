@@ -110,6 +110,7 @@ public class Immunity extends Ability {
 				if(a>= 360)
 					a = 0;
 			}
+			
 		}.runTaskTimer(Warriors.getInstance(), 0, 1);
 		
 		this.sendUsedMessageToPlayer(p, this.getName());

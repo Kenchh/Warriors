@@ -11,10 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
@@ -49,7 +47,7 @@ public class Recall extends Ability implements IDroppable {
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
-		return recall(u, p, level, conditions[0] == null ? false : true);
+		return recall(u, p, level, conditions != null && conditions.length > 0 && (boolean) conditions[0] == true ? true : false);
 	}
 	
 	@EventHandler
@@ -84,7 +82,7 @@ public class Recall extends Ability implements IDroppable {
 		// teleporting
 		ArrayList<Location> saved = positionSaved.get(p.getUniqueId()) != null ? positionSaved.get(p.getUniqueId()) : new ArrayList<>();
 		int index = (int) ((saved.size()-1) - longAgoTeleport / (1.00 / 20.00));
-		Location toTeleport = saved.get(index >= saved.size() || index < 0? 0 : (int) ((saved.size()-1) - longAgoTeleport / (1.00 / 20.00)));
+		Location toTeleport = saved == null || saved.isEmpty() ? p.getLocation() : saved.get(index >= saved.size() || index < 0 ? 0 : (int) index);
 		Location origin = p.getLocation().clone();
 		toTeleport.setYaw(p.getLocation().getYaw());
 		toTeleport.setPitch(p.getLocation().getPitch());
@@ -96,8 +94,10 @@ public class Recall extends Ability implements IDroppable {
 		
 		// Particles & Sound
 		this.makeParticlesBetween(origin, toTeleport);
-		for(int i = 0; i < 2; i ++)
+		for(int i = 0; i < 2; i ++) {
 			p.getWorld().playSound(origin, Sound.ENDERMAN_TELEPORT, 1, 1);
+			p.getWorld().playSound(toTeleport, Sound.ENDERMAN_TELEPORT, 1, 1);			
+		}
 		
 		this.sendUsedMessageToPlayer(p, isShifting ? "Secondary " + this.getName() : this.getName());
 		this.setCooldown(!isShifting ? 27 - (2 * level) : 12 - level);
@@ -114,7 +114,7 @@ public class Recall extends Ability implements IDroppable {
 			init.add(pvector);
 			Location toSpawn = init.clone();
 			toSpawn.setY(toSpawn.getY() + 0.5);
-			init.getWorld().spigot().playEffect(toSpawn, Effect.PORTAL, 0, 0, 0F, 0F, 0.2F, 0F, 3, 50);
+			init.getWorld().spigot().playEffect(toSpawn, Effect.PORTAL, 0, 0, 0F, 0.3F, 0F, 0F, 10, 50);
 			init.subtract(pvector);
 			pvector.normalize();
 		}

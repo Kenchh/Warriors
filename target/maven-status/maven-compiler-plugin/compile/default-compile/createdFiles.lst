@@ -16,6 +16,7 @@ me\rey\core\pvp\Build$BuildSet.class
 me\rey\core\gui\GuiBuildOptions$2.class
 me\rey\core\items\Glow.class
 me\rey\core\gui\GuiBuildOptions.class
+me\rey\core\classes\abilities\bandit\SmokeBomb.class
 me\rey\core\classes\abilities\wizard\MagmaBlade.class
 me\rey\core\events\UseSoupEvent.class
 me\rey\core\gui\GuiHelp$1.class
@@ -64,6 +65,7 @@ me\rey\core\gui\GuiEditable.class
 me\rey\core\gui\GuiClassAbilitiesEditor$1.class
 me\rey\core\gui\GuiBuildOptions$3.class
 me\rey\core\commands\Equip.class
+me\rey\core\classes\abilities\bandit\SmokeBomb$2.class
 me\rey\core\events\ClassEditorClickEvent.class
 me\rey\core\classes\abilities\AbilityType.class
 me\rey\core\classes\abilities\knight\Immunity$1.class
@@ -82,6 +84,7 @@ me\rey\core\gui\GuiClassEditor.class
 me\rey\core\classes\abilities\AbilityType$EventType.class
 me\rey\core\events\customevents\DamageEvent.class
 me\rey\core\gui\GuiHelp$5.class
+me\rey\core\classes\abilities\bandit\HiddenAssault.class
 me\rey\core\events\DurabilityChangeEvent.class
 me\rey\core\classes\abilities\ninja\Dash.class
 me\rey\core\classes\abilities\IDamageTrigger$IPlayerDamagedByEntity.class
@@ -110,6 +113,7 @@ me\rey\core\gui\GuiHelp$7.class
 me\rey\core\pvp\Build.class
 me\rey\core\events\DamageHandlerEvents.class
 me\rey\core\pvp\ToolType.class
+me\rey\core\classes\abilities\bandit\SmokeBomb$1.class
 me\rey\core\energy\IEnergyEditor.class
 me\rey\core\database\ConnectionPoolManager.class
 me\rey\core\gui\anvil\AnvilGUI.class

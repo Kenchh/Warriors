@@ -1,3 +1,4 @@
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\bandit\SmokeBomb.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\utils\References.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\wizard\EnergyPool.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\enums\State.java
@@ -8,12 +9,12 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\clas
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\pvp\ToolType.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\knight\HoldPosition.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\DeathEvent.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\bandit\HiddenAssault.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\commands\CommandType.java
-C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\ninja\Blink.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\bandit\Blink.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\conditions\ArcaneRepair.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\knight\Immunity.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\IConstant.java
-C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\ninja\Leap.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiClassEditor.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\players\User.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\UpdateEvent.java
@@ -27,8 +28,11 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\even
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\IDamageTrigger.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\PlayerDeathEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\pvp\Build.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiBuildOptions.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\ClassCondition.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\AbilityFailEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiEditable.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\bandit\Recall.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\conditions\AssasinKB.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\ClassEditorClickEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\database\ConnectionPoolManager.java
@@ -44,8 +48,8 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\even
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\wizard\FireBlast.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\commands\Help.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\utils\Utils.java
-C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\customevents\AbilityUseWhileCooldownEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\ninja\Dash.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\bandit\Leap.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\anvil\AnvilGUI.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\Gui.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\anvil\NMSManager.java
@@ -60,6 +64,7 @@ C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\even
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\UseSoupEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\gui\GuiHelp.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\classes\abilities\wizard\NullBlade.java
+C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\enums\AbilityFail.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\events\DurabilityChangeEvent.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\players\DeathMessage.java
 C:\Users\PC\Desktop\Reinforced\Workspace\Warriors\src\main\java\me\rey\core\utils\Cooldown.java

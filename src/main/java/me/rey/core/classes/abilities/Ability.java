@@ -311,6 +311,11 @@ public abstract class Ability extends Cooldown implements Listener {
 		return true;
 	}
 	
+	public boolean sendAbilityMessage(Player p, String text) {
+		new User(p).sendMessageWithPrefix(this.getName(), text);
+		return true;
+	}
+	
 	public void setInLiquid(boolean inLiquid) {
 		this.inLiquid = inLiquid;
 	}
@@ -416,7 +421,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(this instanceof ITogglable && !this.playersEnabled.contains(p.getUniqueId())) continue;
 			if(this instanceof IConstant && !(this instanceof ITogglable)) messages = false;
 			
-			boolean success = this.run(p, null, messages, e);
+			boolean success = this.run(true, this instanceof IConstant && !(this instanceof ITogglable) ? true : false, p, null, messages, e);
 			if(!success && this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId())) {
 				((ITogglable) this).off(p);
 				this.playersEnabled.remove(p.getUniqueId());

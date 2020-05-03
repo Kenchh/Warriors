@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -133,7 +134,21 @@ public class Utils {
 		item.setItemMeta(meta);
 		return item;
 	}
-
+    
+	public static void showPlayer(Player p) {
+		for(Player online : Bukkit.getOnlinePlayers()) {
+			if(online.getUniqueId().equals(p.getUniqueId())) continue;
+			online.showPlayer(p);
+		}
+	}
+	
+	public static void hidePlayer(Player p) {
+		for(Player online : Bukkit.getOnlinePlayers()) {
+			if(online.getUniqueId().equals(p.getUniqueId())) continue;
+			online.hidePlayer(p);
+		}
+	}
+	
     
 
 }
