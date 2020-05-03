@@ -102,23 +102,27 @@ public class DamageHandlerEvents implements Listener {
 		// ARMOR VALUES
 		this.calcDamage(e);
 		
-		/*
-		 * KNOCKBACK
-		 */
-		double multiplier = 1;
-		if(e.isCancelled()) return;
-		if(damageEvent != null)
-			multiplier = damageEvent.getKnockbackMult();
-		if(byEntityEvent != null)
-			multiplier = byEntityEvent.getKnockbackMult();
-		
-		CustomKnockbackEvent kbEvent = new CustomKnockbackEvent(damagee, damager, e.getDamage(), multiplier);
-		Bukkit.getServer().getPluginManager().callEvent(kbEvent);
-		
-		if(kbEvent.isCancelled())
-			kbEvent.setMult(0.001);
-		
-		kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
+		if(!e.isCancelled()) {
+			e.setCancelled(true);
+			((LivingEntity) e.getEntity()).damage(e.getDamage());
+			
+			/*
+			 * KNOCKBACK
+			 */
+			double multiplier = 1;
+			if(damageEvent != null)
+				multiplier = damageEvent.getKnockbackMult();
+			if(byEntityEvent != null)
+				multiplier = byEntityEvent.getKnockbackMult();
+			
+			CustomKnockbackEvent kbEvent = new CustomKnockbackEvent(damagee, damager, e.getDamage(), multiplier);
+			Bukkit.getServer().getPluginManager().callEvent(kbEvent);
+			
+			if(kbEvent.isCancelled())
+				kbEvent.setMult(0.0);
+			
+			kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
+		}
 	}
 	
 	@EventHandler
@@ -158,7 +162,6 @@ public class DamageHandlerEvents implements Listener {
 		/*
 		 * ARMOR VALUES
 		 */
-		if(e.isCancelled()) return; 
 		if(e.getEntity() instanceof Player) {
 			ClassType wearing = new User((Player) e.getEntity()).getWearingClass();
 			
@@ -185,15 +188,10 @@ public class DamageHandlerEvents implements Listener {
 		damage = Math.log10(damage);
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
-		trajectory.multiply(0.05D * damage);
-		trajectory.setY((Math.abs(trajectory.getY()) * 0.8d));
+		trajectory.multiply(0.8D * damage * 0.2);
+		trajectory.setY(Math.abs(0.09 + (0.3/damage)));
 		
-		setVelocity(entity, trajectory.multiply(0.3D + trajectory.length() * 0.05D));
-	}
-	
-	private void setVelocity(Entity entity, Vector velocity) {
-		double multiply = 0.05;
-		entity.setVelocity(velocity.normalize().multiply(multiply));
+		entity.setVelocity(trajectory.multiply(0.3D + trajectory.length() * 0.8D));
 	}
 	
 //    @EventHandler
@@ -222,6 +220,5 @@ public class DamageHandlerEvents implements Listener {
 //        UtilVelocity.velocity(e.getDamagee(),
 //                trajectory, 0.3D + trajectory.length() * 0.8D, false, 0.0D, Math.abs(0.2D * e.getDamage()), 0.4D + 0.04D * e.getDamage(), true);
 //    }
-
 
 }
