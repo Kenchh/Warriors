@@ -104,10 +104,8 @@ public class Flash extends Ability {
         }
 
         if(loc != null) {
-            p.teleport(loc);
             makeParticlesBetween(p.getLocation(), loc);
-        } else {
-            makeParticlesBetween(p.getLocation(), p.getLocation());
+            p.teleport(loc);
         }
 
         p.setFallDistance(0);
@@ -148,7 +146,7 @@ public class Flash extends Ability {
 
     private void makeParticlesBetween(Location init, Location loc) {
         Vector pvector = Utils.getDirectionBetweenLocations(init, loc);
-        for(double i = 1; i <= init.distance(loc); i += 0.5) {
+        for(double i = 1; i <= init.distance(loc); i += 0.2) {
             pvector.multiply(i);
             init.add(pvector);
             Location toSpawn = init.clone();
