@@ -65,48 +65,135 @@ public class Flash extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        if(charges.get(p.getUniqueId()) > 0) {
+        if(charges.get(p.getUniqueId()) <= 0) {
+            return false;
+        }
 
-            Block b = null;
-            for(int i = 0; i < range; i++) {
+        Block b = null;
 
-                if (getTargetBlock(p, i).getType().isSolid() == false && getBlockAbove(getTargetBlock(p, i)).getType().isSolid() == false) {
-                    b = getTargetBlock(p, i);
-                } else {
-                    break;
+
+        if(p.getLocation().getBlock().getType().isSolid() == false) { /* TODO Temporary Condition Solution for non-cubic blocks */
+
+            if (atBlockGap(p, p.getLocation().getBlock()) == false && atBlockGap(p, getBlockAbove(p.getLocation().getBlock())) == false) {
+                for (int i = 0; i < range; i++) {
+
+                    if (atBlockGap(p, getTargetBlock(p, i)) || atBlockGap(p, getBlockAbove(getTargetBlock(p, i)))) {
+                        b = getTargetBlock(p, i - 1);
+                        break;
+                    }
+
+                    if (getTargetBlock(p, i).getType().isSolid() == false && getBlockAbove(getTargetBlock(p, i)).getType().isSolid() == false) {
+                        b = getTargetBlock(p, i);
+                    } else {
+                        break;
+                    }
                 }
-
             }
+        }
 
-            Location loc = null;
+        Location loc = null;
 
-            if(b == null) {
-                loc = p.getLocation();
-            } else {
-                loc = b.getLocation();
-                loc.setX(loc.getX() + 0.5);
-                loc.setZ(loc.getZ() + 0.5);
-            }
+        if(b != null) {
+            loc = b.getLocation();
+            loc.setX(loc.getX() + 0.5);
+            loc.setZ(loc.getZ() + 0.5);
 
             loc.setYaw(p.getLocation().getYaw());
             loc.setPitch(p.getLocation().getPitch());
 
-            makeParticlesBetween(p.getLocation(), loc);
+        }
 
+        if(loc != null) {
             p.teleport(loc);
+            makeParticlesBetween(p.getLocation(), loc);
+        } else {
+            makeParticlesBetween(p.getLocation(), p.getLocation());
+        }
 
-            p.setFallDistance(0);
+        p.setFallDistance(0);
 
-            p.getWorld().playSound(p.getLocation(), Sound.WITHER_SHOOT, 0.4f, 1.2f);
-            p.getWorld().playSound(p.getLocation(), Sound.SILVERFISH_KILL, 1f, 1.6f);
+        p.getWorld().playSound(p.getLocation(), Sound.WITHER_SHOOT, 0.4f, 1.2f);
+        p.getWorld().playSound(p.getLocation(), Sound.SILVERFISH_KILL, 1f, 1.6f);
 
-            removeCharge(p);
+        removeCharge(p);
 
-            sendAbilityMessage(p, "Flash Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.RED + "(-1)");
+        sendAbilityMessage(p, "Flash Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.RED + "(-1)");
+
+        return true;
+
+    }
+
+    public boolean atBlockGap(Player p, Block block) {
+
+        /* Sketch
+         * https://imgur.com/a/H1BUrBQ
+         */
+
+        double yaw = p.getLocation().getYaw();
+        double angle = Math.toRadians(yaw);
+
+        /* South - West */
+        if(angle >= 0 + 0.3 && angle <= Math.PI/2 - 0.3 || angle >= -2*Math.PI + 0.3 && angle <= -3*(Math.PI/2) - 0.3) {
+
+            Location locAtX = block.getLocation();
+            locAtX.setX(locAtX.getX() - 1);
+
+            Location locAtZ = block.getLocation();
+            locAtZ.setZ(locAtZ.getZ() + 1);
+
+            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
+                return true;
+            }
+
+        }
+
+        /* North - West */
+        if(angle >= Math.PI/2 + 0.3 && angle <= Math.PI - 0.3 || angle >= -3*(Math.PI/2) + 0.3 && angle <= -Math.PI - 0.3) {
+
+            Location locAtX = block.getLocation();
+            locAtX.setX(locAtX.getX() - 1);
+
+            Location locAtZ = block.getLocation();
+            locAtZ.setZ(locAtZ.getZ() - 1);
+
+            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
+                return true;
+            }
+
+        }
+
+        /* North - East */
+        if(angle >= Math.PI + 0.3 && angle <= 3*(Math.PI/2) - 0.3 || angle >= -Math.PI + 0.3 && angle <= -1*(Math.PI/2) - 0.3) {
+
+            Location locAtX = block.getLocation();
+            locAtX.setX(locAtX.getX() + 1);
+
+            Location locAtZ = block.getLocation();
+            locAtZ.setZ(locAtZ.getZ() - 1);
+
+            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
+                return true;
+            }
+
+        }
+
+        /* South - East */
+        if(angle >= 3*(Math.PI/2) + 0.3 && angle <= 2*Math.PI - 0.3 || angle >= -1*(Math.PI/2) + 0.3 && angle <= 0 - 0.3) {
+
+            Location locAtX = block.getLocation();
+            locAtX.setX(locAtX.getX() + 1);
+
+            Location locAtZ = block.getLocation();
+            locAtZ.setZ(locAtZ.getZ() + 1);
+
+            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
+                return true;
+            }
 
         }
 
         return false;
+
     }
 
     public void checkInFlashList(Player p) {
@@ -114,7 +201,7 @@ public class Flash extends Ability {
         } else {
             cd.remove(p.getUniqueId());
             charges.remove(p.getUniqueId());
-            Bukkit.broadcastMessage("Added "+ p.getName() + " to flash hashmaps");
+
             cd.put(p.getUniqueId(), 0);
             charges.put(p.getUniqueId(), 0);
         }
