@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
+import me.rey.core.utils.BlockLocation;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,37 +48,49 @@ public class Blink extends Ability {
 
 	@Override
 	protected boolean execute(User u, final Player p, int level, Object... conditions) {
-		Location loc = p.getLocation();
-		Location init = loc.clone();
+		Location init = p.getLocation();
 		double range = 3*level+9;
-		
-		Location targetBlock = p.getTargetBlock((Set <Material>) null, (int) range).getLocation();
-		double distance = init.distance(targetBlock);
-		if(range > distance){
-			range = distance - 0.7;
-		}
-		
-		
-		// TELEPORTING
-		Vector direction = loc.getDirection();
-		direction.normalize();
-		direction.multiply(range);
-		loc.add(direction);
-		
-		Block above = loc.getWorld().getBlockAt(loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ());
-		Block inside = loc.getBlock();
-		if (isAir(above)) {
-			loc.setY(loc.getY()-1);
-		}
-		
-		if(isFloor(inside)) {
-			loc.setY(loc.getY()+5);
+
+		Block b = null;
+
+		if(p.getLocation().getBlock().getType().isSolid() == false) { /* TODO Temporary Condition Solution for non-cubic blocks */
+
+			if (BlockLocation.atBlockGap(p, p.getLocation().getBlock()) == false && BlockLocation.atBlockGap(p, BlockLocation.getBlockAbove(p.getLocation().getBlock())) == false) {
+				for (int i = 0; i < range; i++) {
+
+					if (BlockLocation.atBlockGap(p, BlockLocation.getTargetBlock(p, i)) || BlockLocation.atBlockGap(p, BlockLocation.getBlockAbove(BlockLocation.getTargetBlock(p, i)))) {
+						b = BlockLocation.getTargetBlock(p, i - 1);
+						break;
+					}
+
+					if (BlockLocation.getTargetBlock(p, i).getType().isSolid() == false && BlockLocation.getBlockAbove(BlockLocation.getTargetBlock(p, i)).getType().isSolid() == false) {
+						b = BlockLocation.getTargetBlock(p, i);
+					} else {
+						break;
+					}
+				}
+			}
 		}
 
-		p.teleport(loc);
+		Location loc = null;
+
+		if(b != null) {
+			loc = b.getLocation();
+			loc.setX(loc.getX() + 0.5);
+			loc.setZ(loc.getZ() + 0.5);
+
+			loc.setYaw(p.getLocation().getYaw());
+			loc.setPitch(p.getLocation().getPitch());
+
+		}
+
+		if(loc != null) {
+			p.teleport(loc);
+			this.makeParticlesBetween(init, loc);
+		}
+
 		p.setFallDistance(0);
-		this.makeParticlesBetween(init, loc);
-		
+		p.getWorld().playEffect(p.getLocation(), Effect.BLAZE_SHOOT, 0);
 		this.sendUsedMessageToPlayer(p, this.getName());
 		
 		// ADDING TO DEBLINK USER LIST
@@ -106,7 +119,8 @@ public class Blink extends Ability {
 		Location from = e.getPlayer().getLocation();
 		to.setPitch(from.getPitch());
 		to.setYaw(from.getYaw());
-		
+
+		e.getPlayer().getWorld().playEffect(e.getPlayer().getLocation(), Effect.BLAZE_SHOOT, 0);
 		this.makeParticlesBetween(from,  to);
 		e.getPlayer().teleport(to);
 		e.getPlayer().setFallDistance(0);
