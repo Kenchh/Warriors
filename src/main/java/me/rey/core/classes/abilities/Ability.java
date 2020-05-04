@@ -481,6 +481,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	@EventHandler
 	public void onEvent(PlayerInteractEvent e) {
 		
+		// RIGHT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.RIGHT_CLICK)
 				&& (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
 			
@@ -492,6 +493,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			run(e.getPlayer(), match, true);
 		}
 		
+		// LEFT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.LEFT_CLICK)
 				&& (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
 			
@@ -501,6 +503,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			
 			run(e.getPlayer(), match, true);
 		}
+		
 	}
 	
 	private ToolType match(Material item) {
