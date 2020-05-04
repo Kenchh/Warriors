@@ -41,10 +41,10 @@ public class HiddenAssault extends Ability implements IConstant {
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
-		boolean isShifting = p.isSneaking();
+		boolean isShifting = p.isSneaking(), isInLiquid = isInLiquid(p);
 		double requiredShiftTime = 3.5 - (0.5 * level);
 	
-		if(!isShifting) {
+		if(!isShifting || isInLiquid) {
 			if(this.isUsing(p))
 				this.remove(p);
 			return false;
@@ -74,7 +74,7 @@ public class HiddenAssault extends Ability implements IConstant {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if(!p.isSneaking()) {
+					if(!p.isSneaking() || isInLiquid(p)) {
 						loading.remove(p.getUniqueId());
 						shifting.remove(p.getUniqueId());
 						task.cancel();
@@ -106,7 +106,7 @@ public class HiddenAssault extends Ability implements IConstant {
 				continue;
 			}
 			
-			if(!p.isSneaking()) {
+			if(!p.isSneaking() || isInLiquid(p)) {
 				this.sendNoLongerInvis(p);
 				continue;
 			}
@@ -126,6 +126,10 @@ public class HiddenAssault extends Ability implements IConstant {
 			this.shifting.remove(p.getUniqueId());
 			this.loading.remove(p.getUniqueId());
 		}
+	}
+	
+	private boolean isInLiquid(Player p) {
+		return p.getLocation().getBlock() != null && p.getLocation().getBlock().isLiquid();
 	}
 	
 	private void sendNoLongerInvis(Player p) {
