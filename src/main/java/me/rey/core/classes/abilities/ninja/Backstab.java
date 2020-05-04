@@ -17,7 +17,7 @@ import me.rey.core.players.User;
 public class Backstab extends Ability implements IPlayerDamagedEntity {
 
 	public Backstab() {
-		super(4, "Backstab", ClassType.LEATHER, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
+		super(1, "Backstab", ClassType.LEATHER, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
 				"Attacks from behind opponents",
 				"deal <variable>1.5*l+1.5</variable> (+1.5) additional damage."
 				));

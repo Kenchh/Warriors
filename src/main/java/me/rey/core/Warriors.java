@@ -34,6 +34,7 @@ import me.rey.core.classes.abilities.wizard.MagmaBlade;
 import me.rey.core.classes.abilities.wizard.NullBlade;
 import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.classes.conditions.AssasinKB;
+import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
@@ -194,10 +195,12 @@ public class Warriors extends JavaPlugin {
 				// NINJA
 				new AssasinKB(),
 				// WIZARD
-				new ArcaneRepair()
+				new ArcaneRepair(),
 				// MARKSMAN
 				// KNIGHT
 				// BRUTE
+				// BLACK
+				new Lightweight()
 				));
 
 		for(ClassCondition condition : classConditions) {
