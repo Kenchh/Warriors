@@ -7,6 +7,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
+import me.rey.core.utils.BlockLocation;
 import me.rey.core.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -71,19 +72,18 @@ public class Flash extends Ability {
 
         Block b = null;
 
-
         if(p.getLocation().getBlock().getType().isSolid() == false) { /* TODO Temporary Condition Solution for non-cubic blocks */
 
-            if (atBlockGap(p, p.getLocation().getBlock()) == false && atBlockGap(p, getBlockAbove(p.getLocation().getBlock())) == false) {
+            if (BlockLocation.atBlockGap(p, p.getLocation().getBlock()) == false && BlockLocation.atBlockGap(p, BlockLocation.getBlockAbove(p.getLocation().getBlock())) == false) {
                 for (int i = 0; i < range; i++) {
 
-                    if (atBlockGap(p, getTargetBlock(p, i)) || atBlockGap(p, getBlockAbove(getTargetBlock(p, i)))) {
-                        b = getTargetBlock(p, i - 1);
+                    if (BlockLocation.atBlockGap(p, BlockLocation.getTargetBlock(p, i)) || BlockLocation.atBlockGap(p, BlockLocation.getBlockAbove(BlockLocation.getTargetBlock(p, i)))) {
+                        b = BlockLocation.getTargetBlock(p, i - 1);
                         break;
                     }
 
-                    if (getTargetBlock(p, i).getType().isSolid() == false && getBlockAbove(getTargetBlock(p, i)).getType().isSolid() == false) {
-                        b = getTargetBlock(p, i);
+                    if (BlockLocation.getTargetBlock(p, i).getType().isSolid() == false && BlockLocation.getBlockAbove(BlockLocation.getTargetBlock(p, i)).getType().isSolid() == false) {
+                        b = BlockLocation.getTargetBlock(p, i);
                     } else {
                         break;
                     }
@@ -123,79 +123,6 @@ public class Flash extends Ability {
 
     }
 
-    public boolean atBlockGap(Player p, Block block) {
-
-        /* Sketch
-         * https://imgur.com/a/H1BUrBQ
-         */
-
-        double yaw = p.getLocation().getYaw();
-        double angle = Math.toRadians(yaw);
-
-        /* South - West */
-        if(angle >= 0 + 0.3 && angle <= Math.PI/2 - 0.3 || angle >= -2*Math.PI + 0.3 && angle <= -3*(Math.PI/2) - 0.3) {
-
-            Location locAtX = block.getLocation();
-            locAtX.setX(locAtX.getX() - 1);
-
-            Location locAtZ = block.getLocation();
-            locAtZ.setZ(locAtZ.getZ() + 1);
-
-            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
-                return true;
-            }
-
-        }
-
-        /* North - West */
-        if(angle >= Math.PI/2 + 0.3 && angle <= Math.PI - 0.3 || angle >= -3*(Math.PI/2) + 0.3 && angle <= -Math.PI - 0.3) {
-
-            Location locAtX = block.getLocation();
-            locAtX.setX(locAtX.getX() - 1);
-
-            Location locAtZ = block.getLocation();
-            locAtZ.setZ(locAtZ.getZ() - 1);
-
-            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
-                return true;
-            }
-
-        }
-
-        /* North - East */
-        if(angle >= Math.PI + 0.3 && angle <= 3*(Math.PI/2) - 0.3 || angle >= -Math.PI + 0.3 && angle <= -1*(Math.PI/2) - 0.3) {
-
-            Location locAtX = block.getLocation();
-            locAtX.setX(locAtX.getX() + 1);
-
-            Location locAtZ = block.getLocation();
-            locAtZ.setZ(locAtZ.getZ() - 1);
-
-            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
-                return true;
-            }
-
-        }
-
-        /* South - East */
-        if(angle >= 3*(Math.PI/2) + 0.3 && angle <= 2*Math.PI - 0.3 || angle >= -1*(Math.PI/2) + 0.3 && angle <= 0 - 0.3) {
-
-            Location locAtX = block.getLocation();
-            locAtX.setX(locAtX.getX() + 1);
-
-            Location locAtZ = block.getLocation();
-            locAtZ.setZ(locAtZ.getZ() + 1);
-
-            if(locAtX.getBlock().getType().isSolid() && locAtZ.getBlock().getType().isSolid()) {
-                return true;
-            }
-
-        }
-
-        return false;
-
-    }
-
     public void checkInFlashList(Player p) {
         if(cd.containsKey(p.getUniqueId()) && charges.containsKey(p.getUniqueId())) {
         } else {
@@ -219,19 +146,6 @@ public class Flash extends Ability {
         cd.replace(p.getUniqueId(), cooldown);
     }
 
-    public static Block getTargetBlock(Player player, int range) {
-        Location loc = player.getEyeLocation();
-        Vector dir = loc.getDirection().normalize();
-
-        Block b = null;
-
-        for (int i = 0; i <= range; i++) {
-
-            b = loc.add(dir).getBlock();
-        }
-        return b;
-    }
-
     private void makeParticlesBetween(Location init, Location loc) {
         Vector pvector = Utils.getDirectionBetweenLocations(init, loc);
         for(double i = 1; i <= init.distance(loc); i += 0.5) {
@@ -243,18 +157,6 @@ public class Flash extends Ability {
             init.subtract(pvector);
             pvector.normalize();
         }
-    }
-
-    public static Block getBlockUnderneath(Block b) {
-        Location loc = new Location(b.getWorld(), b.getLocation().getX(), b.getLocation().getY() - 1.0, b.getLocation().getZ());
-        Block bu = Bukkit.getWorld(b.getWorld().getName()).getBlockAt(loc);
-        return bu;
-    }
-
-    public static Block getBlockAbove(Block b) {
-        Location loc = new Location(b.getWorld(), b.getLocation().getX(), b.getLocation().getY() + 1.0, b.getLocation().getZ());
-        Block ba = Bukkit.getWorld(b.getWorld().getName()).getBlockAt(loc);
-        return ba;
     }
 
 }
