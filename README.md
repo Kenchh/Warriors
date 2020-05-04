@@ -10,7 +10,7 @@ Warriors Plugin Core is, like the name specifies, the main plugin that acts as a
 4. Knockback Handler.
 5. Energy/Mana.
 6. Customized Events to fit all dependency needs.
-7. Deep plugin API, with access to creation of new classes, abilities, and much more.
+7. Plugin API, with access to creation of new classes, abilities, and much more.
 
 ## Contributing
 
