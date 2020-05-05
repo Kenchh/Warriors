@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Flash extends Ability {
 
@@ -44,7 +41,7 @@ public class Flash extends Ability {
     public void onTick(UpdateEvent e) {
 
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if (!(new User(p).isUsingAbility(this))) return;
+            if (!(new User(p).isUsingAbility(this))) continue;
 
             checkInFlashList(p);
 
@@ -104,8 +101,52 @@ public class Flash extends Ability {
         }
 
         if(loc != null) {
-            makeParticlesBetween(p.getLocation(), loc);
-            p.teleport(loc);
+            if(p.getTargetBlock((Set<Material>) null, 5).getType().isSolid()) {
+
+                Block tb = p.getTargetBlock((Set<Material>) null, 5);
+                float dir = (float)Math.toDegrees(Math.atan2(p.getLocation().getBlockX() - tb.getX(), tb.getZ() - p.getLocation().getBlockZ()));
+                BlockFace face = BlockLocation.getClosestFace(dir);
+
+                if(face == BlockFace.NORTH || face == BlockFace.EAST || face == BlockFace.SOUTH || face == BlockFace.WEST) {
+                    Location tloc = tb.getLocation();
+
+                    if (face == BlockFace.NORTH) {
+                        tloc.setX(tloc.getX() + 1.35);
+                        tloc.setZ(tloc.getZ() + 0.5);
+                    }
+
+                    if (face == BlockFace.EAST) {
+                        tloc.setZ(tloc.getZ() + 1.35);
+                        tloc.setX(tloc.getX() + 0.5);
+                    }
+
+                    if (face == BlockFace.SOUTH) {
+                        tloc.setX(tloc.getX() - 0.35);
+                        tloc.setZ(tloc.getZ() + 0.5);
+                    }
+
+                    if (face == BlockFace.WEST) {
+                        tloc.setZ(tloc.getZ() - 0.35);
+                        tloc.setX(tloc.getX() + 0.5);
+                    }
+
+                    tloc.setY(loc.getY());
+                    tloc.setYaw(p.getLocation().getYaw());
+                    tloc.setPitch(p.getLocation().getPitch());
+
+                    if (tloc.getBlock().getType().isSolid() == false) {
+                        makeParticlesBetween(p.getLocation(), tloc);
+                        p.teleport(tloc);
+                    }
+                } else {
+                    makeParticlesBetween(p.getLocation(), loc);
+                    p.teleport(loc);
+                }
+
+            } else {
+                makeParticlesBetween(p.getLocation(), loc);
+                p.teleport(loc);
+            }
         }
 
         p.setFallDistance(0);
