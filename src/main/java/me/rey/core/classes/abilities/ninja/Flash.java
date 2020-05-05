@@ -21,8 +21,10 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
 import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.Text;
 import me.rey.core.utils.Utils;
 
 public class Flash extends Ability {
@@ -32,6 +34,10 @@ public class Flash extends Ability {
 
     private HashMap<UUID, Integer> charges = new HashMap<UUID, Integer>();
     private HashMap<UUID, Integer> cd = new HashMap<UUID, Integer>();
+    
+    private static final String NOT_CHARGED = "○";
+    private static final String CHARGING = "◎";
+    private static final String CHARGED = "●";
 
     public Flash() {
         super(3, "Flash", ClassType.LEATHER, AbilityType.AXE, 1, 4, 0, Arrays.asList(
@@ -43,25 +49,38 @@ public class Flash extends Ability {
         setIgnoresCooldown(true);
         setWhileSlowed(false);
     }
-
+    
     @EventHandler
     public void onTick(UpdateEvent e) {
 
         for(Player p : Bukkit.getOnlinePlayers()) {
             if (!(new User(p).isUsingAbility(this))) continue;
 
+            int maxCharges = new User(p).getSelectedBuild(new User(p).getWearingClass()).getAbilityLevel(this.getAbilityType()) + 1;
             checkInFlashList(p);
 
-            if(charges.get(p.getUniqueId()) < 5) {
+            if(charges.get(p.getUniqueId()) < maxCharges) {
                 if (cd.get(p.getUniqueId()) >= cooldownUntilNewCharge) {
                     addCharge(p);
                     setCD(p, 0);
 
                     sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.GREEN + "(+1)");
-
                 } else {
                     setCD(p, cd.get(p.getUniqueId()) + 1);
                 }
+            }
+            
+            
+            // Action Bar
+            if(this.matchesAbilityTool(p)) {
+	            String chargeList = "";
+	            int flashCount = charges.get(p.getUniqueId());
+	            
+	            for(int i = 0; i < flashCount; i++) chargeList += ChatColor.GREEN + CHARGED + " ";
+	            if(flashCount < maxCharges) chargeList += ChatColor.YELLOW + CHARGING + " ";
+	            for(int i = 0; i < (maxCharges - flashCount - 1); i++) chargeList += ChatColor.RED + NOT_CHARGED + " ";
+	            
+	            new ActionBar(Text.color("&f&lFlash Charges: " + chargeList)).send(p);;
             }
         }
 
@@ -70,9 +89,7 @@ public class Flash extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        if(charges.get(p.getUniqueId()) <= 0) {
-            return false;
-        }
+        if(charges.get(p.getUniqueId()) <= 0) return false;
 
         Block b = null;
 

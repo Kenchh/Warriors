@@ -1,6 +1,7 @@
 package me.rey.core.classes.abilities;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,9 @@ import net.md_5.bungee.api.ChatColor;
 
 public abstract class Ability extends Cooldown implements Listener {
 	
+	// Cooldowns
+	private HashMap<UUID, Double> tempMaxCooldowns;
+	
 	// Droppable
 	private Set<UUID> playersEnabled;
 	
@@ -81,6 +85,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.tokenCost = tokenCost;
 		this.energyCost = 0.00;
 		this.description = new String[description.size()];
+		this.tempMaxCooldowns = new HashMap<>();
 		
 		int index = 0;
 		for(String s : description) {
@@ -251,6 +256,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	public void applyCooldown(Player p) {
 		if(!ignoresCooldown && !cooldownCanceled) {
 			this.setCooldownForPlayer(p, this.cooldown);
+			this.tempMaxCooldowns.put(p.getUniqueId(), this.cooldown);
 		}
 		
 		this.resetCooldown();
@@ -546,6 +552,24 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 	}
 	
+	public boolean matchesAbilityTool(Player p) {
+		// Getting held Axe/Sword
+		ToolType holdType = this.match(p.getItemInHand() == null ? new Item(Material.AIR).get() : p.getItemInHand());
+		if(holdType == null) return false;
+				
+		
+		
+		// Checking if this ability's tools match with the player's held tool
+		boolean pass = false;
+		for(ToolType available : this.getAbilityType().getToolTypes()) {
+			if(available.equals(holdType)) pass = true;
+		}
+		
+		
+		// If the ability tool doesn't match, then we continue to the next player
+		return pass;
+	}
+	
 	/*
 	 * ACTION BAR COOLDOWN DISPLAY
 	 */
@@ -560,29 +584,15 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(!u.isUsingAbility(this)) continue;
 			
 			
-			// Getting held Axe/Sword
-			ToolType holdType = this.match(p.getItemInHand() == null ? new Item(Material.AIR).get() : p.getItemInHand());
-			if(holdType == null) continue;
-					
-			
-			
-			// Checking if this ability's tools match with the player's held tool
-			boolean pass = false;
-			for(ToolType available : this.getAbilityType().getToolTypes()) {
-				if(available.equals(holdType)) pass = true;
-			}
-			
-			
-			// If the ability tool doesn't match, then we continue to the next player
-			if(!pass) continue;
+			if(!this.matchesAbilityTool(p)) return;
 			
 			
 			// Getting cooldown variables
-			double maxCooldown = this.getCooldown(), pCooldown = this.getPlayerCooldown(p);
-			
+			double maxCooldown = this.tempMaxCooldowns.containsKey(p.getUniqueId()) ? this.tempMaxCooldowns.get(p.getUniqueId()) : this.getCooldown();
+			double pCooldown = this.getPlayerCooldown(p);
 			
 			// Canceling if the cooldown is ignored or the player has 0 cooldown
-			if(this.ignoresCooldown || this.getPlayerCooldown(p) < 0.1) continue;
+			if(this.ignoresCooldown || pCooldown == 0) continue;
 				
 			// DISPLAYING ACTION BAR
 			int bars = 20;
@@ -590,10 +600,11 @@ public abstract class Ability extends Cooldown implements Listener {
 			
 			double mult = bars / maxCooldown;
 			int toAdd = (int) Math.round(pCooldown * mult);
-			Bukkit.broadcastMessage(mult + " multiplier");
 			for(int i = 1; i <= bars; i++) {
 				barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "|";
 			}
+			
+			if(pCooldown <= 0.1) barsString = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
 			
 			new ActionBar(Text.color("&e&l" + this.getName() + " " + barsString)).send(p);
 		}
