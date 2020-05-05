@@ -39,12 +39,15 @@ import me.rey.core.events.customevents.DamageEvent;
 import me.rey.core.events.customevents.DamagedByEntityEvent;
 import me.rey.core.events.customevents.EnergyUpdateEvent;
 import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.gui.Gui.Item;
+import me.rey.core.packets.ActionBar;
 import me.rey.core.players.PlayerHit;
 import me.rey.core.players.User;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.utils.Cooldown;
 import me.rey.core.utils.Text;
+import net.md_5.bungee.api.ChatColor;
 
 public abstract class Ability extends Cooldown implements Listener {
 	
@@ -482,27 +485,27 @@ public abstract class Ability extends Cooldown implements Listener {
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onEvent(PlayerInteractEvent e) {
-		
+
 		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
 				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
 				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
 				Material.ENDER_CHEST);
-		
+
 		boolean isAir = e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_AIR);
 		boolean result = isAir ? true : expected.contains(e.getClickedBlock().getType()) || e.getClickedBlock().getType().name().toLowerCase().contains("door") 
 				|| e.getClickedBlock().getType().name().toLowerCase().contains("fence")? true : false;
-		
+
 		if((e.isCancelled() || result) && !isAir) return;
 		
 		// RIGHT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.RIGHT_CLICK)
 				&& (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-			
+
 			Material item = e.getItem() == null ? Material.AIR : e.getItem().getType();
-			
+
 			ToolType match = match(item);
 			if(match == null) return;
-			
+
 			run(e.getPlayer(), match, true);
 		}
 		
@@ -540,6 +543,59 @@ public abstract class Ability extends Cooldown implements Listener {
 		if(this instanceof ITogglable && this.playersEnabled.contains(e.getPlayer().getUniqueId())){
 			((ITogglable) this).off(e.getPlayer());
 			this.playersEnabled.remove(e.getPlayer().getUniqueId());
+		}
+	}
+	
+	/*
+	 * ACTION BAR COOLDOWN DISPLAY
+	 */
+	
+	@EventHandler
+	public void onActionBarCooldown(UpdateEvent e) {
+		// Checked for only SWORD & AXE abilities
+		if(!this.getAbilityType().equals(AbilityType.SWORD) && !this.getAbilityType().equals(AbilityType.AXE)) return;
+		
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			User u = new User(p);
+			if(!u.isUsingAbility(this)) continue;
+			
+			
+			// Getting held Axe/Sword
+			ToolType holdType = this.match(p.getItemInHand() == null ? new Item(Material.AIR).get() : p.getItemInHand());
+			if(holdType == null) continue;
+					
+			
+			
+			// Checking if this ability's tools match with the player's held tool
+			boolean pass = false;
+			for(ToolType available : this.getAbilityType().getToolTypes()) {
+				if(available.equals(holdType)) pass = true;
+			}
+			
+			
+			// If the ability tool doesn't match, then we continue to the next player
+			if(!pass) continue;
+			
+			
+			// Getting cooldown variables
+			double maxCooldown = this.getCooldown(), pCooldown = this.getPlayerCooldown(p);
+			
+			
+			// Canceling if the cooldown is ignored or the player has 0 cooldown
+			if(this.ignoresCooldown || this.getPlayerCooldown(p) < 0.1) continue;
+				
+			// DISPLAYING ACTION BAR
+			int bars = 20;
+			String barsString = "";
+			
+			double mult = bars / maxCooldown;
+			int toAdd = (int) Math.round(pCooldown * mult);
+			Bukkit.broadcastMessage(mult + " multiplier");
+			for(int i = 1; i <= bars; i++) {
+				barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "|";
+			}
+			
+			new ActionBar(Text.color("&e&l" + this.getName() + " " + barsString)).send(p);
 		}
 	}
 
