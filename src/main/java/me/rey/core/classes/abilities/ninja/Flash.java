@@ -50,7 +50,7 @@ public class Flash extends Ability {
                     addCharge(p);
                     setCD(p, 0);
 
-                    sendAbilityMessage(p, "Flash Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.GREEN + "(+1)");
+                    sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.GREEN + "(+1)");
 
                 } else {
                     setCD(p, cd.get(p.getUniqueId()) + 1);
@@ -156,7 +156,7 @@ public class Flash extends Ability {
 
         removeCharge(p);
 
-        sendAbilityMessage(p, "Flash Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.RED + "(-1)");
+        sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.RED + "(-1)");
 
         return true;
 

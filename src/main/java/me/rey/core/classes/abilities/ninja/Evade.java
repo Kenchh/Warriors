@@ -1,6 +1,7 @@
 package me.rey.core.classes.abilities.ninja;
 
 import com.avaje.ebean.Update;
+import jdk.nashorn.internal.ir.Block;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
@@ -9,9 +10,7 @@ import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.utils.BlockLocation;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -51,9 +50,9 @@ public class Evade extends Ability {
                 if(preparingEvade.get(p.getUniqueId()) >= 20 || p.isBlocking() == false) {
                     preparingEvade.remove(p.getUniqueId());
 
-                    sendAbilityMessage(p, "Failed to evade.");
-                    this.setCooldown(8);
-                    this.applyCooldown(p);
+                    setIgnoresCooldown(false);
+                    applyCooldown(p);
+                    sendAbilityMessage(p, ChatColor.RED + "Failed to evade.");
 
                 } else {
                     preparingEvade.replace(p.getUniqueId(), preparingEvade.get(p.getUniqueId()) + 1);
@@ -68,6 +67,8 @@ public class Evade extends Ability {
         if(preparingEvade.containsKey(p.getUniqueId()) == false) {
             preparingEvade.put(p.getUniqueId(), 0);
         }
+
+        setIgnoresCooldown(true);
 
         return true;
     }
@@ -98,6 +99,8 @@ public class Evade extends Ability {
             return;
         }
 
+        e.setCancelled(true);
+
         preparingEvade.remove(damagee.getUniqueId());
 
         invincible.put(damagee.getUniqueId(), 0);
@@ -105,8 +108,13 @@ public class Evade extends Ability {
         this.setCooldown(1);
         this.applyCooldown(damagee);
 
+        for(int i=0; i<=8; i++) {
+            damagee.getWorld().playSound(damagee.getLocation(), Sound.ENDERDRAGON_WINGS, 1.5f, 0.5f);
+        }
+        damagee.getWorld().spigot().playEffect(damagee.getLocation(), Effect.LARGE_SMOKE, 0, 0, 0F, 0F, 0F, 0F, 10, 100);
+
         tpBehindPlayer(damagee, damager);
-        damagee.getWorld().spigot().playEffect(damagee.getLocation(), Effect.LARGE_SMOKE, 0, 0, 0F, 0F, 0F, 0F, 3, 100);
+
 
     }
 
@@ -120,15 +128,17 @@ public class Evade extends Ability {
         tpLoc.setY(damager.getLocation().getY());
         locInBetween.setY(damager.getLocation().getY());
 
-        if(locInBetween.getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(locInBetween.getBlock()).getType().isSolid() == false) {
+        if(damager.getLocation().getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(damager.getLocation().getBlock()).getType().isSolid() == false) {
+            if (locInBetween.getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(locInBetween.getBlock()).getType().isSolid() == false) {
 
-            if (tpLoc.getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(tpLoc.getBlock()).getType().isSolid() == false) {
-                damagee.teleport(tpLoc);
+                if (tpLoc.getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(tpLoc.getBlock()).getType().isSolid() == false) {
+                    damagee.teleport(tpLoc);
+                    return;
+                }
+
+                damagee.teleport(locInBetween);
                 return;
             }
-
-            damagee.teleport(locInBetween);
-            return;
         }
 
         damagee.teleport(damager.getLocation());
