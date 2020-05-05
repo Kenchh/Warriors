@@ -2,6 +2,7 @@ package me.rey.core.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -103,6 +104,31 @@ public class BlockLocation {
         org.bukkit.Location loc = new org.bukkit.Location(b.getWorld(), b.getLocation().getX(), b.getLocation().getY() + 1.0, b.getLocation().getZ());
         Block ba = Bukkit.getWorld(b.getWorld().getName()).getBlockAt(loc);
         return ba;
+    }
+
+    public static BlockFace getClosestFace(float direction){
+
+        direction = direction % 360;
+
+        if(direction < 0)
+            direction += 360;
+
+        direction = Math.round(direction / 90);
+
+        switch((int)direction){
+
+            case 0:
+                return BlockFace.WEST;
+            case 1:
+                return BlockFace.NORTH;
+            case 2:
+                return BlockFace.EAST;
+            case 3:
+                return BlockFace.SOUTH;
+            default:
+                return BlockFace.WEST;
+
+        }
     }
 
 }
