@@ -606,7 +606,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			
 			if(pCooldown <= 0.1) barsString = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
 			
-			new ActionBar(Text.color("&e&l" + this.getName() + " " + barsString)).send(p);
+			new ActionBar(Text.color("&f&l" + this.getName() + " " + barsString)).send(p);
 		}
 	}
 
