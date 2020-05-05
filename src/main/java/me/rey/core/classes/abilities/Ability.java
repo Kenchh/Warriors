@@ -55,7 +55,8 @@ public abstract class Ability extends Cooldown implements Listener {
 	// Cooldowns
 	private HashMap<UUID, Double> tempMaxCooldowns;
 	
-	// Droppable
+	// Dependant
+	private Set<UUID> prepared;
 	private Set<UUID> playersEnabled;
 	
 	private String name;
@@ -95,7 +96,9 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 		if(this instanceof ITogglable)
 			this.playersEnabled = new HashSet<>();
-
+		
+		if(this instanceof IBowPreparable)
+			this.prepared = new HashSet<>();
 	}
 	
 	public boolean run(Player p, ToolType toolType, boolean messages, Object... conditions) {
