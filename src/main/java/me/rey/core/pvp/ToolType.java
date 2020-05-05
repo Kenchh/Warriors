@@ -11,10 +11,13 @@ public enum ToolType {
 	
 	POWER_SWORD(7, "&fPower Sword", Material.DIAMOND_SWORD, HitType.MELEE),
 	POWER_AXE(7, "&fPower Axe", Material.DIAMOND_AXE, HitType.MELEE),
+	POWER_SPADE(7, "&fPower Spade", Material.DIAMOND_SPADE, HitType.MELEE),
 	BOOSTER_SWORD(true, 6, "&fBooster Sword", Material.GOLD_SWORD, HitType.MELEE),
 	BOOSTER_AXE(true, 6, "&fBooster Axe", Material.GOLD_AXE, HitType.MELEE),
+	BOOSTER_SPADE(true, 6, "&fBooster Spade", Material.GOLD_SPADE, HitType.MELEE),
 	STANDARD_SWORD(6, "&fStandard Sword", Material.IRON_SWORD, HitType.MELEE),
 	STANDARD_AXE(6, "&fStandard Axe", Material.IRON_AXE, HitType.MELEE),
+	STANDARD_SPADE(6, "&fStandard Spade", Material.IRON_SPADE, HitType.MELEE),
 	STANDARD_BOW(5, "&fStandard Bow", Material.BOW, HitType.RANGED);
 
 	private int damage;

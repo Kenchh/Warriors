@@ -10,6 +10,7 @@ public enum AbilityType {
 	
 	SWORD(true, EventType.RIGHT_CLICK, new Item(ToolType.STANDARD_SWORD.getType()), ToolType.POWER_SWORD, ToolType.STANDARD_SWORD, ToolType.BOOSTER_SWORD),
 	AXE(true, EventType.RIGHT_CLICK, new Item(ToolType.STANDARD_AXE.getType()), ToolType.POWER_AXE, ToolType.STANDARD_AXE, ToolType.BOOSTER_AXE),
+	SPADE(true, EventType.RIGHT_CLICK, new Item(ToolType.STANDARD_SPADE.getType()), ToolType.POWER_SPADE, ToolType.STANDARD_SPADE, ToolType.BOOSTER_SPADE),
 	BOW(EventType.LEFT_CLICK, new Item(ToolType.STANDARD_BOW.getType()), ToolType.STANDARD_BOW),
 	PASSIVE_A(EventType.NONE, new Item(Material.INK_SACK).setDurability(1),ToolType.POWER_SWORD, ToolType.POWER_AXE, ToolType.STANDARD_SWORD, ToolType.STANDARD_AXE, ToolType.BOOSTER_SWORD, ToolType.BOOSTER_AXE),
 	PASSIVE_B(EventType.NONE, new Item(Material.INK_SACK).setDurability(14), ToolType.POWER_SWORD, ToolType.POWER_AXE, ToolType.STANDARD_SWORD, ToolType.STANDARD_AXE, ToolType.BOOSTER_SWORD, ToolType.BOOSTER_AXE),

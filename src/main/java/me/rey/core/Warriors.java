@@ -271,6 +271,14 @@ public class Warriors extends JavaPlugin {
 		return abilityCache != null ? abilityCache : new ArrayList<>();
 	}
 	
+	public ArrayList<Ability> getClassAbilities(ClassType classType){
+		ArrayList<Ability> abilities = new ArrayList<>();
+		for(Ability a : this.getAbilitiesInCache()) {
+			if(a.getClassType().equals(classType)) abilities.add(a);
+		}
+		return abilities;
+	}
+	
 	public void loadConfig() {
 		getConfig().options().copyDefaults(true);
 		saveConfig();

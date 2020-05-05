@@ -35,9 +35,19 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 		/*
 		 * SETTING ICONS
 		 */
-		for(int i = 0; i < AbilityType.values().length; i++) {
+		int i = 0;
+		for(AbilityType abilityType : AbilityType.values()) {
 			
-			AbilityType abilityType = AbilityType.values()[i];
+			AbilityType toExclude = AbilityType.BOW;
+			for(Ability a : Warriors.getInstance().getClassAbilities(classType)) {
+				if(a.getAbilityType().equals(AbilityType.BOW)) {
+					toExclude = AbilityType.SPADE;
+					break;
+				}
+			}
+			
+			
+			if(toExclude.equals(abilityType)) continue;
 			int row = 9 * (i + 1) - 9;
 			setItem(new GuiItem(abilityType.getIcon().setName("&a&l" + abilityType.getName() + " Skills")) {
 				@Override
@@ -121,7 +131,7 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 				
 			}
 			
-			
+			i++;
 		}
 		
 		int tokens = toEdit.getTokensRemaining();
