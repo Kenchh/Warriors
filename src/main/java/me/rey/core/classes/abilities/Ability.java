@@ -115,10 +115,9 @@ public abstract class Ability extends Cooldown implements Listener {
 		 * BOOSTER WEAPONS
 		 */
 		int level = b.getAbilityLevel(this.getAbilityType());
-		if(toolType != null && (toolType == ToolType.BOOSTER_AXE || toolType == ToolType.BOOSTER_SWORD)) {
+		if(this.getAbilityType().supportsBoosters() && toolType != null && this.matchesAbilityTool(toolType) && toolType.isBooster())
 			level = Math.min(this.getMaxLevel() + 1, level + 2);
-		}
-		
+				
 		AbilityFailEvent event = null;
 		
 		// WHILE COOLDOWN
@@ -431,7 +430,8 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(this instanceof ITogglable && !this.playersEnabled.contains(p.getUniqueId())) continue;
 			if(this instanceof IConstant && !(this instanceof ITogglable)) messages = false;
 			
-			boolean success = this.run(true, this instanceof IConstant && !(this instanceof ITogglable) ? true : false, p, null, messages, e);
+			ToolType toolType = this.findBooster(p);
+			boolean success = this.run(true, this instanceof IConstant && !(this instanceof ITogglable) ? true : false, p, toolType, messages, e);
 			if(!success && this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId())) {
 				((ITogglable) this).off(p);
 				this.playersEnabled.remove(p.getUniqueId());
@@ -528,7 +528,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 	}
 	
-	private ToolType match(Material item) {
+	protected ToolType match(Material item) {
 		ToolType toolType = null;
 		for(ToolType type : this.getAbilityType().getToolTypes())
 			if(type.getType().equals(item))
@@ -537,8 +537,15 @@ public abstract class Ability extends Cooldown implements Listener {
 		return toolType;
 	}
 	
-	private ToolType match(ItemStack item) {
+	protected ToolType match(ItemStack item) {
 		return match(item.getType());
+	}
+	
+	protected ToolType findBooster(Player p) {
+		for(ItemStack item : p.getInventory().getContents())
+			if(item != null && match(item) != null && this.matchesAbilityTool(match(item)) && match(item).isBooster()) return match(item);
+		
+		return null;
 	}
 	
 	/*
@@ -552,12 +559,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 	}
 	
-	public boolean matchesAbilityTool(Player p) {
-		// Getting held Axe/Sword
-		ToolType holdType = this.match(p.getItemInHand() == null ? new Item(Material.AIR).get() : p.getItemInHand());
-		if(holdType == null) return false;
-				
-		
+	public boolean matchesAbilityTool(ToolType holdType) {
 		
 		// Checking if this ability's tools match with the player's held tool
 		boolean pass = false;
@@ -584,7 +586,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(!u.isUsingAbility(this)) continue;
 			
 			
-			if(!this.matchesAbilityTool(p)) return;
+			if(!this.matchesAbilityTool(this.match(p.getItemInHand() == null ? new Item(Material.AIR).get() : p.getItemInHand()))) return;
 			
 			
 			// Getting cooldown variables

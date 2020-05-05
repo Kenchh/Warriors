@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -14,20 +13,21 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.util.Vector;
 
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
+import me.rey.core.classes.abilities.IConstant;
 import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.gui.Gui.Item;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
 import me.rey.core.utils.BlockLocation;
 import me.rey.core.utils.Text;
 import me.rey.core.utils.Utils;
 
-public class Flash extends Ability {
+public class Flash extends Ability implements IConstant {
 
     private final int cooldownUntilNewCharge = 60;
     private final int range = 5;
@@ -49,14 +49,16 @@ public class Flash extends Ability {
         setIgnoresCooldown(true);
         setWhileSlowed(false);
     }
-    
-    @EventHandler
-    public void onTick(UpdateEvent e) {
 
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            if (!(new User(p).isUsingAbility(this))) continue;
-
-            int maxCharges = new User(p).getSelectedBuild(new User(p).getWearingClass()).getAbilityLevel(this.getAbilityType()) + 1;
+    @Override
+    protected boolean execute(User u, Player p, int level, Object... conditions) {
+    	
+    	/*
+    	 * CHARGE REGENERATION
+    	 */
+    	if(conditions != null && conditions.length == 1 && conditions[0] != null && conditions[0] instanceof UpdateEvent) {
+    		
+            int maxCharges = level + 1;
             checkInFlashList(p);
 
             if(charges.get(p.getUniqueId()) < maxCharges) {
@@ -64,15 +66,20 @@ public class Flash extends Ability {
                     addCharge(p);
                     setCD(p, 0);
 
-                    sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.GREEN + "(+1)");
+                    sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) /* + " " + ChatColor.GREEN + "(+1)" */);
                 } else {
                     setCD(p, cd.get(p.getUniqueId()) + 1);
                 }
+            } 
+            
+            // Capping people's charges
+            while(this.charges.get(p.getUniqueId()) > maxCharges) {
+            	removeCharge(p);
             }
             
             
             // Action Bar
-            if(this.matchesAbilityTool(p)) {
+            if(this.matchesAbilityTool(this.match(p.getItemInHand() == null ? new Item(Material.AIR).get() : p.getItemInHand()))) {
 	            String chargeList = "";
 	            int flashCount = charges.get(p.getUniqueId());
 	            
@@ -82,12 +89,11 @@ public class Flash extends Ability {
 	            
 	            new ActionBar(Text.color("&f&lFlash Charges: " + chargeList)).send(p);;
             }
-        }
-
-    }
-
-    @Override
-    protected boolean execute(User u, Player p, int level, Object... conditions) {
+       
+    		return false;
+    	}
+    	//END
+    	
 
         if(charges.get(p.getUniqueId()) <= 0) return false;
 
@@ -180,7 +186,7 @@ public class Flash extends Ability {
 
         removeCharge(p);
 
-        sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) + " " + ChatColor.RED + "(-1)");
+        sendAbilityMessage(p, "Charges: " + ChatColor.YELLOW + charges.get(p.getUniqueId()) /*+ " " + ChatColor.RED + "(-1)" */);
 
         return true;
 
