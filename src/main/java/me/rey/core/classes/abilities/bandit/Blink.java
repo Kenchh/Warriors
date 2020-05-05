@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-import me.rey.core.utils.BlockLocation;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +22,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.enums.AbilityFail;
 import me.rey.core.events.customevents.AbilityFailEvent;
 import me.rey.core.players.User;
+import me.rey.core.utils.BlockLocation;
 import me.rey.core.utils.Utils;
 
 public class Blink extends Ability {
@@ -186,6 +186,7 @@ public class Blink extends Ability {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean isFloor(Block block) {
 		Block above = block.getRelative(BlockFace.UP);
 		if(isAir(above))

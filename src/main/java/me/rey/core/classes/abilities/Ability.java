@@ -1,5 +1,6 @@
 package me.rey.core.classes.abilities;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -478,8 +480,19 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onEvent(PlayerInteractEvent e) {
+		
+		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
+				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
+				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
+				Material.ENDER_CHEST);
+		
+		boolean isAir = e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_AIR);
+		boolean result = isAir ? true : expected.contains(e.getClickedBlock().getType()) || e.getClickedBlock().getType().name().toLowerCase().contains("door") 
+				|| e.getClickedBlock().getType().name().toLowerCase().contains("fence")? true : false;
+		
+		if((e.isCancelled() || result) && !isAir) return;
 		
 		// RIGHT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.RIGHT_CLICK)

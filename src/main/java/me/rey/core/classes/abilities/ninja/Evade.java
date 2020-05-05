@@ -1,21 +1,24 @@
 package me.rey.core.classes.abilities.ninja;
 
-import com.avaje.ebean.Update;
-import jdk.nashorn.internal.ir.Block;
-import me.rey.core.classes.ClassType;
-import me.rey.core.classes.abilities.Ability;
-import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.events.customevents.AbilityFailEvent;
-import me.rey.core.events.customevents.UpdateEvent;
-import me.rey.core.players.User;
-import me.rey.core.pvp.ToolType;
-import me.rey.core.utils.BlockLocation;
-import org.bukkit.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.*;
+import me.rey.core.classes.ClassType;
+import me.rey.core.classes.abilities.Ability;
+import me.rey.core.classes.abilities.AbilityType;
+import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.players.User;
+import me.rey.core.utils.BlockLocation;
 
 public class Evade extends Ability {
 
