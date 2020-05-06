@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
+import me.rey.core.classes.abilities.IConstant;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -20,7 +21,7 @@ import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.BlockLocation;
 
-public class Evade extends Ability {
+public class Evade extends Ability implements IConstant {
 
     public HashMap<UUID, Integer> preparingEvade = new HashMap<UUID, Integer>();
     public HashMap<UUID, Integer> invincible = new HashMap<UUID, Integer>();
@@ -36,10 +37,11 @@ public class Evade extends Ability {
         ));
     }
 
-    @EventHandler
-    public void onUpdate(UpdateEvent e) {
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            if(new User(p).isUsingAbility(this) == false) return;
+    @Override
+    protected boolean execute(User u, Player p, int level, Object... conditions) {
+
+        if(conditions != null && conditions.length == 1 && conditions[0] != null && conditions[0] instanceof UpdateEvent) {
+            this.setCooldownCanceled(true);
 
             if(invincible.containsKey(p.getUniqueId())) {
                 if(invincible.get(p.getUniqueId()) >= 20) {
@@ -61,16 +63,15 @@ public class Evade extends Ability {
                     preparingEvade.replace(p.getUniqueId(), preparingEvade.get(p.getUniqueId()) + 1);
                 }
             }
-        }
-    }
 
-    @Override
-    protected boolean execute(User u, Player p, int level, Object... conditions) {
+            return false;
+        }
 
         if(preparingEvade.containsKey(p.getUniqueId()) == false) {
             preparingEvade.put(p.getUniqueId(), 0);
         }
 
+        sendUsedMessageToPlayer(p, this.getName());
         setIgnoresCooldown(true);
 
         return true;
