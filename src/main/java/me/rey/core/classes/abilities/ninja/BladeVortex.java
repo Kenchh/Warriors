@@ -12,6 +12,7 @@ import me.rey.core.utils.BlockLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,6 +42,8 @@ public class BladeVortex extends Ability {
         ));
     }
 
+    int S = 0;
+
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
@@ -50,30 +53,37 @@ public class BladeVortex extends Ability {
             vortexing.put(p.getUniqueId(), 0D);
         }
 
-        int S = Bukkit.getScheduler().scheduleSyncRepeatingTask(Warriors.getPlugin(Warriors.class), new Runnable() {
+        S = Bukkit.getScheduler().scheduleSyncRepeatingTask(Warriors.getPlugin(Warriors.class), new Runnable() {
             @Override
             public void run() {
+
+                if(vortexingS.containsKey(p.getUniqueId()) == false) {
+                    vortexingS.put(p.getUniqueId(), S);
+                }
+
                 if(vortexing.containsKey(p.getUniqueId())) {
 
-                    vortexing.replace(p.getUniqueId(), vortexing.get(p.getUniqueId()) + 0.3D);
+                    if (vortexing.get(p.getUniqueId()) >= 4D) {
 
-                    double ticks = vortexing.get(p.getUniqueId());
-
-                    playParticles(p, radius - ticks, false);
-                    playParticles(p, radius - ticks, true);
-
-                    if (ticks >= 4D) {
-
+                        Bukkit.getScheduler().cancelTask(S);
+                        vortexingS.remove(p.getUniqueId());
                         vortexing.remove(p.getUniqueId());
-                        Bukkit.getScheduler().cancelTask(vortexingS.get(p.getUniqueId()));
+                    } else {
+
+                        vortexing.replace(p.getUniqueId(), vortexing.get(p.getUniqueId()) + 0.3);
+
+                        double ticks = vortexing.get(p.getUniqueId());
+
+                        p.getWorld().playSound(p.getLocation(), Sound.PIG_DEATH, 1F, 0.65F);
+                        p.getWorld().playSound(p.getLocation(), Sound.LAVA_POP, 1F, 1.35F);
+
+                        playParticles(p, radius - ticks, false);
+                        playParticles(p, radius - ticks, true);
                     }
                 }
             }
-        }, 0L, 1L);
+        }, 1L, 1L);
 
-        if(vortexingS.containsKey(p.getUniqueId()) == false) {
-            vortexingS.put(p.getUniqueId(), S);
-        }
 
         for(Entity e : p.getNearbyEntities(radius, 4, radius)) {
             double distance = p.getLocation().distance(e.getLocation());
@@ -126,7 +136,7 @@ public class BladeVortex extends Ability {
         HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
 
         for(double degree=0; degree<=360; degree++) {
-            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(user, true, radius, radius, degree));
+            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(user, rotated, radius, radius, degree));
         }
 
         for(double degree=0; degree<=360; degree+=4) {
@@ -137,9 +147,9 @@ public class BladeVortex extends Ability {
 
             Location loc = new Location(user.getWorld(), xCords, user.getLocation().getY(), zCords);
 
-            float red = 160;
-            float green = 9;
-            float blue = 140;
+            float red = 230;
+            float green = 0;
+            float blue = 200;
 
             user.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
 

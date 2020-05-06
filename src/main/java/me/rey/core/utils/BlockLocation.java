@@ -166,7 +166,7 @@ public class BlockLocation {
         double z = p.getLocation().getZ();
 
         if(rotated) {
-            x -= addX;
+            x += addX;
             z -= addZ;
         } else {
             x += addX;
