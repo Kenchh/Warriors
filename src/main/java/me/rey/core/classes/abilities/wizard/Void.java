@@ -19,9 +19,9 @@ import me.rey.core.classes.abilities.IDamageTrigger;
 import me.rey.core.energy.EnergyHandler;
 import me.rey.core.enums.State;
 import me.rey.core.events.customevents.CustomKnockbackEvent;
-import me.rey.core.events.customevents.DamageEvent;
-import me.rey.core.events.customevents.DamagedByEntityEvent;
 import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.damage.DamagedByEntityEvent;
 import me.rey.core.players.User;
 
 public class Void extends Ability implements IConstant, ITogglable, IDamageTrigger {

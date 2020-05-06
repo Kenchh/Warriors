@@ -18,7 +18,7 @@ public enum ToolType {
 	STANDARD_SWORD(6, "&fStandard Sword", Material.IRON_SWORD, HitType.MELEE),
 	STANDARD_AXE(6, "&fStandard Axe", Material.IRON_AXE, HitType.MELEE),
 	STANDARD_SPADE(6, "&fStandard Spade", Material.IRON_SPADE, HitType.MELEE),
-	STANDARD_BOW(5, "&fStandard Bow", Material.BOW, HitType.RANGED);
+	STANDARD_BOW(5, "&fStandard Bow", Material.BOW, HitType.ARCHERY);
 
 	private int damage;
 	private String name;
@@ -65,7 +65,17 @@ public enum ToolType {
 	
 	public enum HitType {
 		
-		MELEE, RANGED;
+		MELEE("Melee"), ARCHERY("Archery"), OTHER("Other");
+		
+		private String name;
+		
+		HitType(String name){
+			this.name = name;
+		}
+		
+		public String getName() {
+			return Text.color(name);
+		}
 		
 	}
 	

@@ -14,7 +14,7 @@ public class Text {
 	}
 	
 	public static String color(String text) {
-		return ChatColor.translateAlternateColorCodes('&', text);
+		return ChatColor.translateAlternateColorCodes('&', text.replaceAll("&s", "&e").replaceAll("&r", "&7").replaceAll("&q", "&c&l").replaceAll("&w", "&a&l"));
 	}
 	
     public static void log(Plugin plugin, String msg) {
