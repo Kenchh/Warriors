@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.rey.core.classes.abilities.IConstant;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -17,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
+import me.rey.core.classes.abilities.IConstant;
 import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.BlockLocation;
