@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
+import me.rey.core.classes.abilities.bandit.BlindingArrow;
 import me.rey.core.classes.abilities.bandit.Blink;
 import me.rey.core.classes.abilities.bandit.HiddenAssault;
 import me.rey.core.classes.abilities.bandit.InfectiousArrow;
@@ -217,6 +218,7 @@ public class Warriors extends JavaPlugin {
 	public void initAbilityCache() {
 		abilityCache = new ArrayList<>(Arrays.asList(
 				//BANDIT
+				new BlindingArrow(),
 				new Blink(),
 				new HiddenAssault(),
 				new InfectiousArrow(),
