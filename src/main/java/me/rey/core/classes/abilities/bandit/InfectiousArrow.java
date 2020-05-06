@@ -25,7 +25,10 @@ public class InfectiousArrow extends Ability implements IBowPreparable {
 	
 	public InfectiousArrow() {
 		super(706, "Infectious Arrow", ClassType.BLACK, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
-				"asdadad"
+				"Prepare yourself to deal a Wither",
+				"effect on your next target with a",
+				"duration of <variable>3+(0.5*l)</variable> (+0.5) Seconds.", "",
+				"Recharge: 7 Seconds"
 				));
 	}
 

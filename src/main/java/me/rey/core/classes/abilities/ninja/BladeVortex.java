@@ -33,7 +33,7 @@ public class BladeVortex extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setCooldown(10.5 - level);
+        this.setCooldown(7.5 - level);
 
         for(Entity e : p.getNearbyEntities(6, 6, 6)) {
             double distance = p.getLocation().distance(e.getLocation());

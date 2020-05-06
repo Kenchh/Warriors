@@ -327,8 +327,8 @@ public abstract class Ability extends Cooldown implements Listener {
 		return true;
 	}
 	
-	public boolean sendAbilityMessage(Player p, String text) {
-		new User(p).sendMessageWithPrefix(this.getName(), text);
+	public boolean sendAbilityMessage(LivingEntity p, String text) {
+		p.sendMessage(Text.format(this.getName(), text));
 		return true;
 	}
 	
@@ -512,7 +512,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		LivingEntity hit = e.getDamagee();
 
 		this.sendAbilityMessage(hitter, "You hit " + this.SECONDARY + hit.getName() + this.MAIN + " with " + this.VARIABLE + this.getName() + this.MAIN + ".");
-		hit.sendMessage(Text.color(this.SECONDARY + hitter.getName() + this.MAIN +" hit you with " + this.VARIABLE + this.getName() + this.MAIN + "."));
+		this.sendAbilityMessage(hit, this.SECONDARY + hitter.getName() + this.MAIN +" hit you with " + this.VARIABLE + this.getName() + this.MAIN + ".");
 		
 		if(!e.isCancelled()) {
 			if(!(e.getDamagee() instanceof Player)) return;
