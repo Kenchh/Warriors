@@ -358,6 +358,10 @@ public abstract class Ability extends Cooldown implements Listener {
 	
 	public void toggle(Player player, State state) {
 		new User(player).sendMessageWithPrefix(this.getName(), this.getName() + ": " + state.getName());
+		if(state == State.DISABLED)
+			this.playersEnabled.remove(player.getUniqueId());
+		else
+			this.playersEnabled.add(player.getUniqueId());
 	}
 	
 	/*
@@ -424,7 +428,6 @@ public abstract class Ability extends Cooldown implements Listener {
 
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			if(this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId()) && !new User(p).isUsingAbility(this)){
-				this.playersEnabled.remove(p.getUniqueId());
 				((ITogglable) this).off(p);
 				this.toggle(p, State.DISABLED);
 				continue;
@@ -440,7 +443,6 @@ public abstract class Ability extends Cooldown implements Listener {
 			boolean success = this.run(true, this instanceof IConstant && !(this instanceof ITogglable) ? true : false, p, toolType, messages, e);
 			if(!success && this instanceof ITogglable && this.playersEnabled.contains(p.getUniqueId())) {
 				((ITogglable) this).off(p);
-				this.playersEnabled.remove(p.getUniqueId());
 				this.toggle(p, State.DISABLED);
 			}
 		}
@@ -506,7 +508,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		if(!((IBowPreparable) this).hasShot(e.getDamager())) return;
 		
 		this.setCooldownCanceled(true);
-		this.run(e.getDamager(), this.findBooster(e.getDamager()), true, e);
+		this.run(true, true, e.getDamager(), this.findBooster(e.getDamager()), true, e);
 		((IBowPreparable) this).unshoot(e.getDamager());
 		Player hitter = e.getDamager();
 		LivingEntity hit = e.getDamagee();
