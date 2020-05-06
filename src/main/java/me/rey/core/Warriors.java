@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.ninja.*;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -228,6 +229,7 @@ public class Warriors extends JavaPlugin {
 				new Dash(),
 				new Flash(),
 				new Evade(),
+				new BladeVortex(),
 				
 				//WIZARD
 				new EnergyRegeneration(),
