@@ -98,7 +98,7 @@ public class EffectUtils implements Listener {
 	 */
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void onAbilityUse(AbilityUseEvent e) {
-		if(!this.silencedAbilities.contains(e.getAbility().getAbilityType()) || e.getAbility() instanceof ITogglable) return;
+		if(!this.silencedAbilities.contains(e.getAbility().getAbilityType()) && !(e.getAbility() instanceof ITogglable)) return;
 		if(!isSilenced(e.getPlayer().getUniqueId())) return;
 		
 		if(e.getAbility() instanceof ITogglable) {
