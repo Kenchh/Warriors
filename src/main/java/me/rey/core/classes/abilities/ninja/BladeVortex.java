@@ -64,6 +64,7 @@ public class BladeVortex extends Ability {
                         Bukkit.getScheduler().cancelTask(S);
                         vortexingS.remove(p.getUniqueId());
                         vortexing.remove(p.getUniqueId());
+
                     } else {
 
                         vortexing.replace(p.getUniqueId(), vortexing.get(p.getUniqueId()) + 0.3);
@@ -73,8 +74,8 @@ public class BladeVortex extends Ability {
                         p.getWorld().playSound(p.getLocation(), Sound.PIG_DEATH, 1F, 0.65F);
                         p.getWorld().playSound(p.getLocation(), Sound.LAVA_POP, 1F, 1.35F);
 
-                        playParticles(p, radius - ticks, false);
-                        playParticles(p, radius - ticks, true);
+                        playParticles(p.getLocation(), radius - ticks, false);
+                        playParticles(p.getLocation(), radius - ticks, true);
                     }
                 }
             }
@@ -127,12 +128,12 @@ public class BladeVortex extends Ability {
         return false;
     }
 
-    public void playParticles(Player user, double radius, boolean rotated) {
+    public void playParticles(Location location, double radius, boolean rotated) {
 
         HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
 
         for(double degree=0; degree<=360; degree++) {
-            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(user, rotated, radius, radius, degree));
+            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(location, rotated, radius, radius, degree));
         }
 
         for(double degree=0; degree<=360; degree+=4) {
@@ -141,13 +142,15 @@ public class BladeVortex extends Ability {
             double xCords = cords[0];
             double zCords = cords[1];
 
-            Location loc = new Location(user.getWorld(), xCords, user.getLocation().getY(), zCords);
+            Location loc = location;
+            loc.setX(xCords);
+            loc.setZ(zCords);
 
             float red = 230;
             float green = 0;
             float blue = 200;
 
-            user.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
+            location.getWorld().spigot().playEffect(location, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
 
         }
     }
