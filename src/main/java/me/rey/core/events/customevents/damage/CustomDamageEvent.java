@@ -1,4 +1,4 @@
-package me.rey.core.events.customevents;
+package me.rey.core.events.customevents.damage;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -9,27 +9,30 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.rey.core.players.PlayerHit;
+import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Utils;
 
-public class DamageEvent extends Event implements Cancellable{
+public abstract class CustomDamageEvent extends Event implements Cancellable {
+
+	protected final LivingEntity damager;
+	protected final LivingEntity damagee;
+	protected double damage, knockbackMult;
+	protected boolean isCancelled;
+	protected EntityDamageByEntityEvent event;
+	protected ItemStack item;
+	protected PlayerHit hit;
+	protected HitType hitType;
 	
-	private final Player damager;
-	private final LivingEntity damagee;
-	private double damage, knockbackMult;
-	private boolean isCancelled;
-	private EntityDamageByEntityEvent event;
-	private ItemStack item;
-	private PlayerHit hit;
-	
-	public DamageEvent(EntityDamageByEntityEvent event, Player damager, LivingEntity damagee, double damage, ItemStack item) {
+	public CustomDamageEvent(EntityDamageByEntityEvent event, HitType hitType, LivingEntity damager, LivingEntity damagee, double damage, ItemStack item) {
 		this.event = event;
+		this.hitType = hitType;
 		this.damager = damager;
 		this.damagee = damagee;
 		this.damage = damage;
 		this.isCancelled = false;
 		this.item = item;
-		this.hit = null;
 		this.knockbackMult = 1;
+		this.hit = null;
 	}
 	
 	private static final HandlerList HANDLERS = new HandlerList();
@@ -47,7 +50,11 @@ public class DamageEvent extends Event implements Cancellable{
 		return HANDLERS;
 	}
 	
-	public Player getDamager() {
+	public HitType getHitType() {
+		return hitType;
+	}
+	
+	public LivingEntity getDamager() {
 		return damager;
 	}
 	
@@ -67,19 +74,6 @@ public class DamageEvent extends Event implements Cancellable{
 		event.setDamage(Math.max(0, event.getDamage() + damage));
 	}
 	
-	public PlayerHit getHit() {
-		if(hit != null) return hit;
-		if(!(this.getDamagee() instanceof Player)) return null;
-		Utils.updateItem(item);
-		ItemStack hold = item.clone();
-	
-		return new PlayerHit((Player) this.getDamagee(), (LivingEntity) this.getDamager(), this.getDamage(), hold);
-	}
-	
-	public void setHit(PlayerHit hit) {
-		this.hit = hit;
-	}
-	
 	public double getKnockbackMult() {
 		return knockbackMult;
 	}
@@ -97,5 +91,23 @@ public class DamageEvent extends Event implements Cancellable{
 	public void setCancelled(boolean cancel) {
 		this.isCancelled = cancel;
 	}
-
+	
+	public PlayerHit getHit() {
+		if(hit != null) return hit;
+		if(!(this.getDamagee() instanceof Player)) return null;
+		Utils.updateItem(this.item);
+		ItemStack hold = this.item.clone();
+	
+		PlayerHit toReturn;
+		if(hitType != HitType.ARCHERY)
+			toReturn = new PlayerHit((Player) this.getDamagee(), (LivingEntity) this.getDamager(), this.getDamage(), hold);
+		else
+			toReturn = new PlayerHit((Player) this.getDamagee(), ((LivingEntity) this.getDamager()).getName(), this.getDamage(), HitType.ARCHERY.getName());
+		return toReturn;
+	}
+	
+	public void setHit(PlayerHit hit) {
+		this.hit = hit;
+	}
+	
 }

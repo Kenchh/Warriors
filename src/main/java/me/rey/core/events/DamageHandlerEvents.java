@@ -2,6 +2,7 @@ package me.rey.core.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,8 +20,9 @@ import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.events.customevents.AbilityUseEvent;
 import me.rey.core.events.customevents.CustomKnockbackEvent;
-import me.rey.core.events.customevents.DamageEvent;
-import me.rey.core.events.customevents.DamagedByEntityEvent;
+import me.rey.core.events.customevents.damage.CustomDamageEvent;
+import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.damage.DamagedByEntityEvent;
 import me.rey.core.players.PlayerHit;
 import me.rey.core.players.PlayerHitCache;
 import me.rey.core.players.User;
@@ -35,8 +37,7 @@ public class DamageHandlerEvents implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageByEntityEvent e) {
 		if(!(e.getEntity() instanceof LivingEntity)) return;
-		DamageEvent damageEvent = null;
-		DamagedByEntityEvent byEntityEvent = null;
+		CustomDamageEvent damageEvent = null;
 		
 		/*
 		 * SETTING ENTITY TO SHOOTER
@@ -45,7 +46,7 @@ public class DamageHandlerEvents implements Listener {
 		Entity damager = e.getDamager(), damagee = e.getEntity();;
 		if(damager instanceof Projectile && ((Projectile) damager).getShooter() != null && ((Projectile) damager).getShooter() instanceof LivingEntity) {
 			damager = (LivingEntity) ((Projectile) damager).getShooter();
-			hitType = HitType.RANGED;
+			hitType = e.getDamager() instanceof Arrow ? HitType.ARCHERY : HitType.OTHER;
 		}
 		
 		/*
@@ -73,7 +74,7 @@ public class DamageHandlerEvents implements Listener {
 				}
 			}
 			
-			damageEvent = new DamageEvent(e, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
+			damageEvent = new DamageEvent(e, hitType, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
 			if(damageEvent.isCancelled())
@@ -92,10 +93,10 @@ public class DamageHandlerEvents implements Listener {
 		 */
 		
 		if(damagee instanceof Player && damageEvent == null  && damager instanceof LivingEntity) {
-			byEntityEvent = new DamagedByEntityEvent(e, (LivingEntity) damager, (Player) damagee, e.getDamage(), ((LivingEntity) damagee).getEquipment().getItemInHand());
-			Bukkit.getServer().getPluginManager().callEvent(byEntityEvent);
+			damageEvent = new DamagedByEntityEvent(e, hitType, (LivingEntity) damager, (Player) damagee, e.getDamage(), ((LivingEntity) damagee).getEquipment().getItemInHand());
+			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
-			if(byEntityEvent.isCancelled())
+			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 		}
 		
@@ -103,8 +104,11 @@ public class DamageHandlerEvents implements Listener {
 		this.calcDamage(e);
 		
 		if(!e.isCancelled()) {
-			e.setCancelled(true);
-			((LivingEntity) e.getEntity()).damage(e.getDamage());
+			
+			if(hitType == HitType.MELEE) {
+				e.setCancelled(true);
+				((LivingEntity) e.getEntity()).damage(e.getDamage());
+			}
 			
 			/*
 			 * KNOCKBACK
@@ -112,8 +116,6 @@ public class DamageHandlerEvents implements Listener {
 			double multiplier = 1;
 			if(damageEvent != null)
 				multiplier = damageEvent.getKnockbackMult();
-			if(byEntityEvent != null)
-				multiplier = byEntityEvent.getKnockbackMult();
 			
 			CustomKnockbackEvent kbEvent = new CustomKnockbackEvent(damagee, damager, e.getDamage(), multiplier);
 			Bukkit.getServer().getPluginManager().callEvent(kbEvent);
@@ -178,18 +180,13 @@ public class DamageHandlerEvents implements Listener {
 	
 	private void kb(Entity entity, Entity hitter, double damage, double multiplier) {
 		
-		if(entity instanceof Player && cache.getLastBlow((Player) entity) != null) {
-			long difference = cache.getLastBlow((Player) entity).getTimeIssued() - System.currentTimeMillis();
-			if(difference < 400) return;
-		}
-		
-		damage += 3;
+		damage += 3; 
 		if (damage < 2.0D) damage = 2.0D;
 		damage = Math.log10(damage);
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
 		trajectory.multiply(0.8D * damage * 0.2);
-		trajectory.setY(Math.abs(0.09 + (0.3/damage)));
+		trajectory.setY(Math.abs(0.025 * multiplier));
 		
 		entity.setVelocity(trajectory.multiply(0.3D + trajectory.length() * 0.8D));
 	}

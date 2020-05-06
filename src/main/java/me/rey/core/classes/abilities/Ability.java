@@ -12,17 +12,22 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
@@ -36,16 +41,17 @@ import me.rey.core.enums.AbilityFail;
 import me.rey.core.enums.State;
 import me.rey.core.events.customevents.AbilityFailEvent;
 import me.rey.core.events.customevents.AbilityUseEvent;
-import me.rey.core.events.customevents.DamageEvent;
-import me.rey.core.events.customevents.DamagedByEntityEvent;
 import me.rey.core.events.customevents.EnergyUpdateEvent;
 import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.damage.DamagedByEntityEvent;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.PlayerHit;
 import me.rey.core.players.User;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
+import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Cooldown;
 import me.rey.core.utils.Text;
 import net.md_5.bungee.api.ChatColor;
@@ -56,7 +62,6 @@ public abstract class Ability extends Cooldown implements Listener {
 	private HashMap<UUID, Double> tempMaxCooldowns;
 	
 	// Dependant
-	private Set<UUID> prepared;
 	private Set<UUID> playersEnabled;
 	
 	private String name;
@@ -67,7 +72,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private long id;
 	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir;
 	private double cooldown, resetCooldown, energyCost;
-	private String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
+	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
 	public Ability(long id, String name, ClassType classType, AbilityType abilityType, int tokenCost, int maxLevel, double cooldown, List<String> description) {
 		super(Warriors.getInstance(), Text.format(name, "You can use &a" + name + "&7."));
@@ -97,8 +102,6 @@ public abstract class Ability extends Cooldown implements Listener {
 		if(this instanceof ITogglable)
 			this.playersEnabled = new HashSet<>();
 		
-		if(this instanceof IBowPreparable)
-			this.prepared = new HashSet<>();
 	}
 	
 	public boolean run(Player p, ToolType toolType, boolean messages, Object... conditions) {
@@ -124,7 +127,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		AbilityFailEvent event = null;
 		
 		// WHILE COOLDOWN
-		if(this.hasCooldown(p)) {
+		if(this.hasCooldown(p) && !this.ignoresCooldown && !this.cooldownCanceled) {
 			event = new AbilityFailEvent(AbilityFail.COOLDOWN, p, this, level);
 			Bukkit.getServer().getPluginManager().callEvent(event);
 			
@@ -376,7 +379,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	public void onDamage(DamageEvent e) {
 		if(!(new User(e.getDamager()).isUsingAbility(this))) return;
 		if(this instanceof IPlayerDamagedByEntity) return;
-		if(!(this instanceof IDamageTrigger)) return;
+		if(!(this instanceof IDamageTrigger) || !e.getHitType().equals(HitType.MELEE)) return;
 		
 		
 		if(!e.isCancelled()) {
@@ -397,7 +400,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	public void onDamageByEntity(DamagedByEntityEvent e) {
 		if(!(new User(e.getDamagee()).isUsingAbility(this))) return;
 		if(this instanceof IPlayerDamagedEntity) return;
-		if(!(this instanceof IDamageTrigger)) return;
+		if(!(this instanceof IDamageTrigger) || !e.getHitType().equals(HitType.MELEE)) return;
 		
 		
 		if(!e.isCancelled()) {
@@ -492,6 +495,70 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 	}
 	
+	/*
+	 * BOW ABILITIES / PREPARABLE / ON SHOT
+	 */
+	@EventHandler
+	public void onBowHit(DamageEvent e) {
+		if(!(this instanceof IBowPreparable)) return;
+		if(!e.getHitType().equals(HitType.ARCHERY)) return;
+		if(!new User(e.getDamager()).isUsingAbility(this)) return;
+		if(!((IBowPreparable) this).hasShot(e.getDamager())) return;
+		
+		this.setCooldownCanceled(true);
+		this.run(e.getDamager(), this.findBooster(e.getDamager()), true, e);
+		((IBowPreparable) this).unshoot(e.getDamager());
+		Player hitter = e.getDamager();
+		LivingEntity hit = e.getDamagee();
+
+		this.sendAbilityMessage(hitter, "You hit " + this.SECONDARY + hit.getName() + this.MAIN + " with " + this.VARIABLE + this.getName() + this.MAIN + ".");
+		hit.sendMessage(Text.color(this.SECONDARY + hitter.getName() + this.MAIN +" hit you with " + this.VARIABLE + this.getName() + this.MAIN + "."));
+		
+		if(!e.isCancelled()) {
+			if(!(e.getDamagee() instanceof Player)) return;
+			PlayerHit playerHit = new PlayerHit((Player) e.getDamagee(), (Player) e.getDamager(), e.getDamage(), null);
+			playerHit.setCause("&a" + this.getName());
+			e.setHit(playerHit);
+		}
+	}
+	
+	/*
+	 * BOW SHOOT EVENT
+	 */
+	@EventHandler
+	public void onBowShoot(EntityShootBowEvent e) {
+		if(!(this instanceof IBowPreparable)) return;
+		if(!(e.getEntity() instanceof Player)) return;
+		if(!new User((Player) e.getEntity()).isUsingAbility(this)) return;
+		if(!((IBowPreparable) this).isPrepared((Player) e.getEntity())) return;
+		
+		((IBowPreparable) this).unprepare((Player) e.getEntity());
+		((IBowPreparable) this).shoot((Player) e.getEntity());
+		this.sendAbilityMessage((Player) e.getEntity(), "You fired " + this.VARIABLE + this.getName() + this.MAIN + ".");
+	}
+	
+	@EventHandler
+	public void projectileHit(ProjectileHitEvent e) {
+		if(!(this instanceof IBowPreparable)) return;
+		if(!(e.getEntity() instanceof Arrow)) return;
+		if(!(((Arrow) e.getEntity()).getShooter() instanceof Player)) return;
+		
+		Player shooter = (Player) ((Arrow) e.getEntity()).getShooter();
+		Arrow arrow = (Arrow) e.getEntity();
+		if(!new User(shooter).isUsingAbility(this)) return;
+		
+		Ability self = this;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if(((IBowPreparable) self).hasShot(shooter) && (arrow.isOnGround() || arrow.isDead())) {
+					((IBowPreparable) self).unshoot(shooter);
+					sendAbilityMessage(shooter, "You missed " + VARIABLE + getName() + MAIN + ".");
+				}
+			}
+		}.runTaskLater(Warriors.getInstance(), 2);
+	}
+	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onEvent(PlayerInteractEvent e) {
 
@@ -516,17 +583,28 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(match == null) return;
 
 			run(e.getPlayer(), match, true);
+			return;
 		}
 		
 		// LEFT CLICK ABILITIES
-		if(this.getAbilityType().getEventType().equals(EventType.LEFT_CLICK)
-				&& (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
+		if((this.getAbilityType().getEventType().equals(EventType.LEFT_CLICK) || this instanceof IBowPreparable)
+				&& (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {			
 			
 			Material item = e.getItem() == null ? Material.AIR : e.getItem().getType();
 			ToolType match = match(item);
 			if(match == null) return;
 			
-			run(e.getPlayer(), match, true);
+			if(this instanceof IBowPreparable) {
+				boolean success = run(e.getPlayer(), match, true, e);
+				if(success) {
+					this.sendAbilityMessage(e.getPlayer(), "You have prepared " + this.VARIABLE + this.getName() + "&r.");
+					e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLAZE_BREATH, 2.5F, 2.0F);
+				}
+			} else {
+				run(e.getPlayer(), match, true);
+			}
+			
+			return;
 		}
 		
 	}
@@ -578,7 +656,6 @@ public abstract class Ability extends Cooldown implements Listener {
 	/*
 	 * ACTION BAR COOLDOWN DISPLAY
 	 */
-	
 	@EventHandler
 	public void onActionBarCooldown(UpdateEvent e) {
 		// Checked for only SWORD & AXE abilities
