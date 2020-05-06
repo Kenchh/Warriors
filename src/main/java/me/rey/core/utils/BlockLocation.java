@@ -131,4 +131,52 @@ public class BlockLocation {
         }
     }
 
+    public static double[] getXZCordsFromDegree(Player p, double radius, double degree) {
+        double radian = Math.toRadians(degree);
+
+        double xMultiplier = Math.cos(radian);
+        double zMultiplier = Math.sin(radian);
+
+        double addX = xMultiplier * radius;
+        double addZ = zMultiplier * radius;
+
+        double[] xzCords = new double[2];
+
+        double x = p.getLocation().getX() + addX;
+        double z = p.getLocation().getZ() + addZ;
+
+        xzCords[0] = x;
+        xzCords[1] = z;
+
+        return xzCords;
+    }
+
+    public static double[] getXZCordsFromDegree(Player p, boolean rotated, double addAngle, double radius, double degree) {
+        double radian = Math.toRadians(degree);
+
+        double xMultiplier = Math.cos(radian);
+        double zMultiplier = Math.sin(radian + addAngle);
+
+        double addX = xMultiplier * radius;
+        double addZ = zMultiplier * radius;
+
+        double[] xzCords = new double[2];
+
+        double x = p.getLocation().getX();
+        double z = p.getLocation().getZ();
+
+        if(rotated) {
+            x -= addX;
+            z -= addZ;
+        } else {
+            x += addX;
+            z += addZ;
+        }
+
+        xzCords[0] = x;
+        xzCords[1] = z;
+
+        return xzCords;
+    }
+
 }

@@ -1,7 +1,7 @@
 main: me.rey.core.Warriors
 name: Warriors
 version: 1.0.0
-author: rey
+author: rey,Kenchh
 commands:
     help:
         usage: /<command>

@@ -1,12 +1,20 @@
 package me.rey.core.classes.abilities.ninja;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 
+import me.rey.core.Warriors;
+import me.rey.core.classes.abilities.IConstant;
+import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.utils.BlockLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.util.Vector;
 
 import me.rey.core.classes.ClassType;
@@ -16,7 +24,10 @@ import me.rey.core.players.User;
 
 public class BladeVortex extends Ability {
 
-    private final double radius = 4;
+    private final double radius = 5;
+
+    HashMap<UUID, Double> vortexing = new HashMap<UUID, Double>();
+    HashMap<UUID, Integer> vortexingS = new HashMap<UUID, Integer>();
 
     public BladeVortex() {
         super(4, "Blade Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 6.5, Arrays.asList(
@@ -33,9 +44,38 @@ public class BladeVortex extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setCooldown(7.5 - level);
+        this.setCooldown(10.5 - level);
 
-        for(Entity e : p.getNearbyEntities(6, 6, 6)) {
+        if(vortexing.containsKey(p.getUniqueId()) == false) {
+            vortexing.put(p.getUniqueId(), 0D);
+        }
+
+        int S = Bukkit.getScheduler().scheduleSyncRepeatingTask(Warriors.getPlugin(Warriors.class), new Runnable() {
+            @Override
+            public void run() {
+                if(vortexing.containsKey(p.getUniqueId())) {
+
+                    vortexing.replace(p.getUniqueId(), vortexing.get(p.getUniqueId()) + 0.3D);
+
+                    double ticks = vortexing.get(p.getUniqueId());
+
+                    playParticles(p, radius - ticks, false);
+                    playParticles(p, radius - ticks, true);
+
+                    if (ticks >= 4D) {
+
+                        vortexing.remove(p.getUniqueId());
+                        Bukkit.getScheduler().cancelTask(vortexingS.get(p.getUniqueId()));
+                    }
+                }
+            }
+        }, 0L, 1L);
+
+        if(vortexingS.containsKey(p.getUniqueId()) == false) {
+            vortexingS.put(p.getUniqueId(), S);
+        }
+
+        for(Entity e : p.getNearbyEntities(radius, 4, radius)) {
             double distance = p.getLocation().distance(e.getLocation());
             if(inCircle(p, e)) {
                 if (distance < 2.6) {
@@ -44,8 +84,10 @@ public class BladeVortex extends Ability {
                     pushIn(p, e);
                 }
             }
+
         }
 
+        sendUsedMessageToPlayer(p, this.getName());
         return false;
     }
 
@@ -53,60 +95,8 @@ public class BladeVortex extends Ability {
 
         HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
 
-        for(double degree=0; degree<=90; degree++) {
-
-            double radian = Math.toRadians(degree);
-
-            double maxXmultiplier = Math.cos(radian);
-            double maxZmultiplier = Math.sin(radian);
-
-            double maxX = maxXmultiplier * radius;
-            double maxZ = maxZmultiplier * radius;
-
-            double[] maxCords = new double[2];
-
-            double maxXCords = p.getLocation().getX() + maxX;
-            double maxZCords = p.getLocation().getZ() + maxZ;
-
-            maxCords[0] = maxXCords;
-            maxCords[1] = maxZCords;
-
-            maxmincords.put(degree, maxCords);
-
-        }
-
-        for(double degree=180; degree<=270; degree++) {
-
-            double radian = Math.toRadians(degree);
-
-            double minXmultiplier = Math.cos(radian);
-            double minZmultiplier = Math.sin(radian);
-
-            double minX = minXmultiplier * radius;
-            double minZ = minZmultiplier * radius;
-
-            double[] minCords = new double[2];
-
-            double minXCords = p.getLocation().getX() + minX;
-            double minZCords = p.getLocation().getZ() + minZ;
-
-            minCords[0] = minXCords;
-            minCords[1] = minZCords;
-
-            maxmincords.put(degree, minCords);
-
-        }
-
-        for(double degree : maxmincords.keySet()) {
-            double[] cords = maxmincords.get(degree);
-
-            double xCords = cords[0];
-            double zCords = cords[1];
-
-            Location loc = new Location(p.getWorld(), xCords, p.getLocation().getY() + 1, zCords);
-
-            p.getWorld().spigot().playEffect(loc, Effect.FIREWORKS_SPARK, 0, 0, 0F, 0F, 0F, 0F, 5, 50);
-
+        for(double degree=0; degree<=360; degree++) {
+            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(p, radius, degree));
         }
 
         for(double degree=0;degree<=90;degree++) {
@@ -120,7 +110,7 @@ public class BladeVortex extends Ability {
             double minX = mincords[0];
             double minZ = mincords[1];
 
-            if(p.getLocation().getX() <= maxX && p.getLocation().getZ() <= maxZ && p.getLocation().getX() >= minX && p.getLocation().getZ() >= minZ) {
+            if(e.getLocation().getX() <= maxX && e.getLocation().getZ() <= maxZ && e.getLocation().getX() >= minX && e.getLocation().getZ() >= minZ) {
                 return true;
             } else {
                 continue;
@@ -128,9 +118,32 @@ public class BladeVortex extends Ability {
 
         }
 
-
-
         return false;
+    }
+
+    public void playParticles(Player user, double radius, boolean rotated) {
+
+        HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
+
+        for(double degree=0; degree<=360; degree++) {
+            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(user, true, radius, radius, degree));
+        }
+
+        for(double degree=0; degree<=360; degree+=4) {
+            double[] cords = maxmincords.get(degree);
+
+            double xCords = cords[0];
+            double zCords = cords[1];
+
+            Location loc = new Location(user.getWorld(), xCords, user.getLocation().getY(), zCords);
+
+            float red = 160;
+            float green = 9;
+            float blue = 140;
+
+            user.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
+
+        }
     }
 
     public void pushAway(Player user, Entity pToPush) {

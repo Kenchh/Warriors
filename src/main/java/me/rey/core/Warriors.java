@@ -60,7 +60,7 @@ import me.rey.core.utils.Text;
 /*
  * This is the official Warriors plugin
  *
- * @author	Rey
+ * @author	Rey, Kenchh
  * @version 1.0.0
  * @since	2020-01-01
  */
