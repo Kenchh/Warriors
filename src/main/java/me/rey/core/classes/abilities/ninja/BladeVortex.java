@@ -1,20 +1,18 @@
 package me.rey.core.classes.abilities.ninja;
 
-import me.rey.core.classes.ClassType;
-import me.rey.core.classes.abilities.Ability;
-import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.players.User;
-import org.bukkit.Bukkit;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import me.rey.core.classes.ClassType;
+import me.rey.core.classes.abilities.Ability;
+import me.rey.core.classes.abilities.AbilityType;
+import me.rey.core.players.User;
 
 public class BladeVortex extends Ability {
 
