@@ -600,13 +600,14 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(this.ignoresCooldown || pCooldown == 0) continue;
 				
 			// DISPLAYING ACTION BAR
-			int bars = 20;
+			int bars = 15;
 			String barsString = "";
 			
 			double mult = bars / maxCooldown;
-			int toAdd = (int) Math.round(pCooldown * mult);
+			int toAdd = (int) Math.round((maxCooldown - pCooldown) * mult) + 1;
+
 			for(int i = 1; i <= bars; i++) {
-				barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "|";
+				barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "▌";
 			}
 			
 			if(pCooldown <= 0.1) barsString = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
