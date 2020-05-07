@@ -53,6 +53,7 @@ import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Cooldown;
+import me.rey.core.utils.EffectUtils;
 import me.rey.core.utils.Text;
 import net.md_5.bungee.api.ChatColor;
 
@@ -70,7 +71,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private String[] description;
 	private int maxLevel, tempDefaultLevel, tokenCost;
 	private long id;
-	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir;
+	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
 	private double cooldown, resetCooldown, energyCost;
 	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
@@ -92,6 +93,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.energyCost = 0.00;
 		this.description = new String[description.size()];
 		this.tempMaxCooldowns = new HashMap<>();
+		this.whileSilenced = false;
 		
 		int index = 0;
 		for(String s : description) {
@@ -125,6 +127,26 @@ public abstract class Ability extends Cooldown implements Listener {
 			level = Math.min(this.getMaxLevel() + 1, level + 2);
 				
 		AbilityFailEvent event = null;
+		
+		// WHILE SILENCED
+		if(!whileSilenced && EffectUtils.isSilenced(p.getUniqueId()) && (EffectUtils.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
+			if(!(conditions != null && conditions.length == 1 && (conditions[0] instanceof UpdateEvent || conditions[0] instanceof DamageEvent
+					|| conditions[0] instanceof DamagedByEntityEvent || conditions[0] instanceof EnergyUpdateEvent)) || this instanceof ITogglable) {
+				event = new AbilityFailEvent(AbilityFail.SILENCED, p, this, level);
+				Bukkit.getServer().getPluginManager().callEvent(event);
+				
+				if(!event.isCancelled()) {
+					if(this instanceof ITogglable) {
+						((ITogglable) this).off(p);
+						this.toggle(p, State.DISABLED);
+					} else {
+					    p.playSound(p.getLocation(), Sound.BAT_HURT, 0.8F, 0.8F);
+						this.sendAbilityMessage(p, "You are &asilenced&7.");
+					}
+					return false;
+				}
+			}
+		}
 		
 		// WHILE COOLDOWN
 		if(this.hasCooldown(p) && !this.ignoresCooldown && !this.cooldownCanceled) {
@@ -270,6 +292,10 @@ public abstract class Ability extends Cooldown implements Listener {
 	
 	public int getSkillTokenCost() {
 		return this.tokenCost;
+	}
+	
+	public void setWhileSilenced(boolean silence) {
+		this.whileSilenced = silence;
 	}
 	
 	public void setIgnoresCooldown(boolean ignore) {
@@ -511,10 +537,11 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.run(true, true, e.getDamager(), this.findBooster(e.getDamager()), true, e);
 		((IBowPreparable) this).unshoot(e.getDamager());
 		Player hitter = e.getDamager();
-		LivingEntity hit = e.getDamagee();
+		LivingEntity hit = e.getDamagee(); 
 
 		this.sendAbilityMessage(hitter, "You hit " + this.SECONDARY + hit.getName() + this.MAIN + " with " + this.VARIABLE + this.getName() + this.MAIN + ".");
 		this.sendAbilityMessage(hit, this.SECONDARY + hitter.getName() + this.MAIN +" hit you with " + this.VARIABLE + this.getName() + this.MAIN + ".");
+		hit.getWorld().playSound(hit.getLocation(), Sound.BLAZE_BREATH, 2.5F, 2.0F);
 		
 		if(!e.isCancelled()) {
 			if(!(e.getDamagee() instanceof Player)) return;

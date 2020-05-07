@@ -23,7 +23,7 @@ public enum ClassType {
 			Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS
 	),
 	
-	GOLD(34, "Sibyl",
+	GOLD(34, "Druid",
 			new DefaultBuild(),
 			Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS, Material.GOLD_BOOTS
 	),
@@ -44,7 +44,7 @@ public enum ClassType {
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_BOOTS, 0, 0, 0),
 			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 1)
 			),
-	GREEN(34, "Seer",
+	GREEN(34, "Shaman",
 			new DefaultBuild(),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 39, 174, 96),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_BOOTS, 39, 174, 96)
