@@ -63,7 +63,7 @@ public class GuiBuildOptions extends GuiEditable {
 								return;
 							}
 							
-							for(Build query : u.getBuilds(classType)) {
+							for(Build query : sql.getPlayerBuilds(u.getUniqueId(), classType)) {
 								if(query.getNameWithoutColors().trim().equals(ChatColor.stripColor(Text.color(event.getName().toString())))){
 									u.sendMessageWithPrefix("Build", "Invalid name!");
 									return;

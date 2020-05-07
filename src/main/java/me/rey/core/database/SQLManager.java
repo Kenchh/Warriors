@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
@@ -338,6 +339,41 @@ public class SQLManager {
 		
 		this.setPlayerData(uuid, classType.name().toLowerCase()+"_buildset", new JSONObject(list).toJSONString());
 		
+	}
+	
+	public Map<UUID, HashMap<ClassType, BuildSet>> loadAllBuilds(){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = pool.getConnection();
+			
+			String stmt = "SELECT * FROM " + playerDataTable + " WHERE uuid IS NOT NULL";
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+			HashMap<UUID, HashMap<ClassType, BuildSet>> toReturn = new HashMap<>();
+			
+			while(rs.next()) {
+				
+				UUID uuid = UUID.fromString(rs.getString("uuid"));
+				HashMap<ClassType, BuildSet> builds = new HashMap<ClassType, Build.BuildSet>();
+				
+				for(ClassType classType : ClassType.values()) builds.put(classType, this.getPlayerBuilds(uuid, classType));
+				
+				toReturn.put(uuid, builds);
+			}
+						
+			return toReturn;
+		} catch (NullPointerException e) {
+			return new HashMap<UUID, HashMap<ClassType, BuildSet>>();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.close(conn, ps, rs);
+		}
+		
+		return new HashMap<UUID, HashMap<ClassType, BuildSet>>();
 	}
 
 }

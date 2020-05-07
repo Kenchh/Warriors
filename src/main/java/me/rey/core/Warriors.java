@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -44,10 +45,10 @@ import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
 import me.rey.core.database.SQLManager;
+import me.rey.core.events.BuildHandler;
 import me.rey.core.events.ClassEditorClickEvent;
 import me.rey.core.events.DamageHandlerEvents;
 import me.rey.core.events.DurabilityChangeEvent;
-import me.rey.core.events.EquipClassEvent;
 import me.rey.core.events.PlayerDeathEvent;
 import me.rey.core.events.PlayerInteractChecker;
 import me.rey.core.events.UseSoupEvent;
@@ -55,7 +56,7 @@ import me.rey.core.gui.GuiHelp;
 import me.rey.core.items.Glow;
 import me.rey.core.players.PlayerHitCache;
 import me.rey.core.players.PlayerRunnableHandler;
-import me.rey.core.pvp.Build;
+import me.rey.core.pvp.Build.BuildSet;
 import me.rey.core.utils.EffectUtils;
 import me.rey.core.utils.Text;
 
@@ -75,7 +76,7 @@ public class Warriors extends JavaPlugin {
 	public static ArrayList<Ability> abilityCache;
 	public static ArrayList<ClassCondition> classConditions;
 	public static Map<Player, ClassType> userCache;
-	public static Map<Player, HashMap<ClassType, Build>> buildCache;
+	public static Map<UUID, HashMap<ClassType, BuildSet>> buildCache;
 	public static PlayerHitCache hitCache;
 
 	PluginManager pm = Bukkit.getServer().getPluginManager();
@@ -107,11 +108,10 @@ public class Warriors extends JavaPlugin {
 
 		new PlayerRunnableHandler(this);
 
-		buildCache = new HashMap<>();
+		buildCache = this.getSQLManager().loadAllBuilds();
 		userCache = new HashMap<>();
 		this.initAbilityCache();
 		this.initConditionCache();
-
 
 		registerEnchantments();
 
@@ -178,7 +178,7 @@ public class Warriors extends JavaPlugin {
 	 */
 	public void registerListeners() {
 		pm.registerEvents(new ClassEditorClickEvent(), this);
-		pm.registerEvents(new EquipClassEvent(), this);
+		pm.registerEvents(new BuildHandler(), this);
 		pm.registerEvents(new PlayerDeathEvent(), this);
 		pm.registerEvents(new DurabilityChangeEvent(), this);
 		pm.registerEvents(new DamageHandlerEvents(), this);

@@ -10,21 +10,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
 import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.classes.abilities.IConstant.ITogglable;
-import me.rey.core.enums.State;
-import me.rey.core.events.customevents.AbilityUseEvent;
 import me.rey.core.events.customevents.UpdateEvent;
 import me.rey.core.players.User;
 
 public class EffectUtils implements Listener {
 	
-	private final List<AbilityType> silencedAbilities = Arrays.asList(AbilityType.BOW, AbilityType.SWORD, AbilityType.SPADE, AbilityType.AXE);
+	public static final List<AbilityType> silencedAbilities = Arrays.asList(AbilityType.BOW, AbilityType.SWORD, AbilityType.SPADE, AbilityType.AXE, AbilityType.PASSIVE_A);
 	
 	private static Set<UUID> silenced = new HashSet<>();
 	private static Set<UUID> shocked = new HashSet<>();
@@ -91,24 +87,6 @@ public class EffectUtils implements Listener {
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
 		//TODO:  SHOCK EFFECT
-	}
-	
-	/*
-	 * SILENCE EFFECT
-	 */
-	@EventHandler (priority = EventPriority.LOWEST)
-	public void onAbilityUse(AbilityUseEvent e) {
-		if(!this.silencedAbilities.contains(e.getAbility().getAbilityType()) && !(e.getAbility() instanceof ITogglable)) return;
-		if(!isSilenced(e.getPlayer().getUniqueId())) return;
-		
-		if(e.getAbility() instanceof ITogglable) {
-			((ITogglable) e.getAbility()).off(e.getPlayer());
-			e.getAbility().toggle(e.getPlayer(), State.DISABLED);
-		} else {
-		    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BAT_HURT, 0.8F, 0.8F);
-			new User(e.getPlayer()).sendMessageWithPrefix(e.getAbility().getName(), "You are &asilenced&r.");
-		}
-		e.setCancelled(true);
 	}
 	
 	private static void sendMessage(UUID player, String message) {
