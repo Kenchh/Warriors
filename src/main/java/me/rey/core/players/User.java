@@ -153,8 +153,7 @@ public class User {
 	}
 	
 	public BuildSet getBuilds(ClassType classType) {
-		if(!(sql.playerExists(this.getPlayer().getUniqueId()))) return new BuildSet();
-		return sql.getPlayerBuilds(this.getPlayer().getUniqueId(), classType);
+		return Warriors.buildCache.containsKey(this.getUniqueId()) ? Warriors.buildCache.get(this.getUniqueId()).get(classType) : new BuildSet();
 	}
 	
 //	public Build getSelectedBuild(ClassType classType) {
@@ -193,7 +192,8 @@ public class User {
 		if(message) {
 			this.sendBuildEquippedMessage(classType);
 		}
-
+		
+		saveBuildsInCache();
 	}
 	
 	public void selectBuild(Build build, ClassType classType) {
@@ -231,13 +231,21 @@ public class User {
 	}
 	
 	public void editBuild(Build old, Build newBuild, ClassType classType) {
-		for(Build b : this.getBuilds(classType)) {
+		for(Build b : this.sql.getPlayerBuilds(this.getUniqueId(), classType)) {
 			if(b.getUniqueId().toString().trim().equals(old.getUniqueId().toString().trim())) {
 				b = newBuild;
 				sql.deletePlayerBuild(this.getPlayer().getUniqueId(), b, classType);
 				sql.createPlayerBuild(this.getPlayer().getUniqueId(), b, classType);
 				
-			}			
+			}
+		}
+		
+		saveBuildsInCache();
+	}
+	
+	private void saveBuildsInCache() {
+		for(ClassType type : ClassType.values()) {
+			Warriors.buildCache.get(this.getUniqueId()).put(type, this.sql.getPlayerBuilds(this.getUniqueId(), type));
 		}
 	}
 
