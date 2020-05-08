@@ -19,7 +19,6 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.database.SQLManager;
 import me.rey.core.players.User;
 import me.rey.core.pvp.Build;
-import me.rey.core.pvp.Build.BuildSet;
 import me.rey.core.utils.Text;
 
 public class GuiClassEditor extends GuiEditable {
@@ -44,7 +43,6 @@ public class GuiClassEditor extends GuiEditable {
 	public void setup() {
 		
 		User u = new User(this.getPlayer());
-		BuildSet builds = this.sql.getPlayerBuilds(u.getUniqueId(), classType);
 		
 		int column = 2;
 		for(int i = 0; i < this.getRows(); i++) {
@@ -76,7 +74,7 @@ public class GuiClassEditor extends GuiEditable {
 		meta.setLore(Arrays.asList(
 				Text.color("&r"),
 				Text.color(String.format("&7Player: &e%s", this.getPlayer().getDisplayName())),
-				Text.color(String.format("&7Loaded Builds: &e%s", builds.size())),
+				Text.color(String.format("&7Loaded Builds: &e%s", this.sql.getPlayerBuilds(u.getUniqueId(), classType).size())),
 				Text.color("&r"),
 				Text.color("&8&m---------------")
 		));
@@ -99,9 +97,9 @@ public class GuiClassEditor extends GuiEditable {
 		
 		
 		int[] buildPositions = {2, 4, 6, 8, 30, 32, 34};
-		for(int i = 0; i < builds.size(); i++) {
+		for(int i = 0; i < this.sql.getPlayerBuilds(u.getUniqueId(), classType).size(); i++) {
 			
-			Build b = builds.get(i);
+			Build b = this.sql.getPlayerBuilds(u.getUniqueId(), classType).get(i);
 			int position = b.getPosition() <= -1 ? i+1 : b.getPosition();
 					
 			if(i > buildPositions.length - 1) break;
@@ -148,7 +146,7 @@ public class GuiClassEditor extends GuiEditable {
 					
 					for(int index = 0; index <= buildPositions.length; index++) {
 						boolean repeated = false;
-						for(Build b : builds) {
+						for(Build b : sql.getPlayerBuilds(u.getUniqueId(), classType).getArray()) {
 							if((name + index).equalsIgnoreCase(b.getRawName())) {
 								repeated = true;
 							}
