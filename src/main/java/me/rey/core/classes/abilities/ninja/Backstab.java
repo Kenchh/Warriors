@@ -46,6 +46,10 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 	}
 
 	private boolean isBehind(final Player attacker, final LivingEntity target) {
-		return attacker.getLocation().getDirection().dot(target.getLocation().getDirection()) > 0.8;
+		if(target instanceof Player) {
+			return attacker.getLocation().getDirection().dot(target.getLocation().getDirection()) > 0.8;
+		} else {
+			return attacker.getLocation().getDirection().dot(target.getLocation().getDirection()) > 0.65;
+		}
 	}
 }

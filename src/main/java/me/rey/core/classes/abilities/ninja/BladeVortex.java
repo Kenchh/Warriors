@@ -9,7 +9,11 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import me.rey.core.Warriors;
@@ -21,20 +25,20 @@ import me.rey.core.utils.BlockLocation;
 
 public class BladeVortex extends Ability {
 
-    private final double radius = 5;
+    private final double radius = 5.5;
 
     HashMap<UUID, Double> vortexing = new HashMap<UUID, Double>();
     HashMap<UUID, Integer> vortexingS = new HashMap<UUID, Integer>();
 
     public BladeVortex() {
-        super(4, "Blade Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 6.5, Arrays.asList(
+        super(4, "Blade Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 10.5, Arrays.asList(
                 "Create a blade vortex, pulling players into you",
                 "and casting players near you afar.",
                 "",
                 "Players hit with the blade vortex take <variable>5+l</variable> damage",
                 "as well as receive slowness for <variable>1.0 + 0.5*l</variable> seconds.",
                 "",
-                "Recharge: <variable>7.5 - l</variable>"
+                "Recharge: <variable>10.5 - l</variable>"
         ));
     }
 
@@ -67,7 +71,7 @@ public class BladeVortex extends Ability {
 
                     } else {
 
-                        vortexing.replace(p.getUniqueId(), vortexing.get(p.getUniqueId()) + 0.3);
+                        vortexing.replace(p.getUniqueId(), vortexing.get(p.getUniqueId()) + 1D);
 
                         double ticks = vortexing.get(p.getUniqueId());
 
@@ -83,15 +87,19 @@ public class BladeVortex extends Ability {
 
 
         for(Entity e : p.getNearbyEntities(radius, 4, radius)) {
-            double distance = p.getLocation().distance(e.getLocation());
-            if(inCircle(p, e)) {
-                if (distance < 2.6) {
-                    pushAway(p, e);
-                } else {
-                    pushIn(p, e);
+            if(e instanceof LivingEntity) {
+                double distance = p.getLocation().distance(e.getLocation());
+                if (inCircle(p, e)) {
+                    LivingEntity le = (LivingEntity) e;
+                    le.damage(5 + level);
+                    le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * (1.0 + 0.5 * level)), 1));
+                    if (distance < 2.6) {
+                        pushAway(p, e);
+                    } else {
+                        pushIn(p, e);
+                    }
                 }
             }
-
         }
 
         sendUsedMessageToPlayer(p, this.getName());
