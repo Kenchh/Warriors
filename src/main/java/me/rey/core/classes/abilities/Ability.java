@@ -23,6 +23,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -637,6 +638,25 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 		
 	}
+
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onEvent(PlayerInteractEntityEvent e) {
+
+		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
+				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
+				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
+				Material.ENDER_CHEST);
+
+		// RIGHT CLICK ABILITIES
+
+		Material item = e.getPlayer().getItemInHand() == null ? Material.AIR : e.getPlayer().getItemInHand().getType();
+
+		ToolType match = match(item);
+		if(match == null) return;
+
+		run(e.getPlayer(), match, true);
+		return;
+	}
 	
 	protected ToolType match(Material item) {
 		ToolType toolType = null;
@@ -716,7 +736,11 @@ public abstract class Ability extends Cooldown implements Listener {
 				barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "▌";
 			}
 			
-			if(pCooldown <= 0.1) barsString = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
+			if(pCooldown <= 0.1) {
+				barsString = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
+			} else {
+				barsString += " &f" + pCooldown + " Seconds";
+			}
 			
 			new ActionBar(Text.color("&f&l" + this.getName() + " " + barsString)).send(p);
 		}

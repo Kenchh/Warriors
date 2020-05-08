@@ -1,6 +1,7 @@
 package me.rey.core.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -151,7 +152,7 @@ public class BlockLocation {
         return xzCords;
     }
 
-    public static double[] getXZCordsFromDegree(Player p, boolean rotated, double addAngle, double radius, double degree) {
+    public static double[] getXZCordsFromDegree(Location loc, boolean rotated, double addAngle, double radius, double degree) {
         double radian = Math.toRadians(degree);
 
         double xMultiplier = Math.cos(radian);
@@ -162,8 +163,8 @@ public class BlockLocation {
 
         double[] xzCords = new double[2];
 
-        double x = p.getLocation().getX();
-        double z = p.getLocation().getZ();
+        double x = loc.getX();
+        double z = loc.getZ();
 
         if(rotated) {
             x += addX;
