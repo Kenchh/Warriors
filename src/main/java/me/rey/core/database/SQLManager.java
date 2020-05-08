@@ -341,7 +341,7 @@ public class SQLManager {
 		
 	}
 	
-	public Map<UUID, HashMap<ClassType, Build[]>> loadAllBuilds(){
+	public Map<UUID, HashMap<ClassType, Build[]>> loadAllBuilds() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

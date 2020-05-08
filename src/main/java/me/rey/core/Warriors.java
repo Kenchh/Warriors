@@ -110,7 +110,6 @@ public class Warriors extends JavaPlugin {
 		new PlayerRunnableHandler(this);
 		new ClassHandler();
 
-		buildCache = this.getSQLManager().loadAllBuilds();
 		userCache = new HashMap<>();
 		this.initAbilityCache();
 		this.initConditionCache();
@@ -121,6 +120,7 @@ public class Warriors extends JavaPlugin {
 
 		deathMessagesEnabled = this.getConfig().getBoolean("kill-death-messages");
 		logger.warning("Search for any errors in CONSOLE, they may be fatal to player gameplay");
+		buildCache = this.getSQLManager().loadAllBuilds();
 	}
 
 
