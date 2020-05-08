@@ -2,10 +2,11 @@ package me.rey.core.pvp;
 
 import java.util.AbstractList;
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.commons.lang.ArrayUtils;
 
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
@@ -134,46 +135,55 @@ public class Build extends AbstractMap<Ability, Integer> {
 		
 	}
 
-	public static class BuildSet extends AbstractList<Build>{
+	public static class BuildSet extends AbstractList<Build> {
 		
-		ArrayList<Build> builds;
+		private Build[] list;
+		private int size = 0;
 		
-		public BuildSet(Build... builds) {
-			this.builds = new ArrayList<>();
+		public BuildSet(Build... builds) {			
+			this.list = new Build[0];
 			
 			for(Build b : builds) {
-				this.builds.add(b);
+				this.add(b);
 			}
 		}
 		
-		public ArrayList<Build> getArrayList(){
-			return this.builds;
+		public Build[] getArray() {
+			return list.clone();
 		}
 
 		@Override
 		public Build get(int index) {
-			if(index > builds.size()) return null;
-			return builds.get(index);
+	        if(index >= size) throw new IndexOutOfBoundsException("" + index);
+	        return (Build) list[index];
 		}
 
 		@Override
 		public int size() {
-			return builds.size();
+			return size;
 		}
 		
 		@Override
 		public boolean add(Build build) {
-			return this.builds.add(build);
+	        if(size >= list.length){
+	            Build[] newList = new Build[list.length + 1];
+	            System.arraycopy(list, 0, newList, 0, list.length);
+	            list = newList;
+	        }
+	        list[size] = build;
+	        size++;
+	        return true;
 		}
 		
-		public void remove(Build build) {
-			for(int i = 0; i < this.builds.size(); i++) {
-				Build b = this.builds.get(i);
+		public boolean remove(Build build) {  
+			for(int i = 0; i < list.length; i++) {
+				Build b=  list[i];
 				if(b.getUniqueId().toString().equalsIgnoreCase(build.getUniqueId().toString())) {	
-					this.builds.remove(i);
+					list = (Build[]) ArrayUtils.remove(list, i);
 					break;
 				}
 			}
+			return true;
 		}
 
 	}

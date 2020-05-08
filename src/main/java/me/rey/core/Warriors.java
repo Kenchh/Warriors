@@ -47,6 +47,7 @@ import me.rey.core.commands.Skill;
 import me.rey.core.database.SQLManager;
 import me.rey.core.events.BuildHandler;
 import me.rey.core.events.ClassEditorClickEvent;
+import me.rey.core.events.ClassHandler;
 import me.rey.core.events.DamageHandlerEvents;
 import me.rey.core.events.DurabilityChangeEvent;
 import me.rey.core.events.PlayerDeathEvent;
@@ -56,7 +57,7 @@ import me.rey.core.gui.GuiHelp;
 import me.rey.core.items.Glow;
 import me.rey.core.players.PlayerHitCache;
 import me.rey.core.players.PlayerRunnableHandler;
-import me.rey.core.pvp.Build.BuildSet;
+import me.rey.core.pvp.Build;
 import me.rey.core.utils.EffectUtils;
 import me.rey.core.utils.Text;
 
@@ -76,7 +77,7 @@ public class Warriors extends JavaPlugin {
 	public static ArrayList<Ability> abilityCache;
 	public static ArrayList<ClassCondition> classConditions;
 	public static Map<Player, ClassType> userCache;
-	public static Map<UUID, HashMap<ClassType, BuildSet>> buildCache;
+	public static Map<UUID, HashMap<ClassType, Build[]>> buildCache;
 	public static PlayerHitCache hitCache;
 
 	PluginManager pm = Bukkit.getServer().getPluginManager();
@@ -104,11 +105,11 @@ public class Warriors extends JavaPlugin {
 		this.registerListeners();
 
 
-		guiHelp = new GuiHelp(this);
+		guiHelp = new GuiHelp(this);	
 
 		new PlayerRunnableHandler(this);
+		new ClassHandler();
 
-		buildCache = this.getSQLManager().loadAllBuilds();
 		userCache = new HashMap<>();
 		this.initAbilityCache();
 		this.initConditionCache();
@@ -119,6 +120,7 @@ public class Warriors extends JavaPlugin {
 
 		deathMessagesEnabled = this.getConfig().getBoolean("kill-death-messages");
 		logger.warning("Search for any errors in CONSOLE, they may be fatal to player gameplay");
+		buildCache = this.getSQLManager().loadAllBuilds();
 	}
 
 

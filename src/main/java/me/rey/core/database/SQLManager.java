@@ -257,7 +257,7 @@ public class SQLManager {
 		bs.add(b);
 		
 		HashMap<String, HashMap<String, Object>> list = new HashMap<>();
-		for(Build build : bs.getArrayList()) {
+		for(Build build : bs.getArray()) {
 			HashMap<Long, Integer> query = new HashMap<Long, Integer>();
 			
 			for(Ability ability : build.getAbilities().keySet()) {
@@ -288,7 +288,7 @@ public class SQLManager {
 			bs.remove(b);
 			
 			HashMap<String, HashMap<String, Object>> list = new HashMap<>();
-			for(Build build : bs.getArrayList()) {
+			for(Build build : bs.getArray()) {
 				HashMap<Long, Integer> query = new HashMap<Long, Integer>();
 				
 				for(Ability ability : build.getAbilities().keySet()) {
@@ -317,7 +317,7 @@ public class SQLManager {
 		BuildSet bs = this.getPlayerBuilds(uuid, classType);
 		
 		HashMap<String, HashMap<String, Object>> list = new HashMap<>();
-		for(Build build : bs.getArrayList()) {
+		for(Build build : bs.getArray()) {
 			if(build.getUniqueId().equals(b.getUniqueId())){
 				build = b;
 			}
@@ -341,7 +341,7 @@ public class SQLManager {
 		
 	}
 	
-	public Map<UUID, HashMap<ClassType, BuildSet>> loadAllBuilds(){
+	public Map<UUID, HashMap<ClassType, Build[]>> loadAllBuilds() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -352,28 +352,31 @@ public class SQLManager {
 			String stmt = "SELECT * FROM " + playerDataTable + " WHERE uuid IS NOT NULL";
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
-			HashMap<UUID, HashMap<ClassType, BuildSet>> toReturn = new HashMap<>();
+			HashMap<UUID, HashMap<ClassType, Build[]>> toReturn = new HashMap<>();
 			
 			while(rs.next()) {
 				
 				UUID uuid = UUID.fromString(rs.getString("uuid"));
-				HashMap<ClassType, BuildSet> builds = new HashMap<ClassType, Build.BuildSet>();
+				HashMap<ClassType, Build[]> builds = new HashMap<>();
 				
-				for(ClassType classType : ClassType.values()) builds.put(classType, this.getPlayerBuilds(uuid, classType));
+				for(ClassType classType : ClassType.values()) {
+					BuildSet buildSet = this.getPlayerBuilds(uuid, classType);
+					builds.put(classType, buildSet.getArray());
+				}
 				
 				toReturn.put(uuid, builds);
 			}
 						
 			return toReturn;
 		} catch (NullPointerException e) {
-			return new HashMap<UUID, HashMap<ClassType, BuildSet>>();
+			return new HashMap<UUID, HashMap<ClassType, Build[]>>();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			pool.close(conn, ps, rs);
 		}
 		
-		return new HashMap<UUID, HashMap<ClassType, BuildSet>>();
+		return new HashMap<UUID, HashMap<ClassType, Build[]>>();
 	}
 
 }
