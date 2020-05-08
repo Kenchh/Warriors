@@ -14,7 +14,7 @@ public class ClassHandler extends BukkitRunnable {
 	}
 	
 	private void start() {
-		this.runTaskTimerAsynchronously(Warriors.getInstance(), 0, 1);
+		this.runTaskTimer(Warriors.getInstance(), 0, 1);
 	}
 
 	@Override

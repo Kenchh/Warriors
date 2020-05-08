@@ -27,7 +27,14 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
-		DamageEvent e = (DamageEvent) conditions[0];
+		DamageEvent e = null;
+
+		try {
+			e = (DamageEvent) conditions[0];
+		} catch (ArrayIndexOutOfBoundsException s) {
+			System.out.println("Already known exception occured [Backstab]");
+			return false;
+		}
 		
 		Player damager = e.getDamager();
 		LivingEntity damagee = e.getDamagee();

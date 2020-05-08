@@ -28,7 +28,7 @@ public class Leap extends Ability {
 	private ArrayList<UUID> wallkickPlayers;
 	
 	public Leap() {
-		super(702, "Leap", ClassType.BLACK, AbilityType.AXE, 1, 4, 9.00, Arrays.asList(
+		super(702, "Leap", ClassType.BLACK, AbilityType.AXE, 1, 4, 3.00, Arrays.asList(
 				"Take a great leap forwards",
 				"",
 				"Wall Kick by using Leap with your",
@@ -36,7 +36,7 @@ public class Leap extends Ability {
 				"trigger Leaps Recharge.",
 				"",
 				"Cannot be used while Slowed.",
-				"Recharge: <variable>0-1.5*L+10.5</variable> (-1.5) Seconds"));
+				"Recharge: <variable>3.25 - 0.25 * l</variable> (-0.25) Seconds"));
 		
 		this.wallkickPlayers = new ArrayList<>();
 		this.setWhileSlowed(false);
@@ -54,12 +54,16 @@ public class Leap extends Ability {
 	}
 
 	private boolean leap(final Player p, int level, boolean wallKickOnly) {
-		Vector vectorBehind = p.getLocation().getDirection().setY(0).normalize().multiply(-1);
+		Vector vectorBehind = p.getLocation().getDirection().setY(0).multiply(-1);
 		Block blockBehind = p.getLocation().add(vectorBehind).getBlockY() == p.getLocation().getBlockY() ? p.getLocation().add(vectorBehind).getBlock() : null;
 		if(!(blockBehind != null && blockBehind.getType().isSolid()) && wallKickOnly) return false;
 		
 		p.setFallDistance(-7);
-		p.setVelocity(p.getLocation().getDirection().multiply(1.0).add(new Vector(0, 0.5, 0)));
+		if(p.isOnGround()) {
+			p.setVelocity(p.getLocation().getDirection().setY(0.8).multiply(1.2));
+		} else {
+			p.setVelocity(p.getLocation().getDirection().setY(1).multiply(0.8));
+		}
 		
 		int points = 20;
 		double radius = 1.0d;
@@ -94,7 +98,7 @@ public class Leap extends Ability {
 		}
 		
 		sendUsedMessageToPlayer(p, this.getName());
-		this.setCooldown(-1.5 * level + 10.5);
+		this.setCooldown(3.25 - 0.25 * level);
 		return true;
 	}
 	
