@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,7 +58,19 @@ public class EffectUtils implements Listener {
 	
 	public static void shock(UUID player, double seconds) {
 		shocked.add(player);
-		
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if(shocked.contains(player)) {
+					Player p = Bukkit.getServer().getPlayer(player);
+					p.playEffect(EntityEffect.HURT);
+				} else {
+					this.cancel();
+				}
+			}
+		}.runTaskTimer(Warriors.getInstance(), 0L, 1L);
+
 		new BukkitRunnable() {
 			
 			@Override
