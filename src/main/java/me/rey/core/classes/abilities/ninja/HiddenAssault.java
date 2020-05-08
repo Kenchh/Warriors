@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.bandit;
+package me.rey.core.classes.abilities.ninja;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public class HiddenAssault extends Ability implements IConstant {
 	private Set<UUID> shifting = new HashSet<>(), loading = new HashSet<UUID>();
 
 	public HiddenAssault() {
-		super(705, "Hidden Assault", ClassType.BLACK, AbilityType.PASSIVE_A, 1, 3, 0.00, Arrays.asList(
+		super(705, "Hidden Assault", ClassType.LEATHER, AbilityType.PASSIVE_A, 1, 3, 0.00, Arrays.asList(
 				"Shifting for <variable>3.5-(0.5*l)</variable> seconds allows",
 				"you to become completely invisible.", "",
 				"You become visible when you unshift."

@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.bandit;
 
 import java.util.Arrays;
 
@@ -17,7 +17,7 @@ import me.rey.core.players.User;
 public class Backstab extends Ability implements IPlayerDamagedEntity {
 
 	public Backstab() {
-		super(1, "Backstab", ClassType.LEATHER, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
+		super(1, "Backstab", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
 				"Attacks from behind opponents",
 				"deal <variable>1.5*l+1.5</variable> (+1.5) additional damage."
 				));
@@ -32,7 +32,7 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 		try {
 			e = (DamageEvent) conditions[0];
 		} catch (ArrayIndexOutOfBoundsException s) {
-			System.out.println("Already known exception occured [Backstab]");
+			System.out.println("Already known exception occurred [Backstab]");
 			return false;
 		}
 		

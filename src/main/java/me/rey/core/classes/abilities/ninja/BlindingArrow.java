@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.bandit;
+package me.rey.core.classes.abilities.ninja;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ public class BlindingArrow extends Ability implements IBowPreparable {
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
 	
 	public BlindingArrow() {
-		super(707, "Blinding Arrow", ClassType.BLACK, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
+		super(707, "Blinding Arrow", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
 				"Prepare yourself to deal a Blindness",
 				"and Slowness 2 effect on your next",
 				"target with a duration of <variable>2.5+(0.5*l)</variable> (+0.5) Seconds.", "",

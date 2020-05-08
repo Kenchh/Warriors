@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.ninja.*;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -18,21 +19,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
-import me.rey.core.classes.abilities.bandit.BlindingArrow;
 import me.rey.core.classes.abilities.bandit.Blink;
-import me.rey.core.classes.abilities.bandit.Disarm;
-import me.rey.core.classes.abilities.bandit.HiddenAssault;
-import me.rey.core.classes.abilities.bandit.InfectiousArrow;
 import me.rey.core.classes.abilities.bandit.Leap;
 import me.rey.core.classes.abilities.bandit.Recall;
-import me.rey.core.classes.abilities.bandit.SmokeBomb;
 import me.rey.core.classes.abilities.knight.HoldPosition;
 import me.rey.core.classes.abilities.knight.Immunity;
-import me.rey.core.classes.abilities.ninja.Backstab;
-import me.rey.core.classes.abilities.ninja.BladeVortex;
-import me.rey.core.classes.abilities.ninja.Dash;
-import me.rey.core.classes.abilities.ninja.Evade;
-import me.rey.core.classes.abilities.ninja.Flash;
+import me.rey.core.classes.abilities.bandit.Backstab;
 import me.rey.core.classes.abilities.wizard.EnergyPool;
 import me.rey.core.classes.abilities.wizard.EnergyRegeneration;
 import me.rey.core.classes.abilities.wizard.FireBlast;
@@ -227,7 +219,7 @@ public class Warriors extends JavaPlugin {
 				new Blink(),
 				new Disarm(),
 				new HiddenAssault(),
-				new InfectiousArrow(),
+				new WitheredArrow(),
 				new Leap(),
 				new Recall(),
 				new SmokeBomb(),
