@@ -107,7 +107,8 @@ public class DamageHandlerEvents implements Listener {
 			
 			if(hitType == HitType.MELEE) {
 				e.setCancelled(true);
-				((LivingEntity) e.getEntity()).damage(e.getDamage());
+				((LivingEntity) e.getEntity()).setHealth(Math.max(0, Math.min(((LivingEntity) e.getEntity()).getHealth() - e.getDamage(),
+						((LivingEntity) e.getEntity()).getMaxHealth() )));
 			}
 			
 			/*
@@ -121,7 +122,7 @@ public class DamageHandlerEvents implements Listener {
 			Bukkit.getServer().getPluginManager().callEvent(kbEvent);
 			
 			if(kbEvent.isCancelled())
-				kbEvent.setMult(0.0);
+				return;
 			
 			kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
 		}
