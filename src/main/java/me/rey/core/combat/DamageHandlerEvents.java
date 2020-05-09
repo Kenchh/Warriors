@@ -1,4 +1,4 @@
-package me.rey.core.events;
+package me.rey.core.combat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
@@ -35,11 +35,22 @@ import me.rey.core.utils.UtilVelocity;
 
 public class DamageHandlerEvents implements Listener {
 
+	private final long HIT_DELAY = 400;
 	PlayerHitCache cache = Warriors.getInstance().getHitCache();
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageByEntityEvent e) {
 		if(!(e.getEntity() instanceof LivingEntity)) return;
+		
+		/*
+		 * HIT DELAY
+		 */
+		if(CombatManager.timeAgo((LivingEntity) e.getEntity()) <= HIT_DELAY) {
+			e.setCancelled(true);
+			return;
+		}
+		
+		
 		CustomDamageEvent damageEvent = null;
 		
 		/*
@@ -115,6 +126,7 @@ public class DamageHandlerEvents implements Listener {
 				e.setCancelled(true);
 				((LivingEntity) e.getEntity()).setHealth(Math.max(0, Math.min(((LivingEntity) e.getEntity()).getHealth() - e.getDamage(),
 						((LivingEntity) e.getEntity()).getMaxHealth())));
+				CombatManager.resetTime((LivingEntity) e.getEntity());
 			}
 			
 			/*
@@ -198,7 +210,7 @@ public class DamageHandlerEvents implements Listener {
 		damage = Math.log10(damage);
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
-		trajectory.multiply(0.05D / (13 / damage));
+		trajectory.multiply(0.05D * damage * 2D);
 		trajectory.setY(Math.abs(trajectory.getY()));
 		
 		UtilVelocity.velocity(entity,
