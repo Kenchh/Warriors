@@ -1,7 +1,6 @@
 package me.rey.core.classes;
 
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -10,47 +9,48 @@ import me.rey.core.classes.abilities.bandit.Leap;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.DefaultBuild;
+import me.rey.core.utils.SoundEffect;
 import me.rey.core.utils.Utils;
 
 public enum ClassType {
 	
-	LEATHER(28, "Assassin",
+	LEATHER(28, "Assassin", SoundEffect.SOFT,
 			new DefaultBuild(new Leap().setTempDefaultLevel(4)),
 			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS
 	),
 	
-	CHAIN(36, "Marksman",
+	CHAIN(36, "Marksman", SoundEffect.MILD_TANK_A,
 			new DefaultBuild(),
 			Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS
 	),
 	
-	GOLD(34, "Druid",
+	GOLD(34, "Druid", SoundEffect.MILD_TANK_B,
 			new DefaultBuild(),
 			Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS, Material.GOLD_BOOTS
 	),
 	
-	IRON(50, "Knight",
+	IRON(50, "Knight", SoundEffect.TANK_A,
 			new DefaultBuild(),
 			Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS
 	),
 	
-	DIAMOND(48, "Brute",
+	DIAMOND(48, "Brute", SoundEffect.TANK_B,
 			new DefaultBuild(),
 			Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS
 	),
 	
-	BLACK(28, "Bandit",
+	BLACK(28, "Bandit", SoundEffect.SOFT,
 			new DefaultBuild(),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 0, 0, 0),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_BOOTS, 0, 0, 0),
 			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 1)
 			),
-	GREEN(34, "Shaman",
+	GREEN(34, "Shaman", SoundEffect.MILD_TANK_B,
 			new DefaultBuild(),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 39, 174, 96),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_BOOTS, 39, 174, 96)
 			),
-	RED(36, "Berserker",
+	RED(36, "Berserker", SoundEffect.TANK_C,
 			new DefaultBuild(),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 231, 76, 60), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 231, 76, 60),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 231, 76, 60), Utils.getColoredArmor(Material.LEATHER_BOOTS, 231, 76, 60)
@@ -61,8 +61,9 @@ public enum ClassType {
 	private PotionEffect[] effects;
 	private DefaultBuild defaultBuild;
 	private double health;
+	private SoundEffect sound;
 	
-	ClassType(double health, String name, DefaultBuild defaultBuild, Material helmet, Material chestplate, Material leggings, Material boots, PotionEffect... effects){
+	ClassType(double health, String name, SoundEffect hitSound, DefaultBuild defaultBuild, Material helmet, Material chestplate, Material leggings, Material boots, PotionEffect... effects){
 		this.health = health;
 		this.name = name;
 		this.helmet = new Item(helmet);
@@ -71,9 +72,11 @@ public enum ClassType {
 		this.boots = new Item(boots);
 		this.effects = effects;
 		this.defaultBuild = defaultBuild;
+		
+		this.sound = hitSound;
 	}
 	
-	ClassType(double health, String name, DefaultBuild defaultBuild, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, PotionEffect... effects){
+	ClassType(double health, String name, SoundEffect hitSound, DefaultBuild defaultBuild, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, PotionEffect... effects){
 		this.health = health;
 		this.name = name;
 		this.helmet = new Item(helmet).setName(null);
@@ -82,6 +85,8 @@ public enum ClassType {
 		this.boots = new Item(boots).setName(null);
 		this.effects = effects;
 		this.defaultBuild = defaultBuild;
+		
+		this.sound = hitSound;
 	}
 	
 	public double getHealth() {
@@ -118,6 +123,10 @@ public enum ClassType {
 
 	public Build getDefaultBuild() {
 		return this.defaultBuild;
+	}
+	
+	public SoundEffect getSound() {
+		return this.sound;
 	}
 	
 }

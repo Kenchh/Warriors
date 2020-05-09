@@ -1,7 +1,9 @@
 package me.rey.core.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.EntityEffect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -105,11 +107,27 @@ public class DamageHandlerEvents implements Listener {
 		
 		if(!e.isCancelled()) {
 			
+			/*
+			 * CUSTOM DAMAGE
+			 */
 			if(hitType == HitType.MELEE) {
 				e.setCancelled(true);
 				((LivingEntity) e.getEntity()).setHealth(Math.max(0, Math.min(((LivingEntity) e.getEntity()).getHealth() - e.getDamage(),
 						((LivingEntity) e.getEntity()).getMaxHealth() )));
 			}
+			
+			/*
+			 * DISPLAY SOUNDS
+			 */
+			if(((LivingEntity) e.getEntity() instanceof Player && new User((Player) e.getEntity()).getWearingClass() != null)){
+				Player p = (Player) e.getEntity();
+				ClassType type = new User(p).getWearingClass();
+				p.getWorld().playSound(p.getLocation(), type.getSound().getSound(), 1.0f, type.getSound().getPitch());
+			} else {
+				((LivingEntity) e.getEntity()).getWorld().playSound(((LivingEntity) e.getEntity()).getLocation(), Sound.HURT_FLESH, 1.0f, 1.0f);
+			}
+			
+			((LivingEntity) e.getEntity()).playEffect(EntityEffect.HURT);
 			
 			/*
 			 * KNOCKBACK
@@ -186,10 +204,10 @@ public class DamageHandlerEvents implements Listener {
 		damage = Math.log10(damage);
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
-		trajectory.multiply(0.8D * damage * 0.2);
-		trajectory.setY(Math.abs(0.025 * multiplier));
+		trajectory.multiply(0.6D * damage);
+		trajectory.setY(Math.abs(trajectory.getY()));
 		
-		entity.setVelocity(trajectory.multiply(0.3D + trajectory.length() * 0.8D));
+		entity.setVelocity(trajectory.multiply(0.2D + trajectory.length() * 0.8D));
 	}
 	
 //    @EventHandler
