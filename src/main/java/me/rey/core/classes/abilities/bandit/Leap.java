@@ -53,17 +53,17 @@ public class Leap extends Ability {
 			e.setCancelled(leap(e.getPlayer(), e.getLevel(), true));
 	}
 
+	@SuppressWarnings("deprecation")
 	private boolean leap(final Player p, int level, boolean wallKickOnly) {
 		Vector vectorBehind = p.getLocation().getDirection().setY(0).multiply(-1);
 		Block blockBehind = p.getLocation().add(vectorBehind).getBlockY() == p.getLocation().getBlockY() ? p.getLocation().add(vectorBehind).getBlock() : null;
 		if(!(blockBehind != null && blockBehind.getType().isSolid()) && wallKickOnly) return false;
 		
 		p.setFallDistance(-7);
-		if(p.isOnGround()) {
+		if(p.isOnGround())
 			p.setVelocity(p.getLocation().getDirection().setY(0.8).multiply(1.2));
-		} else {
+		else
 			p.setVelocity(p.getLocation().getDirection().setY(1).multiply(0.8));
-		}
 		
 		int points = 20;
 		double radius = 1.0d;

@@ -12,10 +12,12 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -589,76 +591,73 @@ public abstract class Ability extends Cooldown implements Listener {
 		}.runTaskLater(Warriors.getInstance(), 2);
 	}
 	
+	/*
+	 * RUN ABILITIES
+	 */
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onEvent(PlayerInteractEvent e) {
 
+		this.runCheck(e.getAction(), e.getPlayer(), e.getItem(), e.getClickedBlock(), e);
+	}
+
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onEvent(PlayerInteractEntityEvent e) {
+
+		this.runCheck(Action.RIGHT_CLICK_AIR, e.getPlayer(), e.getPlayer().getItemInHand(), null, e);
+	}
+
+
+	/*
+	 * CHECK TO RUN
+	 */
+	private void runCheck(Action action, Player p, ItemStack hold, Block clicked, Event e) {
 		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
 				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
 				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
 				Material.ENDER_CHEST);
 
-		boolean isAir = e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_AIR);
-		boolean result = isAir ? true : expected.contains(e.getClickedBlock().getType()) || e.getClickedBlock().getType().name().toLowerCase().contains("door") 
-				|| e.getClickedBlock().getType().name().toLowerCase().contains("fence")? true : false;
+		boolean isAir = clicked == null || action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_AIR);
+		boolean result = isAir ? true : expected.contains(clicked.getType()) || clicked.getType().name().toLowerCase().contains("door") 
+				|| clicked.getType().name().toLowerCase().contains("fence")? true : false;
 
-		if((e.isCancelled() || result) && !isAir) return;
+		if(result && !isAir) return;
 		
 		// RIGHT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.RIGHT_CLICK)
-				&& (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+				&& (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK))) {
 
-			Material item = e.getItem() == null ? Material.AIR : e.getItem().getType();
+			Material item = hold == null ? Material.AIR : hold.getType();
 
 			ToolType match = match(item);
 			if(match == null) return;
 
-			run(e.getPlayer(), match, true);
+			run(p, match, true);
 			return;
 		}
 		
 		// LEFT CLICK ABILITIES
 		if((this.getAbilityType().getEventType().equals(EventType.LEFT_CLICK) || this instanceof IBowPreparable)
-				&& (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {			
+				&& (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK))) {			
 			
-			Material item = e.getItem() == null ? Material.AIR : e.getItem().getType();
+			Material item = hold == null ? Material.AIR : hold.getType();
 			ToolType match = match(item);
 			if(match == null) return;
 			
 			if(this instanceof IBowPreparable) {
-				boolean success = run(e.getPlayer(), match, true, e);
+				boolean success = run(p, match, true, e);
 				if(success) {
-					this.sendAbilityMessage(e.getPlayer(), "You have prepared " + this.VARIABLE + this.getName() + "&r.");
-					e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLAZE_BREATH, 2.5F, 2.0F);
+					this.sendAbilityMessage(p, "You have prepared " + this.VARIABLE + this.getName() + "&r.");
+					p.getWorld().playSound(p.getLocation(), Sound.BLAZE_BREATH, 2.5F, 2.0F);
 				}
 			} else {
-				run(e.getPlayer(), match, true);
+				run(p, match, true);
 			}
 			
 			return;
 		}
 		
 	}
-
-	@EventHandler (priority = EventPriority.HIGHEST)
-	public void onEvent(PlayerInteractEntityEvent e) {
-
-		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
-				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
-				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
-				Material.ENDER_CHEST);
-
-		// RIGHT CLICK ABILITIES
-
-		if(e.isCancelled() || e.getRightClicked() instanceof Player) return;
-
-		Material item = e.getPlayer().getItemInHand() == null ? Material.AIR : e.getPlayer().getItemInHand().getType();
-
-		ToolType match = match(item);
-		if(match == null) return;
-
-		run(e.getPlayer(), match, true);
-		return;
-	}
+	// end
 	
 	protected ToolType match(Material item) {
 		ToolType toolType = null;
@@ -747,5 +746,5 @@ public abstract class Ability extends Cooldown implements Listener {
 			new ActionBar(Text.color("&f&l" + this.getName() + " " + barsString)).send(p);
 		}
 	}
-
+	
 }

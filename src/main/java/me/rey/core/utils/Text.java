@@ -8,7 +8,7 @@ import net.md_5.bungee.api.ChatColor;
 public class Text {
 	
 	public static String format(String prefix, String message) {
-		prefix = ChatColor.translateAlternateColorCodes('&', String.format("&9%s Â»&r", prefix));
+		prefix = ChatColor.translateAlternateColorCodes('&', String.format("&9%s »&r", prefix));
 		message = ChatColor.translateAlternateColorCodes('&', "&7" + message);
 		return (prefix + " " + message);
 	}
