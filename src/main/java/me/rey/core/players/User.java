@@ -1,6 +1,7 @@
 package me.rey.core.players;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -248,7 +249,9 @@ public class User {
 	
 	private void saveBuildsInCache() {
 		for(ClassType type : ClassType.values()) {
-			Warriors.buildCache.get(this.getUniqueId()).replace(type, this.sql.getPlayerBuilds(this.getUniqueId(), type).getArray());
+			HashMap<ClassType, Build[]> builds = Warriors.buildCache.containsKey(this.getUniqueId()) ?
+					Warriors.buildCache.get(this.getUniqueId()) : Warriors.buildCache.put(this.getUniqueId(), new HashMap<ClassType, Build[]>());
+			builds.replace(type, this.sql.getPlayerBuilds(this.getUniqueId(), type).getArray());
 		}
 	}
 
