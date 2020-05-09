@@ -1,5 +1,6 @@
 package me.rey.core.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -12,6 +13,9 @@ public class BuildHandler implements Listener {
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
+
+		e.getPlayer().setWalkSpeed(0.2f);
+
 		Warriors.userCache.remove(e.getPlayer());
 		if(new User(e.getPlayer()).getWearingClass() != null) {
 			User user = new User(e.getPlayer());

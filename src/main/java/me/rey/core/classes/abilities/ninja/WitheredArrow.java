@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.bandit;
+package me.rey.core.classes.abilities.ninja;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,12 +19,12 @@ import me.rey.core.events.customevents.damage.CustomDamageEvent;
 import me.rey.core.events.customevents.damage.DamageEvent;
 import me.rey.core.players.User;
 
-public class InfectiousArrow extends Ability implements IBowPreparable {
+public class WitheredArrow extends Ability implements IBowPreparable {
 	
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
 	
-	public InfectiousArrow() {
-		super(706, "Infectious Arrow", ClassType.BLACK, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
+	public WitheredArrow() {
+		super(706, "Withered Arrow", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
 				"Prepare yourself to deal a Wither",
 				"effect on your next target with a",
 				"duration of <variable>3+(0.5*l)</variable> (+0.5) Seconds.", "",

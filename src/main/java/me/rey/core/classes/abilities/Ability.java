@@ -649,6 +649,8 @@ public abstract class Ability extends Cooldown implements Listener {
 
 		// RIGHT CLICK ABILITIES
 
+		if(e.isCancelled() || e.getRightClicked() instanceof Player) return;
+
 		Material item = e.getPlayer().getItemInHand() == null ? Material.AIR : e.getPlayer().getItemInHand().getType();
 
 		ToolType match = match(item);
