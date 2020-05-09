@@ -1,6 +1,7 @@
 package me.rey.core.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,11 +39,11 @@ public class ClassHandler extends BukkitRunnable {
 				
 				if(!Warriors.userCache.get(p).equals(user.getWearingClass())) {
 					
-					Warriors.userCache.remove(p);
 					Warriors.userCache.replace(p, user.getWearingClass());
 					user.resetEffects();
 					user.sendMessageWithPrefix("Class", "You took off your armor set.");
 					user.sendMessageWithPrefix("Class", "You equipped &e" + user.getWearingClass().getName() + "&7.");
+					p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
 					user.sendBuildEquippedMessage(user.getWearingClass());
 					continue;
 				}
@@ -55,6 +56,7 @@ public class ClassHandler extends BukkitRunnable {
 				Warriors.userCache.put(p, user.getWearingClass());
 				user.resetEffects();
 				user.sendMessageWithPrefix("Selector", "You equipped &e" + user.getWearingClass().getName() + "&7.");
+				p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
 				user.sendBuildEquippedMessage(user.getWearingClass());
 				
 			}
