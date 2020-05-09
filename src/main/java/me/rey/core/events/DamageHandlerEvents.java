@@ -31,6 +31,7 @@ import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Text;
+import me.rey.core.utils.UtilVelocity;
 
 public class DamageHandlerEvents implements Listener {
 
@@ -113,7 +114,7 @@ public class DamageHandlerEvents implements Listener {
 			if(hitType == HitType.MELEE) {
 				e.setCancelled(true);
 				((LivingEntity) e.getEntity()).setHealth(Math.max(0, Math.min(((LivingEntity) e.getEntity()).getHealth() - e.getDamage(),
-						((LivingEntity) e.getEntity()).getMaxHealth() )));
+						((LivingEntity) e.getEntity()).getMaxHealth())));
 			}
 			
 			/*
@@ -204,10 +205,11 @@ public class DamageHandlerEvents implements Listener {
 		damage = Math.log10(damage);
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
-		trajectory.multiply(0.6D * damage);
+		trajectory.multiply(0.05D / (13 / damage));
 		trajectory.setY(Math.abs(trajectory.getY()));
 		
-		entity.setVelocity(trajectory.multiply(0.2D + trajectory.length() * 0.8D));
+		UtilVelocity.velocity(entity,
+		          trajectory, 0.2D + trajectory.length() * 0.8D, false, 0.0D, Math.abs(0.2D * damage), 0.4D + 0.04D * damage, true);
 	}
 	
 //    @EventHandler
