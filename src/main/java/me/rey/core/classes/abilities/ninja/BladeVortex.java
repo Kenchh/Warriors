@@ -90,7 +90,7 @@ public class BladeVortex extends Ability {
                 double distance = p.getLocation().distance(e.getLocation());
                 if (inCircle(p, e)) {
                     LivingEntity le = (LivingEntity) e;
-                    le.damage(5 + level);
+                    le.damage(5 + level, p);
                     le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * (1.0 + 0.5 * level)), 1));
                     if (distance < 2.6) {
                         pushAway(p, e);
