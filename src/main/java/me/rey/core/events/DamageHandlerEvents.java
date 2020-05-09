@@ -120,15 +120,8 @@ public class DamageHandlerEvents implements Listener {
 			/*
 			 * DISPLAY SOUNDS
 			 */
-			if(((LivingEntity) e.getEntity() instanceof Player && new User((Player) e.getEntity()).getWearingClass() != null)){
-				Player p = (Player) e.getEntity();
-				ClassType type = new User(p).getWearingClass();
-				p.getWorld().playSound(p.getLocation(), type.getSound().getSound(), 1.0f, type.getSound().getPitch());
-			} else {
-				((LivingEntity) e.getEntity()).getWorld().playSound(((LivingEntity) e.getEntity()).getLocation(), Sound.HURT_FLESH, 1.0f, 1.0f);
-			}
+			this.playEntitySound((LivingEntity) e.getEntity());
 			
-			((LivingEntity) e.getEntity()).playEffect(EntityEffect.HURT);
 			
 			/*
 			 * KNOCKBACK
@@ -210,6 +203,52 @@ public class DamageHandlerEvents implements Listener {
 		
 		UtilVelocity.velocity(entity,
 		          trajectory, 0.2D + trajectory.length() * 0.8D, false, 0.0D, Math.abs(0.2D * damage), 0.4D + 0.04D * damage, true);
+	}
+	
+	private void playEntitySound(LivingEntity damagee) {
+	    Sound sound;
+	    float pitch = 0.8F + (float)(0.4000000059604645D * Math.random());
+	    float volume = 1.5F + (float)(0.5D * Math.random());
+	    
+	    switch(damagee.getType()) {
+	    case BAT:sound = Sound.BAT_HURT; break;
+	    case BLAZE: sound = Sound.BLAZE_HIT; break;
+	    case CAVE_SPIDER: sound = Sound.SPIDER_IDLE; break;
+	    case CHICKEN: sound = Sound.CHICKEN_HURT; break;
+	    case COW: sound = Sound.COW_HURT; break;
+	    case CREEPER: sound = Sound.CREEPER_HISS; break;
+	    case ENDER_DRAGON: sound = Sound.ENDERDRAGON_GROWL; break;
+	    case ENDERMAN: sound = Sound.ENDERMAN_HIT; break;
+	    case GHAST: sound = Sound.GHAST_SCREAM; break;
+	    case GIANT: sound = Sound.ZOMBIE_HURT; break;
+	    case IRON_GOLEM: sound = Sound.IRONGOLEM_HIT; break;
+	    case MAGMA_CUBE: sound = Sound.MAGMACUBE_JUMP; break;
+	    case MUSHROOM_COW: sound = Sound.COW_HURT; break;
+	    case OCELOT: sound = Sound.CAT_MEOW; break;
+	    case PIG: sound = Sound.PIG_IDLE; break;
+	    case PIG_ZOMBIE: sound = Sound.ZOMBIE_HURT; break;
+	    case SHEEP: sound = Sound.SHEEP_IDLE; break;
+	    case SILVERFISH: sound = Sound.SILVERFISH_HIT; break;
+	    case SKELETON: sound = Sound.SKELETON_HURT; break;
+	    case SLIME: sound = Sound.SLIME_ATTACK; break;
+	    case SNOWMAN: sound = Sound.STEP_SNOW; break;
+	    case SPIDER: sound = Sound.SPIDER_IDLE; break;
+	    case WITHER: sound = Sound.WITHER_HURT; break;
+	    case WOLF: sound = Sound.WOLF_HURT; break;
+	    case ZOMBIE: sound = Sound.ZOMBIE_HURT; break;
+	    default:
+	    	sound = Sound.HURT_FLESH;
+	    	if(damagee instanceof Player && new User((Player) damagee).getWearingClass() != null){
+				ClassType type = new User((Player) damagee).getWearingClass();
+				sound = type.getSound().getSound();
+				pitch = type.getSound().getPitch();
+				volume = 1.0f;
+			}
+	    	break;
+	    }
+	    
+	    damagee.getWorld().playSound(damagee.getLocation(), sound, volume, pitch);
+	    damagee.playEffect(EntityEffect.HURT);
 	}
 	
 //    @EventHandler
