@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
+import me.kenchh.main.Eclipse;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -75,7 +76,9 @@ public class Leap extends Ability {
 		}
 		
 		pLoc.getWorld().playSound(pLoc, Sound.ENDERDRAGON_WINGS, 1F, 2F);
-		
+
+		Eclipse.getInstance().api.setCheckMode(p, "Leap", 2);
+
 		if(blockBehind != null && blockBehind.getType().isSolid()) {
 			if(this.wallkickPlayers.contains(p.getUniqueId())) return false;
 			sendUsedMessageToPlayer(p, this.wallkick);
