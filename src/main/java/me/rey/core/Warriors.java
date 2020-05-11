@@ -21,6 +21,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.bandit.Blink;
 import me.rey.core.classes.abilities.bandit.Leap;
+import me.rey.core.classes.abilities.bandit.RapidSuccession;
 import me.rey.core.classes.abilities.bandit.Recall;
 import me.rey.core.classes.abilities.knight.HoldPosition;
 import me.rey.core.classes.abilities.knight.Immunity;
@@ -222,6 +223,7 @@ public class Warriors extends JavaPlugin {
 				new WitheredArrow(),
 				new Leap(),
 				new Recall(),
+				new RapidSuccession(),
 				new SmokeBomb(),
 				
 				//NINJA

@@ -2,6 +2,7 @@ package me.rey.core.classes.conditions;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
@@ -13,7 +14,7 @@ import me.rey.core.players.User;
 public class Lightweight extends ClassCondition {
 
 	public Lightweight() {
-		super(ClassType.BLACK);
+		super(ClassType.LEATHER);
 	}
 
 	@Override
@@ -21,7 +22,7 @@ public class Lightweight extends ClassCondition {
 		// IGNORE
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.LOWEST)
 	public void onCustomKB(CustomKnockbackEvent e) {
 		if(!(e.getDamager() instanceof Player)) return;
 		if(new User((Player) e.getDamager()).getWearingClass() != this.getClassType()) return;
