@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +16,6 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
-import me.rey.core.classes.abilities.IDamageTrigger;
 import me.rey.core.events.customevents.damage.DamageEvent;
 import me.rey.core.players.User;
 
@@ -40,6 +38,8 @@ public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEnt
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
 		
+		this.setSkipCooldownCheck(true);
+		
 		/*
 		 * DAMAGE CONDITIONS
 		 */
@@ -58,14 +58,18 @@ public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEnt
 		/*
 		 * TOGGLING IT ON
 		 */
-		this.sendUsedMessageToPlayer(p, this.getName());
-		online.add(p);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				online.remove(p);
-			}
-		}.runTaskLater(Warriors.getInstance(), (int) (20 * (2 + level)));
+		if(!this.hasCooldown(p)) {
+			this.sendUsedMessageToPlayer(p, this.getName());
+			online.add(p);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					online.remove(p);
+				}
+			}.runTaskLater(Warriors.getInstance(), (int) (20 * (2 + level)));
+		} else {
+			this.sendCooldownMessage(p);
+		}
 		return true;
 	}
 

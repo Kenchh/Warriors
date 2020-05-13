@@ -74,7 +74,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private String[] description;
 	private int maxLevel, tempDefaultLevel, tokenCost;
 	private long id;
-	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
+	private boolean skipCooldownCheck, cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
 	private double cooldown, resetCooldown, energyCost;
 	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
@@ -91,6 +91,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.whileSlowed = true;
 		this.inAir = true;
 		this.cooldownCanceled = false;
+		this.skipCooldownCheck = false;
 		this.id = id;
 		this.tokenCost = tokenCost;
 		this.energyCost = 0.00;
@@ -152,13 +153,13 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 		
 		// WHILE COOLDOWN
-		if(this.hasCooldown(p) && !this.ignoresCooldown && !this.cooldownCanceled) {
+		if(this.hasCooldown(p) && !skipCooldownCheck && !this.ignoresCooldown && !this.cooldownCanceled) {
 			event = new AbilityFailEvent(AbilityFail.COOLDOWN, p, this, level);
 			Bukkit.getServer().getPluginManager().callEvent(event);
 			
 			if(!event.isCancelled()) {
 				if(!event.isMessageCancelled() && messages)
-						user.sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 for &a" + this.getPlayerCooldown(p) + " &7seconds.");
+						sendCooldownMessage(p);
 				
 				return false;
 			}
@@ -336,6 +337,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		return this.abilityType;
 	}
 	
+	
 	public int getMaxLevel() {
 		return this.maxLevel;
 	}
@@ -377,12 +379,20 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.cooldownCanceled = canceled;
 	}
 	
+	public void setSkipCooldownCheck(boolean canceled) {
+		this.skipCooldownCheck = canceled;
+	}
+	
 	public void setEnergyCost(double energy) {
 		this.energyCost = energy;
 	}
 	
 	public Set<UUID> getEnabledPlayers(){
 		return this.playersEnabled;
+	}
+	
+	protected void sendCooldownMessage(Player p) {
+		new User(p).sendMessageWithPrefix(this.getName(), "You cannot use &a" + this.getName() + "&7 for &a" + this.getPlayerCooldown(p) + " &7seconds.");
 	}
 	
 	public void toggle(Player player, State state) {
