@@ -25,9 +25,9 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.12" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.6.4" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: me.kenchh:eclipse:1.0-SNAPSHOT">
+      <library name="Maven: me.kenchh:eclipse:1.2">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/Eclipse-1.0-SNAPSHOT.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/Eclipse-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
