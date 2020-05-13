@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -69,6 +70,7 @@ public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEnt
 			}.runTaskLater(Warriors.getInstance(), (int) (20 * (2 + level)));
 		} else {
 			this.sendCooldownMessage(p);
+			this.setCooldownCanceled(true);
 		}
 		return true;
 	}
