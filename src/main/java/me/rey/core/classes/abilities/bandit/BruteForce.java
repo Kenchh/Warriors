@@ -16,11 +16,12 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant.IDroppable;
+import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
 import me.rey.core.classes.abilities.IDamageTrigger;
 import me.rey.core.events.customevents.damage.DamageEvent;
 import me.rey.core.players.User;
 
-public class BruteForce extends Ability implements IDroppable, IDamageTrigger {
+public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEntity {
 
 	private static Set<Player> online = new HashSet<>();
 	
@@ -43,13 +44,13 @@ public class BruteForce extends Ability implements IDroppable, IDamageTrigger {
 		 * DAMAGE CONDITIONS
 		 */
 		if(conditions != null && conditions.length == 1 && conditions[0] != null && conditions[0] instanceof DamageEvent) {
+			this.setCooldownCanceled(true);
 			if(!online.contains(p)) return false;
 			
 			((DamageEvent) conditions[0]).addMult(60);
 			
 			LivingEntity ent = ((DamageEvent) conditions[0]).getDamagee();
 			ent.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, (int) Math.round(20 * (0.5 + (0.5 * level))), 0, false, false));
-			this.setCooldownCanceled(true);
 			return true;
 		}
 	
