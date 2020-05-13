@@ -74,6 +74,10 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 		event.setDamage(Math.max(0, event.getDamage() + damage));
 	}
 	
+	public void addMult(double mult) {
+		event.setDamage(event.getDamage() * (1.00 + (mult / 100.00)));
+	}
+	
 	public double getKnockbackMult() {
 		return knockbackMult;
 	}

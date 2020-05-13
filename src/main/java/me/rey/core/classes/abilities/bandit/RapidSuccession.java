@@ -57,7 +57,7 @@ public class RapidSuccession extends Ability implements IDamageTrigger {
 			addToHits(p, found, INCREASE);
 		}
 		
-		return false;
+		return true;
 	}
 	
 	private void addToHits(Player p, UUID uuid, double dmg) {

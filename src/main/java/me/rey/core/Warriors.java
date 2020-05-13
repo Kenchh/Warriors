@@ -20,6 +20,7 @@ import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.bandit.Blink;
+import me.rey.core.classes.abilities.bandit.BruteForce;
 import me.rey.core.classes.abilities.bandit.Leap;
 import me.rey.core.classes.abilities.bandit.RapidSuccession;
 import me.rey.core.classes.abilities.bandit.Recall;
@@ -218,6 +219,7 @@ public class Warriors extends JavaPlugin {
 				//BANDIT
 				new BlindingArrow(),
 				new Blink(),
+				new BruteForce(),
 				new Disarm(),
 				new HiddenAssault(),
 				new WitheredArrow(),

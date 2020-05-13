@@ -2,6 +2,7 @@ package me.rey.core.classes.conditions;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
@@ -19,7 +20,7 @@ public class AssasinKB extends ClassCondition {
 		// IGNORE
 	}
 
-	@EventHandler
+	@EventHandler (priority = EventPriority.LOWEST)
 	public void onCustomKB(CustomKnockbackEvent e) {
 		if(!(e.getDamager() instanceof Player)) return;
 		if(new User((Player) e.getDamager()).getWearingClass() != this.getClassType()) return;
