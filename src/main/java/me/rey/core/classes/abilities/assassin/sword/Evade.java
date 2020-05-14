@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja.sword;
+package me.rey.core.classes.abilities.assassin.sword;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class Evade extends Ability implements IConstant {
     public HashMap<UUID, Integer> invincible = new HashMap<UUID, Integer>();
 
     public Evade() {
-        super(202, "Evade", ClassType.LEATHER, AbilityType.SWORD, 2, 1, 8, Arrays.asList(
+        super(2, "Evade", ClassType.LEATHER, AbilityType.SWORD, 2, 1, 8, Arrays.asList(
                 "Teleports you behind your attacker, and gives",
                 "invincibility frames for a very short amount of time.",
                 "Frames are canceled immediately on an attack.",

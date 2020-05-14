@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja.sword;
+package me.rey.core.classes.abilities.assassin.sword;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class BladeVortex extends Ability {
     HashMap<UUID, Integer> vortexingS = new HashMap<UUID, Integer>();
 
     public BladeVortex() {
-        super(201, "Blade Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 10.5, Arrays.asList(
+        super(1, "Blade Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 10.5, Arrays.asList(
                 "Create a blade vortex, pulling players into you",
                 "and casting players near you afar.",
                 "",

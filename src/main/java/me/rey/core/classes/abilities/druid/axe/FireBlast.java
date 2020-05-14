@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.wizard.axe;
+package me.rey.core.classes.abilities.druid.axe;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class FireBlast extends Ability {
 	private HashMap<UUID, Player> fireballs;
 	
 	public FireBlast() {
-		super(311, "Fire Blast", ClassType.GOLD, AbilityType.AXE, 1, 5, 12.00, Arrays.asList(
+		super(211, "Fire Blast", ClassType.GOLD, AbilityType.AXE, 1, 5, 12.00, Arrays.asList(
 				"Launch a fireball which explodes on impact",
 				"dealing large knockback to enemies within",
 				"<variable>0.5*l+6</variable> (+0.5) Blocks range. Also ignites enemies",

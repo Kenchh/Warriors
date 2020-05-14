@@ -29,7 +29,7 @@ public class Leap extends Ability {
 	private ArrayList<UUID> wallkickPlayers;
 	
 	public Leap() {
-		super(12, "Leap", ClassType.BLACK, AbilityType.AXE, 1, 4, 3.00, Arrays.asList(
+		super(112, "Leap", ClassType.BLACK, AbilityType.AXE, 1, 4, 3.00, Arrays.asList(
 				"Take a great leap forwards",
 				"",
 				"Wall Kick by using Leap with your",

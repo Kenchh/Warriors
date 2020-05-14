@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja.bow;
+package me.rey.core.classes.abilities.assassin.bow;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
@@ -16,17 +18,16 @@ import me.rey.core.classes.abilities.IBowPreparable;
 import me.rey.core.events.customevents.damage.CustomDamageEvent;
 import me.rey.core.events.customevents.damage.DamageEvent;
 import me.rey.core.players.User;
-import me.rey.core.utils.EffectUtils;
 
-public class Disarm extends Ability implements IBowPreparable {
+public class BlindingArrow extends Ability implements IBowPreparable {
 	
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
 	
-	public Disarm() {
-		super(222, "Disarm", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
-				"Prepare yourself to deal a Silencing",
-				"effect on your next target with a",
-				"duration of <variable>3.0+(0.5*l)</variable> (+0.5) Seconds.", "",
+	public BlindingArrow() {
+		super(21, "Blinding Arrow", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
+				"Prepare yourself to deal a Blindness",
+				"and Slowness 2 effect on your next",
+				"target with a duration of <variable>2.5+(0.5*l)</variable> (+0.5) Seconds.", "",
 				"Recharge: 7 Seconds"
 				));
 	}
@@ -40,11 +41,13 @@ public class Disarm extends Ability implements IBowPreparable {
 		}
 		
 		if(conditions.length == 1 && conditions[0] instanceof DamageEvent) {
-			double seconds = 3.0 + (0.5 * level);
+			double seconds = 2.5 + (0.5 * level);
 			LivingEntity hit = ((CustomDamageEvent) conditions[0]).getDamagee();
-			if(!(hit instanceof Player)) return false;
-		
-			EffectUtils.silence(((Player) hit).getUniqueId(), seconds);
+			
+			hit.removePotionEffect(PotionEffectType.BLINDNESS);
+			hit.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) Math.round(seconds * 20), 0, false, false));
+			hit.removePotionEffect(PotionEffectType.SLOW);
+			hit.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) Math.round(seconds * 20), 1, false, false));
 		}
 		
 		return true;

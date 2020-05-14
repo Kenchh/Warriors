@@ -26,7 +26,7 @@ public class Immunity extends Ability {
 	private ArrayList<UUID> players;
 
 	public Immunity() {
-		super(101, "Immunity", ClassType.IRON, AbilityType.SWORD, 2, 3, 0.00, Arrays.asList(
+		super(301, "Immunity", ClassType.IRON, AbilityType.SWORD, 2, 3, 0.00, Arrays.asList(
 				"Gain an immunity period where you",
 				"negate all incoming damage. This",
 				"effect lasts for <variable>5+l</variable> (+1) seconds.",

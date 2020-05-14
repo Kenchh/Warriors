@@ -23,7 +23,7 @@ public class RapidSuccession extends Ability implements IDamageTrigger {
 	private final double EXPIRE = 3.00;
 	
 	public RapidSuccession() {
-		super(42, "Rapid Succession", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 2, 0.00, Arrays.asList(
+		super(142, "Rapid Succession", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 2, 0.00, Arrays.asList(
 				"Your damage gets boosted by",
 				"a factor of 1 every time you",
 				"hit your enemy.", "",

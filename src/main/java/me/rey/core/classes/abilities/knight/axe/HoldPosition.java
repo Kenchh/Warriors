@@ -24,7 +24,7 @@ public class HoldPosition extends Ability {
 	private ArrayList<UUID> players;
 	
 	public HoldPosition() {
-		super(111, "Hold Position", ClassType.IRON, AbilityType.AXE, 1, 5, 18, Arrays.asList(
+		super(311, "Hold Position", ClassType.IRON, AbilityType.AXE, 1, 5, 18, Arrays.asList(
 				"Hold your position, gaining",
 				"Protection 4, Slow 4 and no",
 				"knockback for <variable>l+3</variable> (+1) seconds.",

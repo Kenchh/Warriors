@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.wizard.passive_b;
+package me.rey.core.classes.abilities.druid.passive_b;
 
 import java.util.Arrays;
 
@@ -16,7 +16,7 @@ import me.rey.core.pvp.ToolType;
 public class NullBlade extends Ability implements IPlayerDamagedEntity {
 
 	public NullBlade() {
-		super(342, "Null Blade", ClassType.GOLD, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
+		super(242, "Null Blade", ClassType.GOLD, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
 				"Your attacks suck the life from",
 				"opponents, restoring <variable>2*l+4</variable> (+2) energy."
 				));

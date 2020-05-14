@@ -30,7 +30,7 @@ public class Recall extends Ability implements IDroppable {
 	private final double recallSeconds = 4.0;
 	
 	public Recall() {
-		super(32, "Recall", ClassType.BLACK, AbilityType.PASSIVE_A, 1, 3, 25, Arrays.asList(
+		super(132, "Recall", ClassType.BLACK, AbilityType.PASSIVE_A, 1, 3, 25, Arrays.asList(
 				"Travel back in time to the",
 				"last 4 seconds while instantly",
 				"healing for <variable>6+l</variable> (+1) health points.", "",

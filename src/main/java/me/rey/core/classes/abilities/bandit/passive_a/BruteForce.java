@@ -24,7 +24,7 @@ public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEnt
 	private static Set<Player> online = new HashSet<>();
 	
 	public BruteForce() {
-		super(31, "Brute Force", ClassType.BLACK, AbilityType.PASSIVE_A, 1, 3, 25.00, Arrays.asList(
+		super(131, "Brute Force", ClassType.BLACK, AbilityType.PASSIVE_A, 1, 3, 25.00, Arrays.asList(
 				"You will now deal knockback to",
 				"your enemies and your hits will",
 				"deal 60% more damage for the next",

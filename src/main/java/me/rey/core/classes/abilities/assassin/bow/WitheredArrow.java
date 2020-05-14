@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja.bow;
+package me.rey.core.classes.abilities.assassin.bow;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ public class WitheredArrow extends Ability implements IBowPreparable {
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
 	
 	public WitheredArrow() {
-		super(223, "Withered Arrow", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
+		super(23, "Withered Arrow", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
 				"Prepare yourself to deal a Wither",
 				"effect on your next target with a",
 				"duration of <variable>3+(0.5*l)</variable> (+0.5) Seconds.", "",

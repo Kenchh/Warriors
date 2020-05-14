@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.wizard.passive_b;
+package me.rey.core.classes.abilities.druid.passive_b;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public class MagmaBlade extends Ability implements IPlayerDamagedEntity {
 	private double damageToFire = 1;
 
 	public MagmaBlade() {
-		super(341, "Magma Blade", ClassType.GOLD, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
+		super(241, "Magma Blade", ClassType.GOLD, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
 				"Your sword deals an additional",
 				"<variable>1</variable> damage to burning opponents,",
 				"but also extinguishes them.", "",
