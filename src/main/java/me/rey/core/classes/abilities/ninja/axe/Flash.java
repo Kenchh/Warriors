@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.ninja.axe;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class Flash extends Ability implements IConstant {
     private static final String CHARGED = "●";
 
     public Flash() {
-        super(3, "Flash", ClassType.LEATHER, AbilityType.AXE, 1, 4, 0, Arrays.asList(
+        super(212, "Flash", ClassType.LEATHER, AbilityType.AXE, 1, 4, 0, Arrays.asList(
                 "Flash forwards 6 Blocks.",
                 "Store up to <variable>1 + l</variable> Flash Charges.",
                 "Cannot be used while Slowed."

@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.ninja.passive_a;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public class SmokeBomb extends Ability implements IDroppable {
 	private final double particleInterval = 0.7;
 
 	public SmokeBomb() {
-		super(704, "Smoke Bomb", ClassType.LEATHER, AbilityType.PASSIVE_A, 1, 3, 25, Arrays.asList(
+		super(232, "Smoke Bomb", ClassType.LEATHER, AbilityType.PASSIVE_A, 1, 3, 25, Arrays.asList(
 				"Gain <variable>6.5+(0.5*l)</variable> (+0.5) seconds of",
 				"Invisibility. While in Smoke Bomb, you",
 				"leave a trail of smoke behind you.", "",

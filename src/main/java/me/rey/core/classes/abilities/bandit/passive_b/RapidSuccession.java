@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.bandit;
+package me.rey.core.classes.abilities.bandit.passive_b;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class RapidSuccession extends Ability implements IDamageTrigger {
 	private final double EXPIRE = 3.00;
 	
 	public RapidSuccession() {
-		super(710, "Rapid Succession", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 2, 0.00, Arrays.asList(
+		super(42, "Rapid Succession", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 2, 0.00, Arrays.asList(
 				"Your damage gets boosted by",
 				"a factor of 1 every time you",
 				"hit your enemy.", "",

@@ -8,7 +8,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import me.rey.core.classes.abilities.ninja.*;
+import me.rey.core.classes.abilities.ninja.axe.Dash;
+import me.rey.core.classes.abilities.ninja.axe.Flash;
+import me.rey.core.classes.abilities.ninja.bow.BlindingArrow;
+import me.rey.core.classes.abilities.ninja.bow.Disarm;
+import me.rey.core.classes.abilities.ninja.bow.WitheredArrow;
+import me.rey.core.classes.abilities.ninja.passive_a.HiddenAssault;
+import me.rey.core.classes.abilities.ninja.passive_a.SmokeBomb;
+import me.rey.core.classes.abilities.ninja.sword.BladeVortex;
+import me.rey.core.classes.abilities.ninja.sword.Evade;
+import me.rey.core.classes.abilities.wizard.passive_a.Void;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,19 +28,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
-import me.rey.core.classes.abilities.bandit.Blink;
-import me.rey.core.classes.abilities.bandit.BruteForce;
-import me.rey.core.classes.abilities.bandit.Leap;
-import me.rey.core.classes.abilities.bandit.RapidSuccession;
-import me.rey.core.classes.abilities.bandit.Recall;
-import me.rey.core.classes.abilities.knight.HoldPosition;
-import me.rey.core.classes.abilities.knight.Immunity;
-import me.rey.core.classes.abilities.bandit.Backstab;
-import me.rey.core.classes.abilities.wizard.EnergyPool;
-import me.rey.core.classes.abilities.wizard.EnergyRegeneration;
-import me.rey.core.classes.abilities.wizard.FireBlast;
-import me.rey.core.classes.abilities.wizard.MagmaBlade;
-import me.rey.core.classes.abilities.wizard.NullBlade;
+import me.rey.core.classes.abilities.bandit.axe.Blink;
+import me.rey.core.classes.abilities.bandit.passive_a.BruteForce;
+import me.rey.core.classes.abilities.bandit.axe.Leap;
+import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
+import me.rey.core.classes.abilities.bandit.passive_a.Recall;
+import me.rey.core.classes.abilities.knight.axe.HoldPosition;
+import me.rey.core.classes.abilities.knight.sword.Immunity;
+import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
+import me.rey.core.classes.abilities.wizard.passive_c.EnergyPool;
+import me.rey.core.classes.abilities.wizard.passive_c.EnergyRegeneration;
+import me.rey.core.classes.abilities.wizard.axe.FireBlast;
+import me.rey.core.classes.abilities.wizard.passive_b.MagmaBlade;
+import me.rey.core.classes.abilities.wizard.passive_b.NullBlade;
 import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.classes.conditions.Lightweight;
@@ -241,7 +250,7 @@ public class Warriors extends JavaPlugin {
 				new FireBlast(),
 				new MagmaBlade(),
 				new NullBlade(),
-				new me.rey.core.classes.abilities.wizard.Void(),
+				new Void(),
 				
 				//MAKRSMAN
 				

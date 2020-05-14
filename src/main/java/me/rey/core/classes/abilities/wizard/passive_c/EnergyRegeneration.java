@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.wizard;
+package me.rey.core.classes.abilities.wizard.passive_c;
 
 import java.util.Arrays;
 
@@ -18,7 +18,7 @@ public class EnergyRegeneration extends Ability implements IConstant, IEnergyEdi
 	EnergyHandler energyHandler = new EnergyHandler();
 
 	public EnergyRegeneration() {
-		super(104, "Energy Regeneration", ClassType.GOLD, AbilityType.PASSIVE_C, 1, 5, 0.00, Arrays.asList(
+		super(352, "Energy Regeneration", ClassType.GOLD, AbilityType.PASSIVE_C, 1, 5, 0.00, Arrays.asList(
 				"Your energy now recovers with",
 				"a <variable>20*l</variable>% (+20%) speed bonus.", "",
 				"Max of 100% speed bonus."

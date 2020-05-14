@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.bandit;
+package me.rey.core.classes.abilities.bandit.passive_b;
 
 import java.util.Arrays;
 
@@ -17,7 +17,7 @@ import me.rey.core.players.User;
 public class Backstab extends Ability implements IPlayerDamagedEntity {
 
 	public Backstab() {
-		super(1, "Backstab", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
+		super(41, "Backstab", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
 				"Attacks from behind opponents",
 				"deal <variable>0.75*l+1.5</variable> (+0.75) additional damage."
 				));

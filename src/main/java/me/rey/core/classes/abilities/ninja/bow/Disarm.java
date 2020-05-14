@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.ninja.bow;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ public class Disarm extends Ability implements IBowPreparable {
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
 	
 	public Disarm() {
-		super(708, "Disarm", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
+		super(222, "Disarm", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
 				"Prepare yourself to deal a Silencing",
 				"effect on your next target with a",
 				"duration of <variable>3.0+(0.5*l)</variable> (+0.5) Seconds.", "",

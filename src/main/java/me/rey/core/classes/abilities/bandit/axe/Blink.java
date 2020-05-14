@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.bandit;
+package me.rey.core.classes.abilities.bandit.axe;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class Blink extends Ability {
 	private final String deblink = "De-Blink";
 
 	public Blink() {
-		super(701, "Blink", ClassType.BLACK, AbilityType.AXE, 1, 4, 12, Arrays.asList(
+		super(11, "Blink", ClassType.BLACK, AbilityType.AXE, 1, 4, 12, Arrays.asList(
 				"Instantly teleport forwards <variable>3*l+9</variable> (+3) Blocks.",
 				"",
 				"Using again within <variable>4</variable> seconds De-Blinks,",

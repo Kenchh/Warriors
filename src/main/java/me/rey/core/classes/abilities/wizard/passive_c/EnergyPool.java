@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.wizard;
+package me.rey.core.classes.abilities.wizard.passive_c;
 
 import java.util.Arrays;
 
@@ -18,7 +18,7 @@ public class EnergyPool extends Ability implements IConstant, IEnergyEditor {
 	EnergyHandler energyHandler = new EnergyHandler();
 	
 	public EnergyPool() {
-		super(105, "Energy Pool", ClassType.GOLD, AbilityType.PASSIVE_C, 1, 3, 0.00, Arrays.asList(
+		super(351, "Energy Pool", ClassType.GOLD, AbilityType.PASSIVE_C, 1, 3, 0.00, Arrays.asList(
 				"Your maximum energy capacity",
 				"is now increased by <variable>27*l</variable> (+27)."
 				));

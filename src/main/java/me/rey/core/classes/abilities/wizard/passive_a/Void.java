@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.wizard;
+package me.rey.core.classes.abilities.wizard.passive_a;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ public class Void extends Ability implements IConstant, ITogglable, IDamageTrigg
 	private final double energyPerSecond = 6;
 	
 	public Void() {
-		super(106, "Void", ClassType.GOLD, AbilityType.PASSIVE_A, 1, 3, 0.00, Arrays.asList(
+		super(331, "Void", ClassType.GOLD, AbilityType.PASSIVE_A, 1, 3, 0.00, Arrays.asList(
 				"You enter a state of void where",
 				"all incoming damage is now reduced",
 				"by <variable>1+l</variable> (+1).", "",

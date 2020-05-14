@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.ninja;
+package me.rey.core.classes.abilities.ninja.axe;
 
 import java.util.Arrays;
 
@@ -16,7 +16,7 @@ import me.rey.core.players.User;
 public class Dash extends Ability {
 
 	public Dash() {
-		super(2, "Dash", ClassType.LEATHER, AbilityType.AXE, 1, 4, 10.00, Arrays.asList(
+		super(211, "Dash", ClassType.LEATHER, AbilityType.AXE, 1, 4, 10.00, Arrays.asList(
 				"Dash forward at extreme speed,",
 				"moving up to 20 blocks.",
 				"",
