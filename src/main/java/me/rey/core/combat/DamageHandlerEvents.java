@@ -1,9 +1,8 @@
 package me.rey.core.combat;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
@@ -86,10 +85,8 @@ public class DamageHandlerEvents implements Listener {
 		double rawDamage = this.getDamage(hold, hitType);
 		e.setDamage(rawDamage);
 		
-		// CALCULATE DAMAGE ON ARMOR && EFECTS
-		this.calcArmor(e);
-		this.calcEffects(e);
-		
+		// CALCULATE EFECTS
+		this.calcEffects(e);		
 		
 		/*
 		 * CALL DAMAGE EVENT
@@ -104,7 +101,7 @@ public class DamageHandlerEvents implements Listener {
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 			
-			playerDamager.setLevel((int) Math.round(e.getDamage()));
+			playerDamager.setLevel((int) Math.round(rawDamage));
 			
 			// ADDING TO THEIR HIT CACHE IF THEY'RE A PLAYER
 			if(damagee instanceof Player && !damageEvent.isCancelled())
@@ -124,7 +121,8 @@ public class DamageHandlerEvents implements Listener {
 				e.setCancelled(true);
 		}
 		
-		
+		// CALCULATING FINAL DAMAGE ON ARMOR
+		this.calcArmor(e);
 		
 		if(!e.isCancelled()) {
 			
@@ -223,10 +221,6 @@ public class DamageHandlerEvents implements Listener {
 				PotionEffectType.DAMAGE_RESISTANCE, -1.00 // RESISTANCE
 				);
 		
-		
-		// REMOVING DAMAGE MODIFIER TO EDIT IT
-		String noEdits = Double.toString(e.getDamage());
-		
 		/*
 		 * DAMAGER POTION EFFECTS
 		 */
@@ -234,12 +228,12 @@ public class DamageHandlerEvents implements Listener {
 			LivingEntity ent = (LivingEntity) ((EntityDamageByEntityEvent) e).getDamager();
 			
 			if(!ent.getActivePotionEffects().isEmpty()) {
-				Set<PotionEffectType> types = new HashSet<>();
-				ent.getActivePotionEffects().forEach((effect) -> types.add(effect.getType()));
+				Map<PotionEffectType, Integer> types = new HashMap<>();
+				ent.getActivePotionEffects().forEach((effect) -> types.put(effect.getType(), effect.getAmplifier()));
 				
 				damager.forEach((effect, dmg) -> {
-					if(types.contains(effect))
-						e.setDamage(e.getDamage() + dmg);
+					if(types.containsKey(effect))
+						e.setDamage(e.getDamage() + (dmg * (types.get(effect) + 1)));
 				});
 			}
 		}
@@ -250,12 +244,12 @@ public class DamageHandlerEvents implements Listener {
 		LivingEntity ent = (LivingEntity) e.getEntity();
 		
 		if(!ent.getActivePotionEffects().isEmpty()) {
-			Set<PotionEffectType> types = new HashSet<>();
-			ent.getActivePotionEffects().forEach((effect) -> types.add(effect.getType()));
+			Map<PotionEffectType, Integer> types = new HashMap<>();
+			ent.getActivePotionEffects().forEach((effect) -> types.put(effect.getType(), effect.getAmplifier()));
 			
 			damagee.forEach((effect, dmg) -> {
-				if(types.contains(effect))
-					e.setDamage(e.getDamage() + dmg);
+				if(types.containsKey(effect))
+					e.setDamage(e.getDamage() + (dmg * (types.get(effect) + 1)));
 			});
 		}
 	}
