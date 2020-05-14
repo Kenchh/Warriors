@@ -18,6 +18,7 @@ import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
 import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
 import me.rey.core.classes.abilities.assassin.sword.Evade;
 import me.rey.core.classes.abilities.druid.passive_a.Void;
+import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -251,7 +252,7 @@ public class Warriors extends JavaPlugin {
 				new MagmaBlade(),
 				new NullBlade(),
 				new Void(),
-				
+				new Tornado(),
 				//MAKRSMAN
 				
 				//KNIGHT

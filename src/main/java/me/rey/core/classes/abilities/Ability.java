@@ -719,7 +719,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	@EventHandler
 	public void onActionBarCooldown(UpdateEvent e) {
 		// Checked for only SWORD & AXE abilities
-		if(!this.getAbilityType().equals(AbilityType.SWORD) && !this.getAbilityType().equals(AbilityType.AXE)) return;
+		if(!this.getAbilityType().equals(AbilityType.SWORD) && !this.getAbilityType().equals(AbilityType.AXE) && !this.getAbilityType().equals(AbilityType.SPADE)) return;
 		
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			User u = new User(p);

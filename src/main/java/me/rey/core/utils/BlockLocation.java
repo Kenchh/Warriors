@@ -152,6 +152,40 @@ public class BlockLocation {
         return xzCords;
     }
 
+    public static double[] getXZCordsFromDegree(Location loc, double radius, double degree) {
+        double radian = Math.toRadians(degree);
+
+        double xMultiplier = Math.cos(radian);
+        double zMultiplier = Math.sin(radian);
+
+        double addX = xMultiplier * radius;
+        double addZ = zMultiplier * radius;
+
+        double[] xzCords = new double[2];
+
+        double x = loc.getX() + addX;
+        double z = loc.getZ() + addZ;
+
+        xzCords[0] = x;
+        xzCords[1] = z;
+
+        return xzCords;
+    }
+
+    public static double[] getXZCordsMultipliersFromDegree(double degree) {
+        double radian = Math.toRadians(degree);
+
+        double xMultiplier = Math.cos(radian);
+        double zMultiplier = Math.sin(radian);
+
+        double[] xzCords = new double[2];
+
+        xzCords[0] = xMultiplier;
+        xzCords[1] = zMultiplier;
+
+        return xzCords;
+    }
+
     public static double[] getXZCordsFromDegree(Location loc, boolean rotated, double addAngle, double radius, double degree) {
         double radian = Math.toRadians(degree);
 
@@ -178,6 +212,22 @@ public class BlockLocation {
         xzCords[1] = z;
 
         return xzCords;
+    }
+
+    public static Location highestLocation(Location locat) {
+        double blockY = locat.getBlockY();
+
+        Location tplocation = null;
+        for (int i = (int) blockY; i > 1; i--) {
+            Location loc = new Location(locat.getWorld(), locat.getX(), i, locat.getZ(), locat.getYaw(), locat.getPitch());
+
+            if (loc.getBlock().getType().isSolid()) {
+                tplocation = new Location(locat.getWorld(), locat.getX(), i + 1.5, locat.getZ(), locat.getYaw(), locat.getPitch());
+                break;
+            }
+        }
+
+        return tplocation;
     }
 
 }
