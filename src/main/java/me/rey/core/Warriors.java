@@ -33,7 +33,7 @@ import me.rey.core.classes.abilities.wizard.FireBlast;
 import me.rey.core.classes.abilities.wizard.MagmaBlade;
 import me.rey.core.classes.abilities.wizard.NullBlade;
 import me.rey.core.classes.conditions.ArcaneRepair;
-import me.rey.core.classes.conditions.AssasinKB;
+import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.combat.DamageHandlerEvents;
 import me.rey.core.commands.Equip;
@@ -196,7 +196,7 @@ public class Warriors extends JavaPlugin {
 	public void initConditionCache() {
 		classConditions = new ArrayList<>(Arrays.asList(
 				// NINJA
-				new AssasinKB(),
+				new Vigour(),
 				// WIZARD
 				new ArcaneRepair(),
 				// MARKSMAN

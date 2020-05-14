@@ -1,9 +1,15 @@
 package me.rey.core.combat;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -16,7 +22,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import com.google.common.collect.ImmutableMap;
 
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
@@ -32,6 +41,7 @@ import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Text;
 import me.rey.core.utils.UtilVelocity;
+import net.minecraft.server.v1_8_R3.AttributeModifier;
 
 public class DamageHandlerEvents implements Listener {
 
@@ -40,7 +50,7 @@ public class DamageHandlerEvents implements Listener {
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageByEntityEvent e) {
-		if(!(e.getEntity() instanceof LivingEntity)) return;
+		if(!(e.getEntity() instanceof LivingEntity) || !(e.getDamager() instanceof LivingEntity)) return;
 		
 		/*
 		 * HIT DELAY
@@ -49,9 +59,9 @@ public class DamageHandlerEvents implements Listener {
 			e.setCancelled(true);
 			return;
 		}
-		
-		
+	
 		CustomDamageEvent damageEvent = null;
+	
 		
 		/*
 		 * SETTING ENTITY TO SHOOTER
@@ -71,24 +81,24 @@ public class DamageHandlerEvents implements Listener {
 			cache.addToPlayerCache((Player) e.getEntity(), new PlayerHit((Player) e.getEntity(), name, e.getDamage(), null));
 		}
 		
+		// RAW DAMAGE
+		ItemStack hold = ((LivingEntity) damager).getEquipment().getItemInHand();
+		double rawDamage = this.getDamage(hold, hitType);
+		e.setDamage(rawDamage);
+		
+		// CALCULATE DAMAGE ON ARMOR && EFECTS
+		this.calcArmor(e);
+		this.calcEffects(e);
+		
+		
 		/*
-		 * TOOL DAMAGE && CALL DAMAGE EVENT
+		 * CALL DAMAGE EVENT
 		 */
 		if(damager instanceof Player) {
 				
 			Player playerDamager = (Player) damager;
-			ItemStack hold = playerDamager.getItemInHand();
-			if(hold != null && !hold.getType().equals(Material.AIR)) {
-				
-				for(ToolType toolType : ToolType.values()) {
-					if(toolType.getHitType() != hitType) continue;
-					if(!toolType.getType().equals(hold.getType())) continue;
-					
-					e.setDamage(toolType.getDamage());
-				}
-			}
 			
-			damageEvent = new DamageEvent(e, hitType, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
+			damageEvent = new DamageEvent(e, hitType, playerDamager, (LivingEntity) damagee, rawDamage, hold);
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
 			if(damageEvent.isCancelled())
@@ -114,8 +124,7 @@ public class DamageHandlerEvents implements Listener {
 				e.setCancelled(true);
 		}
 		
-		// ARMOR VALUES
-		this.calcDamage(e);
+		
 		
 		if(!e.isCancelled()) {
 			
@@ -145,10 +154,8 @@ public class DamageHandlerEvents implements Listener {
 			CustomKnockbackEvent kbEvent = new CustomKnockbackEvent(damagee, damager, e.getDamage(), multiplier);
 			Bukkit.getServer().getPluginManager().callEvent(kbEvent);
 			
-			if(kbEvent.isCancelled())
-				return;
-			
-			kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
+			if(!kbEvent.isCancelled())
+				kb(kbEvent.getDamagee(), kbEvent.getDamager(), kbEvent.getDamage(), kbEvent.getMult());
 		}
 	}
 	
@@ -167,7 +174,8 @@ public class DamageHandlerEvents implements Listener {
 		cache.addToPlayerCache(target, new PlayerHit(target, damager, e.getDamage(), null));
 		
 		// armor values
-		this.calcDamage(e);
+		this.calcArmor(e);
+		this.calcEffects(e);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -185,7 +193,7 @@ public class DamageHandlerEvents implements Listener {
 		cache.startCombatTimer((Player) e.getDamagee());
 	}
 	
-	private void calcDamage(EntityDamageEvent e) {
+	private void calcArmor(EntityDamageEvent e) {
 		/*
 		 * ARMOR VALUES
 		 */
@@ -201,6 +209,58 @@ public class DamageHandlerEvents implements Listener {
 				e.setDamage(damage);
 			}
 		}
+		
+	}
+	
+	private void calcEffects(EntityDamageEvent e) {
+		
+		Map<PotionEffectType, Double> damager = ImmutableMap.of(
+				PotionEffectType.INCREASE_DAMAGE, 1.00, // STRENGTH
+				PotionEffectType.WEAKNESS, -1.00 // WEAKNESS
+				);
+		
+		Map<PotionEffectType, Double> damagee = ImmutableMap.of(
+				PotionEffectType.DAMAGE_RESISTANCE, -1.00 // RESISTANCE
+				);
+		
+		
+		// REMOVING DAMAGE MODIFIER TO EDIT IT
+		String noEdits = Double.toString(e.getDamage());
+		
+		/*
+		 * DAMAGER POTION EFFECTS
+		 */
+		if(e instanceof EntityDamageEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof LivingEntity) {
+			LivingEntity ent = (LivingEntity) ((EntityDamageByEntityEvent) e).getDamager();
+			
+			if(!ent.getActivePotionEffects().isEmpty()) {
+				Set<PotionEffectType> types = new HashSet<>();
+				ent.getActivePotionEffects().forEach((effect) -> types.add(effect.getType()));
+				
+				damager.forEach((effect, dmg) -> {
+					if(types.contains(effect))
+						e.setDamage(e.getDamage() + dmg);
+				});
+			}
+		}
+		
+		/*
+		 * DAMAGEE POTION EFFECTS
+		 */
+		LivingEntity ent = (LivingEntity) e.getEntity();
+		
+		if(!ent.getActivePotionEffects().isEmpty()) {
+			Set<PotionEffectType> types = new HashSet<>();
+			ent.getActivePotionEffects().forEach((effect) -> types.add(effect.getType()));
+			
+			damagee.forEach((effect, dmg) -> {
+				if(types.contains(effect))
+					e.setDamage(e.getDamage() + dmg);
+			});
+		}
+		
+		
+		Bukkit.broadcastMessage("Final dmg: " + e.getDamage() + " | Without edits: " + noEdits);
 	}
 	
 	private void kb(Entity entity, Entity hitter, double damage, double multiplier) {
@@ -261,6 +321,26 @@ public class DamageHandlerEvents implements Listener {
 	    
 	    damagee.getWorld().playSound(damagee.getLocation(), sound, volume, pitch);
 	    damagee.playEffect(EntityEffect.HURT);
+	}
+	
+	private double getDamage(ItemStack hold, HitType hitType) {
+		final double baseDmg = 1D;
+		
+		if(hold != null && !hold.getType().equals(Material.AIR)) {
+			
+			for(ToolType toolType : ToolType.values()) {
+				if(toolType.getHitType() != hitType) continue;
+				if(!toolType.getType().equals(hold.getType())) continue;
+				
+				return toolType.getDamage();
+			}
+			
+			net.minecraft.server.v1_8_R3.ItemStack item = CraftItemStack.asNMSCopy(hold);
+			Iterator<AttributeModifier> attackDmg = item.B().get("generic.attackDamage").iterator();;
+			return attackDmg.hasNext() ? attackDmg.next().d() : baseDmg;
+		}
+		
+		return baseDmg;
 	}
 	
 //    @EventHandler
