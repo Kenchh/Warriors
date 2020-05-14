@@ -19,7 +19,7 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 	public Backstab() {
 		super(1, "Backstab", ClassType.BLACK, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
 				"Attacks from behind opponents",
-				"deal <variable>1.5*l+0.75</variable> (+1.5) additional damage."
+				"deal <variable>0.75*l+1.5</variable> (+0.75) additional damage."
 				));
 		this.setIgnoresCooldown(true);
 		this.setInLiquid(true);
@@ -42,7 +42,7 @@ public class Backstab extends Ability implements IPlayerDamagedEntity {
 		if(isBehind(damager, damagee)) {
 			
 			// DAMAGE
-			e.addMod(1.5*level+1.5);
+			e.addMod(0.75*level+1.5);
 			
 			// PLAY EFFECTS
 			damagee.getWorld().playSound(damagee.getLocation(), Sound.HURT_FLESH, 1f, 2f);

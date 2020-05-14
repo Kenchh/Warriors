@@ -418,7 +418,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	/*
 	 * DAMAGE EVENT TRIGGER
 	 */
-	@EventHandler
+	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(DamageEvent e) {
 		if(!(new User(e.getDamager()).isUsingAbility(this))) return;
 		if(this instanceof IPlayerDamagedByEntity) return;
