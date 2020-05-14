@@ -16,7 +16,8 @@ public enum ClassType {
 	
 	LEATHER(28, "Assassin", SoundEffect.SOFT,
 			new DefaultBuild(new Leap().setTempDefaultLevel(4)),
-			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS
+			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS,
+			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 0)
 	),
 	
 	CHAIN(36, "Marksman", SoundEffect.MILD_TANK_A,
@@ -43,7 +44,7 @@ public enum ClassType {
 			new DefaultBuild(),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 0, 0, 0),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_BOOTS, 0, 0, 0),
-			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 1)
+			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 0)
 			),
 	GREEN(34, "Shaman", SoundEffect.MILD_TANK_B,
 			new DefaultBuild(),
