@@ -258,9 +258,6 @@ public class DamageHandlerEvents implements Listener {
 					e.setDamage(e.getDamage() + dmg);
 			});
 		}
-		
-		
-		Bukkit.broadcastMessage("Final dmg: " + e.getDamage() + " | Without edits: " + noEdits);
 	}
 	
 	private void kb(Entity entity, Entity hitter, double damage, double multiplier) {
