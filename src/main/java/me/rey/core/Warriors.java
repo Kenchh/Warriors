@@ -45,7 +45,7 @@ import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.classes.conditions.Vigour;
-import me.rey.core.combat.DamageHandlerEvents;
+import me.rey.core.combat.DamageHandler;
 import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
@@ -186,7 +186,7 @@ public class Warriors extends JavaPlugin {
 		pm.registerEvents(new BuildHandler(), this);
 		pm.registerEvents(new PlayerDeathEvent(), this);
 		pm.registerEvents(new DurabilityChangeEvent(), this);
-		pm.registerEvents(new DamageHandlerEvents(), this);
+		pm.registerEvents(new DamageHandler(), this);
 		pm.registerEvents(new UseSoupEvent(), this);
 		pm.registerEvents(new PlayerInteractChecker(), this);
 	}

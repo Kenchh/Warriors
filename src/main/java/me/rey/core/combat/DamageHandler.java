@@ -42,7 +42,7 @@ import me.rey.core.utils.Text;
 import me.rey.core.utils.UtilVelocity;
 import net.minecraft.server.v1_8_R3.AttributeModifier;
 
-public class DamageHandlerEvents implements Listener {
+public class DamageHandler implements Listener {
 
 	private final long HIT_DELAY = 400;
 	PlayerHitCache cache = Warriors.getInstance().getHitCache();
@@ -137,7 +137,7 @@ public class DamageHandlerEvents implements Listener {
 			/*
 			 * DISPLAY SOUNDS
 			 */
-			this.playEntitySound((LivingEntity) e.getEntity());
+			playEntitySound((LivingEntity) e.getEntity());
 			
 			
 			/*
@@ -266,7 +266,7 @@ public class DamageHandlerEvents implements Listener {
 		          trajectory, 0.2D + trajectory.length() * 0.8D, false, 0.0D, Math.abs(0.2D * damage), 0.4D + 0.04D * damage, true);
 	}
 	
-	private void playEntitySound(LivingEntity damagee) {
+	public static void playEntitySound(LivingEntity damagee) {
 	    Sound sound;
 	    float pitch = 0.8F + (float)(0.4000000059604645D * Math.random());
 	    float volume = 1.5F + (float)(0.5D * Math.random());
