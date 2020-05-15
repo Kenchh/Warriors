@@ -5,12 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.rey.core.pvp.Build;
-import me.rey.core.pvp.ToolType;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -25,6 +21,7 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.effects.SoundEffect;
 import me.rey.core.players.User;
+import me.rey.core.pvp.ToolType;
 import me.rey.core.utils.BlockLocation;
 
 public class Tornado extends Ability {
