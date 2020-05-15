@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.rey.core.players.PlayerHit;
@@ -18,13 +17,11 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 	protected final LivingEntity damagee;
 	protected double damage, knockbackMult;
 	protected boolean isCancelled;
-	protected EntityDamageByEntityEvent event;
 	protected ItemStack item;
 	protected PlayerHit hit;
 	protected HitType hitType;
 	
-	public CustomDamageEvent(EntityDamageByEntityEvent event, HitType hitType, LivingEntity damager, LivingEntity damagee, double damage, ItemStack item) {
-		this.event = event;
+	public CustomDamageEvent(HitType hitType, LivingEntity damager, LivingEntity damagee, double damage, ItemStack item) {
 		this.hitType = hitType;
 		this.damager = damager;
 		this.damagee = damagee;
@@ -67,15 +64,15 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 	}
 	
 	public double getDamage() {
-		return event.getDamage();
+		return damage;
 	}
 	
 	public void addMod(double damage) {
-		event.setDamage(Math.max(0, event.getDamage() + damage));
+		this.damage = Math.max(0, this.damage + damage);
 	}
 	
 	public void addMult(double mult) {
-		event.setDamage(event.getDamage() * (1.00 + (mult / 100.00)));
+		damage = damage * (1.00 + (mult / 100.00));
 	}
 	
 	public double getKnockbackMult() {

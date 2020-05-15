@@ -1,5 +1,6 @@
 package me.rey.core.players;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -71,11 +72,17 @@ public class PlayerHit {
 	}
 	
 	public boolean isCausedByPlayer() {
-		return (damagerEntity != null) && (damagerEntity instanceof Player);
+		return getEntityCause() != null && getEntityCause() instanceof Player;
 	}
 	
 	public LivingEntity getEntityCause() {
-		return damagerEntity;
+		LivingEntity toReturn = damagerEntity;
+		if(!(toReturn != null && toReturn instanceof Player) && this.cause != null) {
+			Player p = Bukkit.getServer().getPlayer(this.cause);
+			if(p != null && p.isOnline()) toReturn = p;
+		}
+		
+		return toReturn;
 	}
 	
 	public double getLongAgo(long currentTime) {

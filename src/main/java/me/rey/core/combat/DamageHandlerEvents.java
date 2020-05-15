@@ -91,18 +91,17 @@ public class DamageHandlerEvents implements Listener {
 				
 			Player playerDamager = (Player) damager;
 			
-			damageEvent = new DamageEvent(e, hitType, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
+			damageEvent = new DamageEvent(hitType, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
+			
+			e.setDamage(damageEvent.getDamage());
 			
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 			
 			playerDamager.setLevel((int) Math.round(e.getDamage()));
 			
-			// ADDING TO THEIR HIT CACHE IF THEY'RE A PLAYER
-			if(damagee instanceof Player && !damageEvent.isCancelled())
-				cache.addToPlayerCache((Player) e.getEntity(), damageEvent.getHit());
-			
+			((DamageEvent) damageEvent).storeCache();
 		}
 		
 		/*
@@ -110,7 +109,7 @@ public class DamageHandlerEvents implements Listener {
 		 */
 		
 		if(damagee instanceof Player && damageEvent == null  && damager instanceof LivingEntity) {
-			damageEvent = new DamagedByEntityEvent(e, hitType, (LivingEntity) damager, (Player) damagee, e.getDamage(), ((LivingEntity) damagee).getEquipment().getItemInHand());
+			damageEvent = new DamagedByEntityEvent(hitType, (LivingEntity) damager, (Player) damagee, e.getDamage(), ((LivingEntity) damagee).getEquipment().getItemInHand());
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
 			if(damageEvent.isCancelled())
@@ -118,10 +117,10 @@ public class DamageHandlerEvents implements Listener {
 		}
 		
 		// CALCULATE EFECTS
-		this.calcEffects(e);		
+		e.setDamage(calcEffects(e.getDamage(), (LivingEntity) damagee, (LivingEntity) damager));		
 		
 		// CALCULATING FINAL DAMAGE ON ARMOR
-		this.calcArmor(e);
+		e.setDamage(calcArmor(e.getDamage(), (LivingEntity) damagee, e));
 		
 		if(!e.isCancelled()) {
 			
@@ -171,8 +170,8 @@ public class DamageHandlerEvents implements Listener {
 		cache.addToPlayerCache(target, new PlayerHit(target, damager, e.getDamage(), null));
 		
 		// armor values
-		this.calcArmor(e);
-		this.calcEffects(e);
+		e.setDamage(calcEffects(e.getDamage(), target, null));
+		e.setDamage(calcArmor(e.getDamage(), target, e));
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -190,26 +189,24 @@ public class DamageHandlerEvents implements Listener {
 		cache.startCombatTimer((Player) e.getDamagee());
 	}
 	
-	private void calcArmor(EntityDamageEvent e) {
+	public static double calcArmor(double damage, LivingEntity entity, EntityDamageEvent e) {
 		/*
 		 * ARMOR VALUES
 		 */
-		if(e.getEntity() instanceof Player) {
+		if(entity instanceof Player) {
 			ClassType wearing = new User((Player) e.getEntity()).getWearingClass();
 			
-			if(e.isApplicable(DamageModifier.ARMOR))
+			if(e != null && e.isApplicable(DamageModifier.ARMOR))
 				e.setDamage(DamageModifier.ARMOR, 0);
 			
-			if(wearing != null) {
-				Player entity = (Player) e.getEntity();
-				double damage = (entity.getMaxHealth() / wearing.getHealth()) * e.getDamage();
-				e.setDamage(damage);
-			}
-		}
+			if(wearing != null)
+				return (entity.getMaxHealth() / wearing.getHealth()) * e.getDamage();
 		
+		}
+		return damage;
 	}
 	
-	private void calcEffects(EntityDamageEvent e) {
+	public static double calcEffects(double damage, LivingEntity hit, LivingEntity hitter) {
 		
 		Map<PotionEffectType, Double> damager = ImmutableMap.of(
 				PotionEffectType.INCREASE_DAMAGE, 1.00, // STRENGTH
@@ -223,34 +220,36 @@ public class DamageHandlerEvents implements Listener {
 		/*
 		 * DAMAGER POTION EFFECTS
 		 */
-		if(e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof LivingEntity) {
-			LivingEntity ent = (LivingEntity) ((EntityDamageByEntityEvent) e).getDamager();
+		if(hitter != null) {
+			LivingEntity ent = hitter;
 			
 			if(!ent.getActivePotionEffects().isEmpty()) {
 				Map<PotionEffectType, Integer> types = new HashMap<>();
 				ent.getActivePotionEffects().forEach((effect) -> types.put(effect.getType(), effect.getAmplifier()));
 				
-				damager.forEach((effect, dmg) -> {
+				
+				for(PotionEffectType effect : damager.keySet()) {
 					if(types.containsKey(effect))
-						e.setDamage(e.getDamage() + (dmg * (types.get(effect) + 1)));
-				});
+						damage = damage + (damager.get(effect) * (types.get(effect) + 1));
+				}
 			}
 		}
 		
 		/*
 		 * DAMAGEE POTION EFFECTS
 		 */
-		LivingEntity ent = (LivingEntity) e.getEntity();
+		LivingEntity ent = hit;
 		
 		if(!ent.getActivePotionEffects().isEmpty()) {
 			Map<PotionEffectType, Integer> types = new HashMap<>();
 			ent.getActivePotionEffects().forEach((effect) -> types.put(effect.getType(), effect.getAmplifier()));
 			
-			damagee.forEach((effect, dmg) -> {
+			for(PotionEffectType effect : damagee.keySet()) {
 				if(types.containsKey(effect))
-					e.setDamage(e.getDamage() + (dmg * (types.get(effect) + 1)));
-			});
+					damage = damage + (damagee.get(effect) * (types.get(effect) + 1));
+			}
 		}
+		return damage;
 	}
 	
 	private void kb(Entity entity, Entity hitter, double damage, double multiplier) {
