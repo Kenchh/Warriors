@@ -49,7 +49,7 @@ public class DamageHandlerEvents implements Listener {
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageByEntityEvent e) {
-		if(!(e.getEntity() instanceof LivingEntity) || !(e.getDamager() instanceof LivingEntity)) return;
+		if(!(e.getEntity() instanceof LivingEntity)) return;
 		
 		/*
 		 * HIT DELAY
@@ -61,7 +61,6 @@ public class DamageHandlerEvents implements Listener {
 	
 		CustomDamageEvent damageEvent = null;
 	
-		
 		/*
 		 * SETTING ENTITY TO SHOOTER
 		 */
@@ -81,9 +80,9 @@ public class DamageHandlerEvents implements Listener {
 		}
 		
 		// RAW DAMAGE
-		ItemStack hold = ((LivingEntity) damager).getEquipment().getItemInHand();
+		ItemStack hold = damager instanceof LivingEntity && hitType == HitType.MELEE ? ((LivingEntity) damager).getEquipment().getItemInHand() : null;
 		double rawDamage = this.getDamage(hold, hitType);
-		e.setDamage(rawDamage);
+		if(damager instanceof Player) e.setDamage(rawDamage);
 		
 		/*
 		 * CALL DAMAGE EVENT
@@ -224,7 +223,7 @@ public class DamageHandlerEvents implements Listener {
 		/*
 		 * DAMAGER POTION EFFECTS
 		 */
-		if(e instanceof EntityDamageEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof LivingEntity) {
+		if(e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof LivingEntity) {
 			LivingEntity ent = (LivingEntity) ((EntityDamageByEntityEvent) e).getDamager();
 			
 			if(!ent.getActivePotionEffects().isEmpty()) {

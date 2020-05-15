@@ -39,6 +39,8 @@ import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IConstant.ITogglable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedByEntity;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
+import me.rey.core.effects.Effect;
+import me.rey.core.effects.repo.Silence;
 import me.rey.core.energy.IEnergyEditor;
 import me.rey.core.enums.AbilityFail;
 import me.rey.core.enums.State;
@@ -56,7 +58,6 @@ import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Cooldown;
-import me.rey.core.utils.EffectUtils;
 import me.rey.core.utils.Text;
 import net.md_5.bungee.api.ChatColor;
 
@@ -133,7 +134,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		AbilityFailEvent event = null;
 		
 		// WHILE SILENCED
-		if(!whileSilenced && EffectUtils.isSilenced(p.getUniqueId()) && (EffectUtils.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
+		if(!whileSilenced && Effect.SILENCE.hasEffect(p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
 			if(!(conditions != null && conditions.length == 1 && (conditions[0] instanceof UpdateEvent || conditions[0] instanceof DamageEvent
 					|| conditions[0] instanceof DamagedByEntityEvent || conditions[0] instanceof EnergyUpdateEvent)) || this instanceof ITogglable) {
 				event = new AbilityFailEvent(AbilityFail.SILENCED, p, this, level);
@@ -144,7 +145,7 @@ public abstract class Ability extends Cooldown implements Listener {
 						((ITogglable) this).off(p);
 						this.toggle(p, State.DISABLED);
 					} else {
-					    p.playSound(p.getLocation(), Sound.BAT_HURT, 0.8F, 0.8F);
+					    Silence.SOUND.play(p);
 						this.sendAbilityMessage(p, "You are &asilenced&7.");
 					}
 					return false;

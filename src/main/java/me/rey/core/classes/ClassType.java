@@ -6,10 +6,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.rey.core.classes.abilities.bandit.axe.Leap;
+import me.rey.core.effects.SoundEffect;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.DefaultBuild;
-import me.rey.core.utils.SoundEffect;
 import me.rey.core.utils.Utils;
 
 public enum ClassType {
