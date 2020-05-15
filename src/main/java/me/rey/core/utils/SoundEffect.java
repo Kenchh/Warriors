@@ -1,6 +1,5 @@
 package me.rey.core.utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
@@ -42,7 +41,10 @@ public class SoundEffect {
 	}
 
 	public static void playCustomSound(Location loc, String sound, float volume, float pitch) {
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound " + sound + " @a " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + " " + volume + " " + pitch);
+		/*
+		 * TODO: CUSTOM SOUND PLAYING
+		 */
+		return;
 	}
 
 }

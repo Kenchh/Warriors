@@ -1,14 +1,12 @@
 package me.rey.core.classes.abilities.shaman.spade;
 
-import me.rey.core.Warriors;
-import me.rey.core.classes.ClassType;
-import me.rey.core.classes.abilities.Ability;
-import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.players.User;
-import me.rey.core.pvp.ToolType;
-import me.rey.core.utils.BlockLocation;
-import me.rey.core.utils.SoundEffect;
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,11 +14,23 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import me.rey.core.Warriors;
+import me.rey.core.classes.ClassType;
+import me.rey.core.classes.abilities.Ability;
+import me.rey.core.classes.abilities.AbilityType;
+import me.rey.core.players.User;
+import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.SoundEffect;
 
 public class Tornado extends Ability {
     public Tornado() {
-        super(521, "Tornado", ClassType.GREEN, AbilityType.SPADE, 1, 3, 5.0, Arrays.asList("adwa"));
+        super(521, "Tornado", ClassType.GREEN, AbilityType.SPADE, 1, 3, 5.0, Arrays.asList(
+        		"Shoot a tornado that will deal a",
+        		"vertical knockback to all enemies",
+        		"that go infront of it.", "",
+        		"The tornado will travel for a",
+        		"distance of <variable>21+(l*3)</variable> blocks."
+        		));
     }
 
     public HashMap<UUID, Integer> prepareTornado = new HashMap<>();
@@ -28,25 +38,29 @@ public class Tornado extends Ability {
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
+    	final double distance = 21 + (level * 3);
 
         double[] cords = BlockLocation.getXZCordsMultipliersFromDegree(p.getLocation().getYaw() + 90);
-        tornado.put(p.getUniqueId(), new TornadoObject(cords[0], cords[1], p.getLocation()));
+        tornado.put(p.getUniqueId(), new TornadoObject(distance, cords[0], cords[1], p.getLocation()));
         SoundEffect.playCustomSound(p.getLocation(), "tornado", 2F, 1F);
 
+        Location origin = p.getLocation().clone();
         new BukkitRunnable() {
             @Override
             public void run() {
 
                 TornadoObject t = tornado.get(p.getUniqueId());
 
-                if(t.ticks >= t.traveldistance) {
-                    tornado.remove(t);
+                t.updateTicks();
+                Location found = t.move().clone();
+                found.setY(origin.getY());
+                
+                if (found.distance(origin) >= t.traveldistance) {
+                    tornado.remove(p.getUniqueId());
                     this.cancel();
                     return;
                 }
 
-                t.updateTicks();
-                t.move();
 
                 t.whirl();
                 t.knockup(p);
@@ -59,10 +73,10 @@ public class Tornado extends Ability {
 
     class TornadoObject {
 
-        double ticks = 1;
-
+    	double ticks;
         double xMultiplier;
         double zMultiplier;
+        double traveldistance;
 
         Location loc;
 
@@ -70,27 +84,30 @@ public class Tornado extends Ability {
         final double particlecount = 20;
         final double height = 5.55;
         final double travelspeed = 0.5;
-        final double traveldistance = 30;
         final double rotationspeed = 20;
         final double radius = 2;
         final double knockup = 0.70;
-
+        
         ArrayList<LivingEntity> knockUped = new ArrayList<>();
 
-        public TornadoObject(double xMultiplier, double zMultiplier, Location startloc) {
+        public TornadoObject(double traveldistance, double xMultiplier, double zMultiplier, Location startloc) {
             this.xMultiplier = xMultiplier;
             this.zMultiplier = zMultiplier;
             this.loc = startloc;
+            this.traveldistance = traveldistance;
+            
+            this.ticks = 1;
         }
 
         public void updateTicks() {
             ticks += 1;
         }
 
-        public void move() {
+        public Location move() {
             loc.setX(loc.getX() + xMultiplier * travelspeed);
             loc.setY(BlockLocation.highestLocation(loc).getY());
             loc.setZ(loc.getZ() + zMultiplier * travelspeed);
+            return loc;
         }
 
         public void whirl() {
