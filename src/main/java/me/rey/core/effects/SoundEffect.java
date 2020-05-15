@@ -1,5 +1,6 @@
 package me.rey.core.effects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -60,9 +61,9 @@ public class SoundEffect {
 	}
 
 	public static void playCustomSound(Location loc, String sound, float volume, float pitch) {
-		/*
-		 * TODO: CUSTOM SOUND PLAYING
-		 */
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.playSound(loc, sound, volume, pitch);
+		}
 		return;
 	}
 
