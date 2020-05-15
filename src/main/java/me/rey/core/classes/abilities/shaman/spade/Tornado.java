@@ -5,8 +5,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
+import me.rey.core.pvp.Build;
+import me.rey.core.pvp.ToolType;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,20 +34,54 @@ public class Tornado extends Ability {
         		"vertical knockback to all enemies",
         		"that go infront of it.", "",
         		"The tornado will travel for a",
-        		"distance of <variable>21+(l*3)</variable> blocks."
+        		"distance of <variable>21+(l*3)</variable> blocks.",
+                "",
+                "Recharge: <variable>9.0 - l</variable>"
         		));
     }
 
     public HashMap<UUID, Integer> prepareTornado = new HashMap<>();
     public HashMap<UUID, TornadoObject> tornado = new HashMap<>();
 
+    public boolean run(Player p, ToolType toolType, boolean messages, Object... conditions) {
+
+        User user = new User(p);
+
+        if(user.getWearingClass() != this.getClassType() || !this.matchesAbilityTool(this.match(p.getItemInHand()))) {
+            return super.run(p, toolType, messages, conditions);
+        }
+
+        if(tornado.containsKey(p.getUniqueId())) {
+            TornadoObject t = tornado.get(p.getUniqueId());
+            t.updatePrepareTick();
+        } else {
+            TornadoObject to = new TornadoObject(p, this, 1, p.getLocation());
+            tornado.put(p.getUniqueId(), to);
+            SoundEffect.playCustomSound(p.getLocation(), "preparetornado", 2F, 1F);
+        }
+
+        return super.run(p, toolType, messages, conditions);
+    }
+
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
-    	final double distance = 21 + (level * 3);
 
-        double[] cords = BlockLocation.getXZCordsMultipliersFromDegree(p.getLocation().getYaw() + 90);
-        tornado.put(p.getUniqueId(), new TornadoObject(distance, cords[0], cords[1], p.getLocation()));
-        SoundEffect.playCustomSound(p.getLocation(), "tornado", 2F, 1F);
+        this.setCooldown(9.0 - level);
+
+        if(tornado.containsKey(p.getUniqueId()) == false) {
+            return false;
+        }
+        this.setCooldownCanceled(true);
+        TornadoObject ot = tornado.get(p.getUniqueId());
+
+        if(ot.preparing == false) {
+            return false;
+        }
+
+        final double distance = 21 + (level * 3);
+        ot.traveldistance = distance;
+        ot.slowduration += level*20;
+        ot.preparing = false;
 
         Location origin = p.getLocation().clone();
         new BukkitRunnable() {
@@ -52,10 +91,12 @@ public class Tornado extends Ability {
                 TornadoObject t = tornado.get(p.getUniqueId());
 
                 t.updateTicks();
+                t.checkPrepare();
+
                 Location found = t.move().clone();
                 found.setY(origin.getY());
                 
-                if (found.distance(origin) >= t.traveldistance) {
+                if (found.distance(origin) >= t.traveldistance*t.charge) {
                     tornado.remove(p.getUniqueId());
                     this.cancel();
                     return;
@@ -68,31 +109,43 @@ public class Tornado extends Ability {
             }
         }.runTaskTimer(Warriors.getInstance(), 0L, 1L);
 
-        return false;
+        return true;
     }
 
     class TornadoObject {
 
     	double ticks;
-        double xMultiplier;
-        double zMultiplier;
+
+    	double lastpreparetick;
+        boolean preparing = true;
+
         double traveldistance;
+        int slowduration = 40;
+
+        double charge = 0.01;
+
+        double cordsAdders[];
+
+        Player p;
+        Ability a;
 
         Location loc;
 
         final double spread = 1.5;
-        final double particlecount = 20;
-        final double height = 5.55;
+        final int particlecount = 20; /* INDIRECT PROPORTIONAL! Lower value -> Higher count/particle thickness */
+        final double maxheight = 5.55;
         final double travelspeed = 0.5;
         final double rotationspeed = 20;
         final double radius = 2;
         final double knockup = 0.70;
+        final double maxchargeticks = 60;
+        //final double maxticks = 80;
         
         ArrayList<LivingEntity> knockUped = new ArrayList<>();
 
-        public TornadoObject(double traveldistance, double xMultiplier, double zMultiplier, Location startloc) {
-            this.xMultiplier = xMultiplier;
-            this.zMultiplier = zMultiplier;
+        public TornadoObject(Player p, Ability a, double traveldistance, Location startloc) {
+            this.p = p;
+            this.a = a;
             this.loc = startloc;
             this.traveldistance = traveldistance;
             
@@ -103,10 +156,50 @@ public class Tornado extends Ability {
             ticks += 1;
         }
 
+        public void updatePrepareTick() {
+            if(lastpreparetick != -1) {
+                lastpreparetick = ticks;
+                charge = ticks/maxchargeticks;
+            }
+        }
+
+        public void checkPrepare() {
+            if((ticks - lastpreparetick > 6 || ticks >= maxchargeticks) && lastpreparetick != -1) {
+                lastpreparetick = -1;
+
+                Block targetblock = null;
+                double direction = p.getLocation().getYaw() + 90;
+
+                for(int i=2; i<=15; i++) {
+                    if(BlockLocation.getTargetBlock(p, i).getType().isSolid()) {
+                        targetblock = BlockLocation.getTargetBlock(p, i);
+                        break;
+                    }
+                }
+
+                if(targetblock != null) {
+                    double deltaX = targetblock.getX() - loc.getX();
+                    double deltaZ = targetblock.getZ() - loc.getZ();
+                    direction = Math.toDegrees(Math.atan(deltaZ/deltaX));
+                    if(deltaX < 0) {
+                        direction += 180;
+                    }
+                }
+
+                cordsAdders = BlockLocation.getXZCordsMultipliersFromDegree(direction);
+                SoundEffect.playCustomSound(loc, "tornado", 2F, 1F);
+                a.applyCooldown(p);
+            }
+        }
+
         public Location move() {
-            loc.setX(loc.getX() + xMultiplier * travelspeed);
-            loc.setY(BlockLocation.highestLocation(loc).getY());
-            loc.setZ(loc.getZ() + zMultiplier * travelspeed);
+            if(lastpreparetick == -1) {
+                loc.setX(loc.getX() + cordsAdders[0] * travelspeed * charge);
+                if(BlockLocation.highestLocation(loc) != null) {
+                    loc.setY(BlockLocation.highestLocation(loc).getY());
+                }
+                loc.setZ(loc.getZ() + cordsAdders[1] * travelspeed * charge);
+            }
             return loc;
         }
 
@@ -123,9 +216,9 @@ public class Tornado extends Ability {
 
                 Location ploc = loc.clone();
 
-                ploc.setX(loc.getX() + mults[0] * degree/720 * spread);
-                ploc.setY(loc.getY() + degree * (height/1000));
-                ploc.setZ(loc.getZ() + mults[1] * degree/720 * spread);
+                ploc.setX(loc.getX() + mults[0] * degree/720 * spread * charge);
+                ploc.setY(loc.getY() + degree * ((maxheight * charge)/1000));
+                ploc.setZ(loc.getZ() + mults[1] * degree/720 * spread * charge);
 
                 ploc.getWorld().spigot().playEffect(ploc, Effect.SNOW_SHOVEL, 0, 0, 0, 0, 0, 0, 0, 50);
 
@@ -134,6 +227,11 @@ public class Tornado extends Ability {
         }
 
         public void knockup(Player p) {
+
+            if(lastpreparetick != -1) {
+                return;
+            }
+
             for(Entity e : loc.getWorld().getNearbyEntities(loc, 5, 2, 5)) {
                 if (e instanceof LivingEntity) {
 
@@ -161,8 +259,8 @@ public class Tornado extends Ability {
                         double minZ = mincords[1];
 
                         if (le.getLocation().getX() <= maxX && le.getLocation().getZ() <= maxZ && le.getLocation().getX() >= minX && le.getLocation().getZ() >= minZ) {
-                            le.setVelocity(le.getVelocity().setY(knockup));
-                            (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 0));
+                            le.setVelocity(le.getVelocity().setY(knockup*charge));
+                            (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slowduration, 0));
                             knockUped.add(le);
                         } else {
                             continue;

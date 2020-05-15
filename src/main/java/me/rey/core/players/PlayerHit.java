@@ -77,11 +77,11 @@ public class PlayerHit {
 	
 	public LivingEntity getEntityCause() {
 		LivingEntity toReturn = damagerEntity;
-		if((toReturn == null || !(toReturn instanceof Player)) && this.cause != null) {
-			Player p = Bukkit.getServer().getPlayer(this.cause);
+		if(!(toReturn != null && toReturn instanceof Player) && this.cause != null) {
+			Player p = Bukkit.getServer().getPlayer(this.damager);
 			if(p != null && p.isOnline()) toReturn = p;
 		}
-		
+
 		return toReturn;
 	}
 	
