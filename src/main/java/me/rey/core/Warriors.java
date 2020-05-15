@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.brute.sword.IronHook;
+import me.rey.core.combat.DamageHandler;
+import me.rey.core.players.combat.PlayerHitCache;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -25,7 +28,6 @@ import me.rey.core.classes.abilities.assassin.bow.Disarm;
 import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
 import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
 import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
-import me.rey.core.classes.abilities.assassin.passive_b.BlitzStrikes;
 import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
 import me.rey.core.classes.abilities.assassin.sword.Evade;
 import me.rey.core.classes.abilities.bandit.axe.Blink;
@@ -46,7 +48,6 @@ import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.classes.conditions.Vigour;
-import me.rey.core.combat.DamageHandler;
 import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
@@ -61,7 +62,6 @@ import me.rey.core.events.UseSoupEvent;
 import me.rey.core.gui.GuiHelp;
 import me.rey.core.items.Glow;
 import me.rey.core.players.PlayerRunnableHandler;
-import me.rey.core.players.combat.PlayerHitCache;
 import me.rey.core.pvp.Build;
 import me.rey.core.utils.Text;
 
@@ -239,27 +239,32 @@ public class Warriors extends JavaPlugin {
 				
 				//NINJA
 				new Backstab(),
-				new BladeVortex(),
-				new BlitzStrikes(),
 				new Dash(),
 				new Flash(),
 				new Evade(),
+				new BladeVortex(),
 				
-				//WIZARD
+				//DRUID
 				new EnergyRegeneration(),
 				new EnergyPool(),
 				new FireBlast(),
 				new MagmaBlade(),
+				new Void(),
+
+				//SHAMAN
 				new NullBlade(),
 				new Tornado(),
-				new Void(),
-				//MAKRSMAN
+
+				//BERSERKER
+
+				//MARKSMAN
 				
 				//KNIGHT
 				new HoldPosition(),
-				new Immunity()
+				new Immunity(),
 				
 				//BRUTE
+				new IronHook()
 				));
 		
 		for(Ability ability : abilityCache) {
