@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,6 +17,7 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
+import me.rey.core.events.customevents.CustomKnockbackEvent;
 import me.rey.core.events.customevents.damage.DamageEvent;
 import me.rey.core.players.User;
 
@@ -47,7 +49,7 @@ public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEnt
 			this.setCooldownCanceled(true);
 			if(!online.contains(p)) return false;
 			
-			((DamageEvent) conditions[0]).addMult(60);
+			((DamageEvent) conditions[0]).addMult(60); /* MULTIPLYING DAMAGE */
 			
 			LivingEntity ent = ((DamageEvent) conditions[0]).getDamagee();
 			ent.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, (int) Math.round(20 * (0.5 + (0.5 * level))), 0, false, false));
@@ -72,6 +74,15 @@ public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEnt
 			this.setCooldownCanceled(true);
 		}
 		return true;
+	}
+	
+	@EventHandler
+	public void onKB(CustomKnockbackEvent e) {
+		if(!(e.getDamager() instanceof Player)) return;
+		if(!new User((Player) e.getDamager()).isUsingAbility(this)) return;
+		
+		if(online.contains((Player) e.getDamager()))
+			e.setCancelled(false); /* UN-CANCELLING IT */
 	}
 
 }

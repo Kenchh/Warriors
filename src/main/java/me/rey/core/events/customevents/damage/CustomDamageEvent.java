@@ -83,7 +83,7 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 	}
 	
 	public void setKnockbackMult(double mult) {
-		this.knockbackMult = mult;
+		this.knockbackMult = Math.max(0, mult);
 	}
 	
 	@Override

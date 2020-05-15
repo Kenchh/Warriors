@@ -85,9 +85,6 @@ public class DamageHandlerEvents implements Listener {
 		double rawDamage = this.getDamage(hold, hitType);
 		e.setDamage(rawDamage);
 		
-		// CALCULATE EFECTS
-		this.calcEffects(e);		
-		
 		/*
 		 * CALL DAMAGE EVENT
 		 */
@@ -95,13 +92,13 @@ public class DamageHandlerEvents implements Listener {
 				
 			Player playerDamager = (Player) damager;
 			
-			damageEvent = new DamageEvent(e, hitType, playerDamager, (LivingEntity) damagee, rawDamage, hold);
+			damageEvent = new DamageEvent(e, hitType, playerDamager, (LivingEntity) damagee, e.getDamage(), hold);
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 			
-			playerDamager.setLevel((int) Math.round(rawDamage));
+			playerDamager.setLevel((int) Math.round(e.getDamage()));
 			
 			// ADDING TO THEIR HIT CACHE IF THEY'RE A PLAYER
 			if(damagee instanceof Player && !damageEvent.isCancelled())
@@ -120,6 +117,9 @@ public class DamageHandlerEvents implements Listener {
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 		}
+		
+		// CALCULATE EFECTS
+		this.calcEffects(e);		
 		
 		// CALCULATING FINAL DAMAGE ON ARMOR
 		this.calcArmor(e);
