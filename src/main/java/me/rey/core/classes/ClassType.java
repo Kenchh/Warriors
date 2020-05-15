@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.rey.core.classes.abilities.bandit.Leap;
+import me.rey.core.classes.abilities.bandit.axe.Leap;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.DefaultBuild;
