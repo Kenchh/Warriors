@@ -29,14 +29,12 @@ import me.rey.core.utils.BlockLocation;
 
 public class Tornado extends Ability {
     public Tornado() {
-        super(521, "Tornado", ClassType.GREEN, AbilityType.SPADE, 1, 3, 5.0, Arrays.asList(
-        		"Shoot a tornado that will deal a",
-        		"vertical knockback to all enemies",
-        		"that go infront of it.", "",
-        		"The tornado will travel for a",
-        		"distance of <variable>21+(l*3)</variable> blocks.",
+        super(521, "Tornado", ClassType.GREEN, AbilityType.SPADE, 1, 3, 13.0, Arrays.asList(
+        		"Charge up a tornado in a direction",
+                "that will knock up and slow all ",
+                "enemies for <variable>2+l seconds</variable> hit by it.",
                 "",
-                "Recharge: <variable>9.0 - l</variable>"
+                "Recharge: <variable>13.0 - l*2</variable>"
         		));
     }
 
@@ -66,7 +64,7 @@ public class Tornado extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setCooldown(9.0 - level);
+        this.setCooldown(13.0 - level*2);
 
         if(tornado.containsKey(p.getUniqueId()) == false) {
             return false;
