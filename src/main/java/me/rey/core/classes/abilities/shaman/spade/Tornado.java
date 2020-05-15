@@ -29,9 +29,9 @@ public class Tornado extends Ability {
         super(521, "Tornado", ClassType.GREEN, AbilityType.SPADE, 1, 3, 13.0, Arrays.asList(
         		"Charge up a tornado in a direction",
                 "that will knock up and slow all ",
-                "enemies for <variable>2+l seconds</variable> hit by it.",
+                "enemies for <variable>2+l</variable> (+1) Seconds hit by it.",
                 "",
-                "Recharge: <variable>13.0 - l*2</variable>"
+                "Recharge: <variable>13.0 - l*2</variable> (-2) Seconds"
         		));
     }
 
