@@ -80,7 +80,7 @@ public class DamageHandlerEvents implements Listener {
 		}
 		
 		// RAW DAMAGE
-		ItemStack hold = damager instanceof LivingEntity && hitType == HitType.MELEE ? ((LivingEntity) damager).getEquipment().getItemInHand() : null;
+		ItemStack hold = damager instanceof LivingEntity ? ((LivingEntity) damager).getEquipment().getItemInHand() : null;
 		double rawDamage = this.getDamage(hold, hitType);
 		if(damager instanceof Player) e.setDamage(rawDamage);
 		
@@ -319,10 +319,9 @@ public class DamageHandlerEvents implements Listener {
 		if(hold != null && !hold.getType().equals(Material.AIR)) {
 			
 			for(ToolType toolType : ToolType.values()) {
-				if(toolType.getHitType() != hitType) continue;
-				if(!toolType.getType().equals(hold.getType())) continue;
-				
-				return toolType.getDamage();
+				if((toolType.getHitType() != HitType.MELEE && toolType.getHitType() != HitType.OTHER && toolType.getHitType() == hitType)
+						|| toolType.getType().equals(hold.getType()))
+					return toolType.getDamage();
 			}
 			
 			net.minecraft.server.v1_8_R3.ItemStack item = CraftItemStack.asNMSCopy(hold);
