@@ -17,6 +17,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.commands.CommandType;
 import me.rey.core.database.SQLManager;
 import me.rey.core.energy.EnergyHandler;
+import me.rey.core.players.combat.PlayerHitCache;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.BuildSet;
 import me.rey.core.utils.Text;

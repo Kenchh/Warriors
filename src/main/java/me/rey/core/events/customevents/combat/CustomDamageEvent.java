@@ -1,4 +1,4 @@
-package me.rey.core.events.customevents.damage;
+package me.rey.core.events.customevents.combat;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-import me.rey.core.players.PlayerHit;
+import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.Utils;
 

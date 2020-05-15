@@ -1,6 +1,7 @@
 package me.rey.core.effects.repo;
 
 import org.bukkit.EntityEffect;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -16,17 +17,17 @@ public class Shock extends Effect {
 	}
 
 	@Override
-	public void onApply(Player p, double seconds) {
+	public void onApply(LivingEntity ent, double seconds) {
 		new BukkitRunnable() {
 			
 			@Override
 			public void run() {
-				if(!hasEffect(p) ||  p == null || !p.isOnline()) {
+				if(!hasEffect(ent) || ent == null || (ent instanceof Player && !((Player) ent).isOnline())) {
 					this.cancel();
 					return;
 				}
 				
-				p.playEffect(EntityEffect.HURT);
+				ent.playEffect(EntityEffect.HURT);
 			}
 			
 		}.runTaskTimer(Warriors.getInstance(), 0, 2);

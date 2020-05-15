@@ -1,4 +1,4 @@
-package me.rey.core.events.customevents;
+package me.rey.core.events.customevents.update;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

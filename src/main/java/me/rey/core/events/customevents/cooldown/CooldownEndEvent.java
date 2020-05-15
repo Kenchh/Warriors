@@ -1,18 +1,15 @@
-package me.rey.core.events.customevents;
+package me.rey.core.events.customevents.cooldown;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import me.rey.core.players.CombatTimer;
-
-public class CombatTimerEndEvent extends Event {
-	private final Player player;
-	private CombatTimer timer;
+public class CooldownEndEvent extends Event {
 	
-	public CombatTimerEndEvent(Player player, CombatTimer timer) {
+	private final Player player;
+	
+	public CooldownEndEvent(Player player) {
 		this.player = player;
-		this.timer = timer;
 	}
 	
 	private static final HandlerList HANDLERS = new HandlerList();
@@ -24,10 +21,6 @@ public class CombatTimerEndEvent extends Event {
 	
 	public static HandlerList getHandlerList() {
 		return HANDLERS;
-	}
-	
-	public CombatTimer getTimer() {
-		return timer;
 	}
 	
 	public Player getPlayer() {

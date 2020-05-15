@@ -39,21 +39,20 @@ import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IConstant.ITogglable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedByEntity;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
-import me.rey.core.effects.Effect;
 import me.rey.core.effects.repo.Silence;
 import me.rey.core.energy.IEnergyEditor;
 import me.rey.core.enums.AbilityFail;
 import me.rey.core.enums.State;
-import me.rey.core.events.customevents.AbilityFailEvent;
-import me.rey.core.events.customevents.AbilityUseEvent;
-import me.rey.core.events.customevents.EnergyUpdateEvent;
-import me.rey.core.events.customevents.UpdateEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
-import me.rey.core.events.customevents.damage.DamagedByEntityEvent;
+import me.rey.core.events.customevents.ability.AbilityFailEvent;
+import me.rey.core.events.customevents.ability.AbilityUseEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
+import me.rey.core.events.customevents.combat.DamagedByEntityEvent;
+import me.rey.core.events.customevents.update.EnergyUpdateEvent;
+import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.packets.ActionBar;
-import me.rey.core.players.PlayerHit;
 import me.rey.core.players.User;
+import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
@@ -122,6 +121,8 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 		Build b = user.getSelectedBuild(this.getClassType());
 		if(b == null) b = this.getClassType().getDefaultBuild();
+
+		
 		if(b.getAbility(this.getAbilityType()) == null || b.getAbility(this.getAbilityType()).getIdLong() != this.getIdLong()) return false;
 		
 		/*
@@ -134,7 +135,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		AbilityFailEvent event = null;
 		
 		// WHILE SILENCED
-		if(!whileSilenced && Effect.SILENCE.hasEffect(p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
+		if(!whileSilenced && new Silence().hasEffect(p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
 			if(!(conditions != null && conditions.length == 1 && (conditions[0] instanceof UpdateEvent || conditions[0] instanceof DamageEvent
 					|| conditions[0] instanceof DamagedByEntityEvent || conditions[0] instanceof EnergyUpdateEvent)) || this instanceof ITogglable) {
 				event = new AbilityFailEvent(AbilityFail.SILENCED, p, this, level);
@@ -540,12 +541,14 @@ public abstract class Ability extends Cooldown implements Listener {
 	/*
 	 * BOW ABILITIES / PREPARABLE / ON SHOT
 	 */
-	@EventHandler
+	@EventHandler (priority = EventPriority.HIGH)
 	public void onBowHit(DamageEvent e) {
 		if(!(this instanceof IBowPreparable)) return;
 		if(!e.getHitType().equals(HitType.ARCHERY)) return;
 		if(!new User(e.getDamager()).isUsingAbility(this)) return;
 		if(!((IBowPreparable) this).hasShot(e.getDamager())) return;
+		
+		if(e.isCancelled()) return;
 		
 		this.setCooldownCanceled(true);
 		this.run(true, true, e.getDamager(), this.findBooster(e.getDamager()), true, e);

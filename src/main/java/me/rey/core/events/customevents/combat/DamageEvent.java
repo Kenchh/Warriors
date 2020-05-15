@@ -1,11 +1,11 @@
-package me.rey.core.events.customevents.damage;
+package me.rey.core.events.customevents.combat;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.rey.core.Warriors;
-import me.rey.core.players.PlayerHitCache;
+import me.rey.core.players.combat.PlayerHitCache;
 import me.rey.core.pvp.ToolType.HitType;
 
 public class DamageEvent extends CustomDamageEvent {

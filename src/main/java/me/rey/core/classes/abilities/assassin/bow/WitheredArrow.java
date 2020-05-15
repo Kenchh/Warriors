@@ -15,8 +15,8 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IBowPreparable;
-import me.rey.core.events.customevents.damage.CustomDamageEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.combat.CustomDamageEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.players.User;
 
 public class WitheredArrow extends Ability implements IBowPreparable {

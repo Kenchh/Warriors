@@ -8,8 +8,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
-import me.rey.core.events.customevents.CustomKnockbackEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.combat.CustomKnockbackEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.players.User;
 
 public class Vigour extends ClassCondition {

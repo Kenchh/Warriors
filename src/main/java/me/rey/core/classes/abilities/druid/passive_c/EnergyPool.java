@@ -10,7 +10,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant;
 import me.rey.core.energy.EnergyHandler;
 import me.rey.core.energy.IEnergyEditor;
-import me.rey.core.events.customevents.EnergyUpdateEvent;
+import me.rey.core.events.customevents.update.EnergyUpdateEvent;
 import me.rey.core.players.User;
 
 public class EnergyPool extends Ability implements IConstant, IEnergyEditor {

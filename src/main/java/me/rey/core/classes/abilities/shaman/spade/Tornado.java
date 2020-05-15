@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.kenchh.main.Eclipse;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
@@ -61,8 +62,6 @@ public class Tornado extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setCooldown(13.0 - level*2);
-
         if(tornado.containsKey(p.getUniqueId()) == false) {
             return false;
         }
@@ -86,7 +85,11 @@ public class Tornado extends Ability {
                 TornadoObject t = tornado.get(p.getUniqueId());
 
                 t.updateTicks();
-                t.checkPrepare();
+                boolean prepare = t.checkPrepare();
+                if(prepare) {
+                    setCooldown(13.0 - level*2);
+                    applyCooldown(p);
+                }
 
                 Location found = t.move().clone();
                 found.setY(origin.getY());
@@ -132,7 +135,7 @@ public class Tornado extends Ability {
         final double travelspeed = 0.5;
         final double rotationspeed = 20;
         final double radius = 2;
-        final double knockup = 0.70;
+        final double knockup = 1;
         final double maxchargeticks = 60;
         //final double maxticks = 80;
         
@@ -158,14 +161,14 @@ public class Tornado extends Ability {
             }
         }
 
-        public void checkPrepare() {
+        public boolean checkPrepare() {
             if((ticks - lastpreparetick > 6 || ticks >= maxchargeticks) && lastpreparetick != -1) {
                 lastpreparetick = -1;
 
                 Block targetblock = null;
                 double direction = p.getLocation().getYaw() + 90;
 
-                for(int i=2; i<=15; i++) {
+                for(int i=0; i<=30; i++) {
                     if(BlockLocation.getTargetBlock(p, i).getType().isSolid()) {
                         targetblock = BlockLocation.getTargetBlock(p, i);
                         break;
@@ -183,8 +186,9 @@ public class Tornado extends Ability {
 
                 cordsAdders = BlockLocation.getXZCordsMultipliersFromDegree(direction);
                 SoundEffect.playCustomSound(loc, "tornado", 2F, 1F);
-                a.applyCooldown(p);
+                return true;
             }
+            return false;
         }
 
         public Location move() {
@@ -254,6 +258,8 @@ public class Tornado extends Ability {
                         double minZ = mincords[1];
 
                         if (le.getLocation().getX() <= maxX && le.getLocation().getZ() <= maxZ && le.getLocation().getX() >= minX && le.getLocation().getZ() >= minZ) {
+                        	if(le instanceof Player) Eclipse.getInstance().api.setCheckMode((Player) le, "tornado", 1.5); /* ANTICHEAT CHECK */
+
                             le.setVelocity(le.getVelocity().setY(knockup*charge));
                             (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slowduration, 0));
                             knockUped.add(le);

@@ -1,4 +1,4 @@
-package me.rey.core.players;
+package me.rey.core.players.combat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

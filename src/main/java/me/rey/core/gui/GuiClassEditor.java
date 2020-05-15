@@ -27,6 +27,8 @@ public class GuiClassEditor extends GuiEditable {
 	private Player p;
 	private SQLManager sql;
 	
+	private final int[] buildPositions = {2, 4, 6, 8, 30, 32, 34};
+	
 	public GuiClassEditor(Warriors plugin, ClassType classType, Player player) {
 		super("", 6, plugin);
 		
@@ -95,8 +97,7 @@ public class GuiClassEditor extends GuiEditable {
 				
 		};
 		
-		
-		int[] buildPositions = {2, 4, 6, 8, 30, 32, 34};
+
 		for(int i = 0; i < this.sql.getPlayerBuilds(u.getUniqueId(), classType).size(); i++) {
 			
 			Build b = this.sql.getPlayerBuilds(u.getUniqueId(), classType).get(i);
@@ -125,44 +126,19 @@ public class GuiClassEditor extends GuiEditable {
 				
 			}, buildPositions[position-1]);
 			
-			this.setEditItem(u, b, buildPositions[position-1]+9);
+			this.setEditItem(u, b, buildPositions[position-1]+9, buildPositions[position-1]);
 			this.setOptionsItem(u, b, buildPositions[position-1]+9*2);
 		}
 		
 		for(int i = 0; i < buildPositions.length; i++) {
 			
-			this.setEditItem(u, null, buildPositions[i]+9);
+			this.setEditItem(u, null, buildPositions[i]+9, buildPositions[i]);
 			this.setOptionsItem(u, null, buildPositions[i]+9*2);
 			
 			setItem(new GuiItem(emptyBuild) {
 				@Override
 				public void onUse(Player player, ClickType type, int slot) {
-					if(sql.getPlayerBuilds(player.getUniqueId(), classType).size() >= buildPositions.length) return;
-									
-					int position = Ints.indexOf(buildPositions, slot) + 1;
-					Build def = new Build("", UUID.randomUUID(), position, new HashMap<Ability, Integer>());
-					String name = "Build ";
-					int number = position;
-					
-					for(int index = 0; index <= buildPositions.length; index++) {
-						boolean repeated = false;
-						for(Build b : sql.getPlayerBuilds(u.getUniqueId(), classType).getArray()) {
-							if((name + index).equalsIgnoreCase(b.getRawName())) {
-								repeated = true;
-							}
-						}
-						if(!repeated) {
-							number = number + index;
-							break;
-						}
-					}
-					
-					def.setName(name + number);
-					
-					sql.createPlayerBuild(player.getUniqueId(), def, classType);
-					u.selectBuild(def, classType);
-					
-					updateInventory();
+					createBuild(player, slot);
 				}
 			}, buildPositions[i]);
 			
@@ -207,6 +183,37 @@ public class GuiClassEditor extends GuiEditable {
 		// IGNORE
 	}
 	
+	private Build createBuild(Player player, int slot) {
+		User u = new User(player);
+		if(sql.getPlayerBuilds(player.getUniqueId(), classType).size() >= buildPositions.length) return u.getSelectedBuild(classType);
+		
+		int position = Ints.indexOf(buildPositions, slot) + 1;
+		Build def = new Build("", UUID.randomUUID(), position, new HashMap<Ability, Integer>());
+		String name = "Build ";
+		int number = position;
+		
+		for(int index = 0; index <= buildPositions.length; index++) {
+			boolean repeated = false;
+			for(Build b : sql.getPlayerBuilds(u.getUniqueId(), classType).getArray()) {
+				if((name + index).equalsIgnoreCase(b.getRawName())) {
+					repeated = true;
+				}
+			}
+			if(!repeated) {
+				number = number + index;
+				break;
+			}
+		}
+		
+		def.setName(name + number);
+		
+		sql.createPlayerBuild(player.getUniqueId(), def, classType);
+		u.selectBuild(def, classType);
+		
+		updateInventory();
+		return u.getSelectedBuild(classType);
+	}
+	
 	private void setOptionsItem(User u, Build b, int slot) {
 		setItem(new GuiItem(new Item(Material.BOOK_AND_QUILL).setName("&7Options")) {
 			@Override
@@ -222,16 +229,18 @@ public class GuiClassEditor extends GuiEditable {
 		}, slot);
 	}
 	
-	private void setEditItem(User u, Build b, int slot) {
+	private void setEditItem(User u, Build b, int slot, int buildSlot) {
+		
 		setItem(new GuiItem(new Item(Material.ANVIL).setName("&7Edit: &e" + (b == null ? "None" : b.getName()))) {
 			@Override
 			public void onUse(Player player, ClickType type, int slot) {
 				
-				if(b != null) {
-					GuiClassAbilitiesEditor editor = new GuiClassAbilitiesEditor(player, classType, b);
-					editor.setup();
-					editor.open(u.getPlayer());
-				}
+				Build toEdit = b;
+				if(toEdit == null) toEdit = createBuild(player, buildSlot);
+						
+				GuiClassAbilitiesEditor editor = new GuiClassAbilitiesEditor(player, classType, toEdit);
+				editor.setup();
+				editor.open(u.getPlayer());
 							
 			}
 		}, slot);

@@ -87,6 +87,7 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 							
 							if(type == ClickType.LEFT) {
 								Build newBuild = toEdit;
+								if(tokens <= 0) return;
 								
 								if(!isInBuild) {
 									newBuild.setAbility(ability, 1);
@@ -95,7 +96,6 @@ public class GuiClassAbilitiesEditor extends GuiEditable {
 								}
 								
 								if (isInBuild && (newBuild.getAbilityLevel(abilityType)) < ability.getMaxLevel()){
-									if(tokens <= 0) return;
 									newBuild.setAbility(ability, newBuild.getAbilityLevel(abilityType) + 1);
 									new User(player).editBuild(toEdit, newBuild, classType);
 									updateInventory();

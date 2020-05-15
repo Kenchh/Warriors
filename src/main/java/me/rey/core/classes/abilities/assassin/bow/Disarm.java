@@ -13,9 +13,9 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IBowPreparable;
-import me.rey.core.effects.Effect;
-import me.rey.core.events.customevents.damage.CustomDamageEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.effects.repo.Silence;
+import me.rey.core.events.customevents.combat.CustomDamageEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.players.User;
 
 public class Disarm extends Ability implements IBowPreparable {
@@ -44,7 +44,7 @@ public class Disarm extends Ability implements IBowPreparable {
 			LivingEntity hit = ((CustomDamageEvent) conditions[0]).getDamagee();
 			if(!(hit instanceof Player)) return false;
 		
-			Effect.SILENCE.apply((Player) hit, seconds);
+			new Silence().apply((Player) hit, seconds);
 		}
 		
 		return true;

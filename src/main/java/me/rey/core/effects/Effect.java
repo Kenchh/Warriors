@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,16 +13,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
 import me.rey.core.effects.EffectType.Applyable;
-import me.rey.core.effects.repo.Shock;
-import me.rey.core.effects.repo.Silence;
 import me.rey.core.utils.Text;
 
 public abstract class Effect implements Listener, Applyable {
 	
-	public static final Effect SILENCE = new Silence();
-	public static final Effect SHOCK = new Shock();
-	
-	protected Set<Player> players;
+	protected Set<LivingEntity> players;
 	protected final String defaultApplyMessage, defaultExpireMessage;
 	
 	private EffectType type;
@@ -41,8 +37,8 @@ public abstract class Effect implements Listener, Applyable {
 		if(hasEffect(e.getPlayer())) this.expireForcefully(e.getPlayer());
 	}
 	
-	public boolean hasEffect(Player p) {
-		return players.contains(p);
+	public boolean hasEffect(LivingEntity ent) {
+		return players.contains(ent);
 	}
 	
 	public EffectType getType() {
@@ -54,23 +50,23 @@ public abstract class Effect implements Listener, Applyable {
 			this.players.remove(p);
 	}
 	
-	public void apply(Player p, double seconds) {
-		if(p == null) return;
+	public void apply(LivingEntity ent, double seconds) {
+		if(ent == null) return;
 		
-		this.players.add(p);
-		this.onApply(p, seconds);
+		this.players.add(ent);
+		this.onApply(ent, seconds);
 		
-		if(this.applySound() != null) this.applySound().play(p);
-		if(this.applyMessage() != null) p.sendMessage(Text.format("Effect", this.applyMessage()));;
+		if(this.applySound() != null && ent instanceof Player) this.applySound().play((Player) ent);
+		if(this.applyMessage() != null && ent instanceof Player) ent.sendMessage(Text.format("Effect", this.applyMessage()));;
 		
 		new BukkitRunnable() {
 			
 			@Override
 			public void run() {
-				players.remove(p);
+				players.remove(ent);
 				
-				if(expireSound() != null) expireSound().play(p);
-				if(expireMessage() != null) p.sendMessage(Text.format("Effect", expireMessage()));
+				if(expireSound() != null && ent instanceof Player) expireSound().play((Player) ent);
+				if(expireMessage() != null) ent.sendMessage(Text.format("Effect", expireMessage()));
 			}
 			
 		}.runTaskLater(Warriors.getInstance(), (int) Math.round(seconds * 20));

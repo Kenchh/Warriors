@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 
 import me.rey.core.combat.CombatManager;
 import me.rey.core.combat.DamageHandler;
-import me.rey.core.events.customevents.damage.CustomDamageEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
-import me.rey.core.events.customevents.damage.DamagedByEntityEvent;
-import me.rey.core.players.PlayerHit;
+import me.rey.core.events.customevents.combat.CustomDamageEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
+import me.rey.core.events.customevents.combat.DamagedByEntityEvent;
+import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.pvp.ToolType.HitType;
 
 public class UtilEnt {

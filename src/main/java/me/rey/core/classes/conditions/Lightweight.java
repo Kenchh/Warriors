@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
-import me.rey.core.events.customevents.CustomKnockbackEvent;
+import me.rey.core.events.customevents.combat.CustomKnockbackEvent;
 import me.rey.core.players.User;
 
 public class Lightweight extends ClassCondition {

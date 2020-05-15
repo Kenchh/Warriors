@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.effects.Effect;
@@ -41,7 +41,7 @@ public class Silence extends Effect {
 	}
 
 	@Override
-	public void onApply(Player p, double seconds) {
+	public void onApply(LivingEntity ent, double seconds) {
 		return;
 	}
 

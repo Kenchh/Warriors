@@ -15,7 +15,7 @@ import me.rey.core.utils.Utils;
 public enum ClassType {
 	
 	LEATHER(28, "Assassin", SoundEffect.SOFT,
-			new DefaultBuild(new Leap().setTempDefaultLevel(4)),
+			new DefaultBuild(),
 			Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS,
 			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 0)
 	),
@@ -41,7 +41,7 @@ public enum ClassType {
 	),
 	
 	BLACK(28, "Bandit", SoundEffect.SOFT,
-			new DefaultBuild(),
+			new DefaultBuild(new Leap().setTempDefaultLevel(4)),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 0, 0, 0),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 0, 0, 0), Utils.getColoredArmor(Material.LEATHER_BOOTS, 0, 0, 0),
 			new PotionEffect(PotionEffectType.SPEED, 20 * 100000, 0)

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.rey.core.events.customevents.CooldownEndEvent;
+import me.rey.core.events.customevents.cooldown.CooldownEndEvent;
 
 public abstract class Cooldown {
 	

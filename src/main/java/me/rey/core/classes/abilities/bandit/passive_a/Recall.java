@@ -18,8 +18,8 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.enums.AbilityFail;
-import me.rey.core.events.customevents.AbilityFailEvent;
-import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.events.customevents.ability.AbilityFailEvent;
+import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.Utils;
 
@@ -47,7 +47,7 @@ public class Recall extends Ability implements IDroppable {
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
-		return recall(u, p, level, conditions != null && conditions.length > 0 && (boolean) conditions[0] == true ? true : false);
+		return recall(u, p, level, false);
 	}
 	
 	@EventHandler
@@ -70,7 +70,7 @@ public class Recall extends Ability implements IDroppable {
 	public void onSecondaryRecall(AbilityFailEvent e) {
 		if(e.getAbility() == this && e.getFail() == AbilityFail.SLOWED) {
 			e.setMessageCancelled(true);
-			this.run(e.getPlayer(), null, true, true);
+			this.recall(new User(e.getPlayer()), e.getPlayer(), e.getLevel(), true);
 		}
 	}
 	

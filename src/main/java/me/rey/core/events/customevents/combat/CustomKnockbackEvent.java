@@ -1,4 +1,4 @@
-package me.rey.core.events.customevents;
+package me.rey.core.events.customevents.combat;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;

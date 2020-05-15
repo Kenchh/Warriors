@@ -17,8 +17,8 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
-import me.rey.core.events.customevents.CustomKnockbackEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.combat.CustomKnockbackEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.players.User;
 
 public class BruteForce extends Ability implements IDroppable, IPlayerDamagedEntity {

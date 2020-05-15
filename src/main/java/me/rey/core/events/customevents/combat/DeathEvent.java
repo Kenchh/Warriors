@@ -1,12 +1,12 @@
-package me.rey.core.events.customevents;
+package me.rey.core.events.customevents.combat;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import me.rey.core.players.DeathMessage;
-import me.rey.core.players.PlayerHit;
+import me.rey.core.players.combat.DeathMessage;
+import me.rey.core.players.combat.PlayerHit;
 
 public class DeathEvent extends Event {
 

@@ -19,7 +19,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant;
-import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;

@@ -17,9 +17,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 
-import me.rey.core.events.customevents.AbilityUseEvent;
 import me.rey.core.events.customevents.CustomPlayerInteractEvent;
-import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.ability.AbilityUseEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
 
 public class PlayerInteractChecker implements Listener {
 	

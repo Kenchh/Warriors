@@ -8,10 +8,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import me.rey.core.Warriors;
-import me.rey.core.events.customevents.DeathEvent;
-import me.rey.core.players.PlayerHit;
-import me.rey.core.players.PlayerHitCache;
+import me.rey.core.events.customevents.combat.DeathEvent;
 import me.rey.core.players.User;
+import me.rey.core.players.combat.PlayerHit;
+import me.rey.core.players.combat.PlayerHitCache;
 import me.rey.core.utils.Text;
 
 public class PlayerDeathEvent implements Listener {

@@ -6,8 +6,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.energy.EnergyHandler;
-import me.rey.core.events.customevents.EnergyUpdateEvent;
-import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.events.customevents.update.EnergyUpdateEvent;
+import me.rey.core.events.customevents.update.UpdateEvent;
 
 public class PlayerRunnableHandler extends BukkitRunnable {
 	

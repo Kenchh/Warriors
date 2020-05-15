@@ -19,7 +19,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.enums.AbilityFail;
-import me.rey.core.events.customevents.AbilityFailEvent;
+import me.rey.core.events.customevents.ability.AbilityFailEvent;
 import me.rey.core.players.User;
 
 public class Leap extends Ability {

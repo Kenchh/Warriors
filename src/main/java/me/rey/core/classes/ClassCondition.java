@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import me.rey.core.events.customevents.UpdateEvent;
+import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.players.User;
 
 public abstract class ClassCondition implements Listener {

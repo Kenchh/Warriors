@@ -1,12 +1,12 @@
-package me.rey.core.players;
+package me.rey.core.players.combat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
-import me.rey.core.events.customevents.CombatTimerEndEvent;
 import me.rey.core.events.customevents.CombatTimerTickEvent;
+import me.rey.core.events.customevents.combat.CombatTimerEndEvent;
 import me.rey.core.utils.References;
 
 public class CombatTimer extends BukkitRunnable {

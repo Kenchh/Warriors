@@ -1,6 +1,6 @@
 package me.rey.core.effects;
 
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 
 public enum EffectType {
 	
@@ -8,7 +8,7 @@ public enum EffectType {
 	
 	public interface Applyable {
 	
-		void onApply(Player p, double seconds);
+		void onApply(LivingEntity ent, double seconds);
 		
 		SoundEffect applySound();
 		SoundEffect expireSound();

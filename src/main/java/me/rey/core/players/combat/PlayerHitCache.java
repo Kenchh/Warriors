@@ -1,4 +1,4 @@
-package me.rey.core.players;
+package me.rey.core.players.combat;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -13,7 +13,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IDamageTrigger;
-import me.rey.core.events.customevents.damage.DamageEvent;
+import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.players.User;
 
 public class RapidSuccession extends Ability implements IDamageTrigger {
