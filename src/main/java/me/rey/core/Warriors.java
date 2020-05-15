@@ -8,17 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import me.rey.core.classes.abilities.assassin.axe.Dash;
-import me.rey.core.classes.abilities.assassin.axe.Flash;
-import me.rey.core.classes.abilities.assassin.bow.BlindingArrow;
-import me.rey.core.classes.abilities.assassin.bow.Disarm;
-import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
-import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
-import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
-import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
-import me.rey.core.classes.abilities.assassin.sword.Evade;
-import me.rey.core.classes.abilities.druid.passive_a.Void;
-import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -29,22 +18,33 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.rey.core.classes.ClassCondition;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
+import me.rey.core.classes.abilities.assassin.axe.Dash;
+import me.rey.core.classes.abilities.assassin.axe.Flash;
+import me.rey.core.classes.abilities.assassin.bow.BlindingArrow;
+import me.rey.core.classes.abilities.assassin.bow.Disarm;
+import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
+import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
+import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
+import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
+import me.rey.core.classes.abilities.assassin.sword.Evade;
 import me.rey.core.classes.abilities.bandit.axe.Blink;
-import me.rey.core.classes.abilities.bandit.passive_a.BruteForce;
 import me.rey.core.classes.abilities.bandit.axe.Leap;
-import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
+import me.rey.core.classes.abilities.bandit.passive_a.BruteForce;
 import me.rey.core.classes.abilities.bandit.passive_a.Recall;
-import me.rey.core.classes.abilities.knight.axe.HoldPosition;
-import me.rey.core.classes.abilities.knight.sword.Immunity;
 import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
-import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
-import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
+import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
+import me.rey.core.classes.abilities.druid.passive_a.Void;
 import me.rey.core.classes.abilities.druid.passive_b.MagmaBlade;
 import me.rey.core.classes.abilities.druid.passive_b.NullBlade;
+import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
+import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
+import me.rey.core.classes.abilities.knight.axe.HoldPosition;
+import me.rey.core.classes.abilities.knight.sword.Immunity;
+import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import me.rey.core.classes.conditions.ArcaneRepair;
-import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.classes.conditions.Lightweight;
+import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.combat.DamageHandlerEvents;
 import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
@@ -62,7 +62,6 @@ import me.rey.core.items.Glow;
 import me.rey.core.players.PlayerHitCache;
 import me.rey.core.players.PlayerRunnableHandler;
 import me.rey.core.pvp.Build;
-import me.rey.core.utils.EffectUtils;
 import me.rey.core.utils.Text;
 
 /*
@@ -190,7 +189,6 @@ public class Warriors extends JavaPlugin {
 		pm.registerEvents(new DamageHandlerEvents(), this);
 		pm.registerEvents(new UseSoupEvent(), this);
 		pm.registerEvents(new PlayerInteractChecker(), this);
-		pm.registerEvents(new EffectUtils(), this);
 	}
 
 	/*
