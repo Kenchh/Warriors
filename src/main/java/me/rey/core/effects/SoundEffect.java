@@ -1,7 +1,8 @@
-package me.rey.core.utils;
+package me.rey.core.effects;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 public class SoundEffect {
 	
@@ -15,11 +16,16 @@ public class SoundEffect {
 	
 	
 	private Sound sound;
-	private float pitch;
+	private float pitch, volume;
 	
 	public SoundEffect(Sound sound, float pitch) {
 		this.pitch = pitch;
 		this.sound = sound;
+		this.volume = 1F;
+	}
+	
+	public float getVolume() {
+		return volume;
 	}
 	
 	public Sound getSound() {
@@ -30,6 +36,11 @@ public class SoundEffect {
 		return pitch;
 	}
 	
+	public SoundEffect setVolume(float volume) {
+		this.volume = volume;
+		return this;
+	}
+	
 	public SoundEffect setSound(Sound sound) {
 		this.sound = sound;
 		return this;
@@ -38,6 +49,14 @@ public class SoundEffect {
 	public SoundEffect setPitch(float pitch) {
 		this.pitch = pitch;
 		return this;
+	}
+	
+	public void play(Location loc) {
+		loc.getWorld().playSound(loc, this.getSound(), 1.0F, this.getPitch());
+	}
+	
+	public void play(Player player) {
+		player.playSound(player.getLocation(), this.getSound(), 1.0F, this.getPitch());
 	}
 
 	public static void playCustomSound(Location loc, String sound, float volume, float pitch) {
