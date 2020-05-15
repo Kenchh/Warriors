@@ -1,6 +1,7 @@
 package me.rey.core.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -8,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.rey.core.combat.CombatManager;
+import me.rey.core.combat.DamageHandler;
 import me.rey.core.events.customevents.damage.CustomDamageEvent;
 import me.rey.core.events.customevents.damage.DamageEvent;
 import me.rey.core.events.customevents.damage.DamagedByEntityEvent;
@@ -25,12 +27,15 @@ public class UtilEnt {
 	
 	public static void damage(double damage, String cause, LivingEntity damagee, LivingEntity damager) {
 		
+		damage = DamageHandler.calcEffects(damage, damagee, damager);
+		damage = DamageHandler.calcArmor(damage, damagee, null);
+		
 		CustomDamageEvent event = null;
 		if(damager instanceof Player) {
 			event = new DamageEvent(HitType.OTHER, (Player) damager, damagee, damage, null);
 			
 			if(damagee instanceof Player) {
-				event.setHit(new PlayerHit((Player) damagee, ((Player) damager).getName(), damage, cause));
+				event.setHit(new PlayerHit((Player) damagee, ((Player) damager).getName(), damage, ChatColor.GREEN.toString() + cause));
 				((DamageEvent) event).storeCache();
 			}
 			
@@ -48,6 +53,8 @@ public class UtilEnt {
 		if(allow) {
 			damagee.setHealth(Math.max(0, Math.min(damagee.getHealth() - damage, damagee.getMaxHealth())));
 			CombatManager.resetTime(damagee);
+			
+			DamageHandler.playEntitySound(damagee);
 		}
 	}
 	

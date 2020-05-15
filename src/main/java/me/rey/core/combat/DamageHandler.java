@@ -194,13 +194,13 @@ public class DamageHandler implements Listener {
 		 * ARMOR VALUES
 		 */
 		if(entity instanceof Player) {
-			ClassType wearing = new User((Player) e.getEntity()).getWearingClass();
+			ClassType wearing = new User((Player) entity).getWearingClass();
 			
 			if(e != null && e.isApplicable(DamageModifier.ARMOR))
 				e.setDamage(DamageModifier.ARMOR, 0);
 			
 			if(wearing != null)
-				return (entity.getMaxHealth() / wearing.getHealth()) * e.getDamage();
+				return (entity.getMaxHealth() / wearing.getHealth()) * damage;
 		
 		}
 		return damage;

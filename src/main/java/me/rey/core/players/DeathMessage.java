@@ -52,8 +52,8 @@ public class DeathMessage {
 	}
 	
 	public String get() {		
-		return Text.color(killerName == null  || killerName.trim() == "" ? String.format("&9Death> &e%s &7has died.", dead) : 
-			String.format("&9Death> &e%s &7was killed by &e%s&7%s", dead, killerName + (assists <= 0 ? "" : " + " + assists),
+		return Text.format("Death", killerName == null  || killerName.trim() == "" ? String.format("&e%s &7has died.", dead) : 
+			String.format("&e%s &7was killed by &e%s&7%s", dead, killerName + (assists <= 0 ? "" : " + " + assists),
 			heldItemName == null ? "&7." : " using &f" + heldItemName + "&7."));
 	}
 	
