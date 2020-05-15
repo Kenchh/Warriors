@@ -80,7 +80,7 @@ public class Tornado extends Ability {
 
         final double distance = 21 + (level * 3);
         ot.traveldistance = distance;
-
+        ot.slowduration += level*20;
         ot.preparing = false;
 
         Location origin = p.getLocation().clone();
@@ -120,11 +120,11 @@ public class Tornado extends Ability {
         boolean preparing = true;
 
         double traveldistance;
+        int slowduration = 40;
 
         double charge = 0.01;
 
         double cordsAdders[];
-
 
         Player p;
         Ability a;
@@ -195,7 +195,9 @@ public class Tornado extends Ability {
         public Location move() {
             if(lastpreparetick == -1) {
                 loc.setX(loc.getX() + cordsAdders[0] * travelspeed * charge);
-                loc.setY(BlockLocation.highestLocation(loc).getY());
+                if(BlockLocation.highestLocation(loc) != null) {
+                    loc.setY(BlockLocation.highestLocation(loc).getY());
+                }
                 loc.setZ(loc.getZ() + cordsAdders[1] * travelspeed * charge);
             }
             return loc;
@@ -258,7 +260,7 @@ public class Tornado extends Ability {
 
                         if (le.getLocation().getX() <= maxX && le.getLocation().getZ() <= maxZ && le.getLocation().getX() >= minX && le.getLocation().getZ() >= minZ) {
                             le.setVelocity(le.getVelocity().setY(knockup*charge));
-                            (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 0));
+                            (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slowduration, 0));
                             knockUped.add(le);
                         } else {
                             continue;
