@@ -12,12 +12,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rey.core.Warriors;
 import me.rey.core.effects.EffectType.Applyable;
+import me.rey.core.effects.repo.Shock;
 import me.rey.core.effects.repo.Silence;
 import me.rey.core.utils.Text;
 
 public abstract class Effect implements Listener, Applyable {
 	
 	public static final Effect SILENCE = new Silence();
+	public static final Effect SHOCK = new Shock();
 	
 	protected Set<Player> players;
 	protected final String defaultApplyMessage, defaultExpireMessage;
@@ -28,8 +30,8 @@ public abstract class Effect implements Listener, Applyable {
 		this.type = type;
 		this.players = new HashSet<>();
 		
-		this.defaultApplyMessage = "You are now " + name + (name.endsWith("e") ? "d" : "ed")+ ".";
-		this.defaultExpireMessage = "You are no longer " + name + (name.endsWith("e") ? "d" : "ed")+ ".";
+		this.defaultApplyMessage = "You are now " + name.toLowerCase() + (name.endsWith("e") ? "d" : "ed")+ ".";
+		this.defaultExpireMessage = "You are no longer " + name.toLowerCase() + (name.endsWith("e") ? "d" : "ed")+ ".";
 		
 		Bukkit.getServer().getPluginManager().registerEvents(this, Warriors.getInstance());
 	}

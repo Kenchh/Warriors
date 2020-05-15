@@ -21,7 +21,7 @@ public class Shock extends Effect {
 			
 			@Override
 			public void run() {
-				if(p == null || !p.isOnline()) {
+				if(!hasEffect(p) ||  p == null || !p.isOnline()) {
 					this.cancel();
 					return;
 				}
@@ -29,7 +29,7 @@ public class Shock extends Effect {
 				p.playEffect(EntityEffect.HURT);
 			}
 			
-		}.runTaskTimerAsynchronously(Warriors.getInstance(), 0, (int) (20 * seconds));
+		}.runTaskTimer(Warriors.getInstance(), 0, 2);
 	}
 
 	@Override
