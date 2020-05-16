@@ -27,10 +27,10 @@ public class TeamManager {
 			if(u.getUniqueId().equals(user.getUniqueId()))
 				team = teams.get(u);
 		
-		return team == null ? createTeam(user, team) : team;
+		return team == null ? createTeam(user, new PlayerTeam(user)) : team;
 	}
 
-	public class PlayerTeam {
+	public static class PlayerTeam {
 		
 		private ArrayList<User> team;
 		private User self;
