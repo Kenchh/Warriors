@@ -267,5 +267,9 @@ public class UtilBlock {
 		}
 		return blockList;
 	}
+	
+	public static HashMap<Block, Double> getBlocksInRadius(Location loc, Double dR) {
+	    return getBlocksInRadius(loc, dR, 999.0D);
+	}
 
 }
