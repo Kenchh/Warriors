@@ -12,16 +12,32 @@ public class TeamManager {
 		return teams;
 	}
 	
+	public static Team createTeam(Team team) {
+		if(team == null) return team;
+		teams.add(team);
+		return team;
+	}
+	
+	public static void deleteTeam(Team team) {
+		teams.remove(team);
+	}
+	
 	public static Team getPlayerTeam(User user) {
 		for(Team t : teams)
 			if(t.hasMember(user))
 				return t;
 		return null;
 	}
+	
+	public static Team setPlayerTeam(Team toJoin, User user) {
+		getPlayerTeam(user).removeMember(user);
+		if(toJoin != null) toJoin.addMember(user);
+		return toJoin;
+	}
 
 	public class Team {
 		
-		ArrayList<User> team;
+		private ArrayList<User> team;
 		
 		public Team(User... players) {
 			team = new ArrayList<User>();
@@ -51,7 +67,7 @@ public class TeamManager {
 			return getMatchingUser(user) != null;
 		}
 		
-		public User getMatchingUser(User user) {
+		private User getMatchingUser(User user) {
 			for(User u : team)
 				if(u.getUniqueId().equals(user.getUniqueId())) return u;
 			return null;
