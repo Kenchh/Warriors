@@ -172,7 +172,8 @@ public class IronHook extends Ability {
                     }
 
                     hookedentity = e;
-                    hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(e.getLocation().getDirection().getY() + grabBaseKnockup+level*grabKnockupLevelMultiplier));
+                    hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(e.getLocation().getDirection().getY() + 0.7));
+                    Bukkit.broadcastMessage(e.getLocation().getDirection().getY() + " " + grabBaseKnockup + " " + grabKnockupLevelMultiplier);
                     p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 2F);
                     break;
                 }

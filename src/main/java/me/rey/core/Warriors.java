@@ -38,6 +38,7 @@ import me.rey.core.classes.abilities.bandit.passive_a.Scream;
 import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
 import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
+import me.rey.core.classes.abilities.druid.axe.IcePrison;
 import me.rey.core.classes.abilities.druid.passive_a.Void;
 import me.rey.core.classes.abilities.druid.passive_b.MagmaBlade;
 import me.rey.core.classes.abilities.druid.passive_b.NullBlade;
@@ -250,6 +251,7 @@ public class Warriors extends JavaPlugin {
 				new EnergyRegeneration(),
 				new EnergyPool(),
 				new FireBlast(),
+				new IcePrison(),
 				new MagmaBlade(),
 				new Void(),
 
