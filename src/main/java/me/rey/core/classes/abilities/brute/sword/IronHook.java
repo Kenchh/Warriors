@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class IronHook extends Ability {
+	
     public IronHook() {
         super(601, "Iron Hook", ClassType.DIAMOND, AbilityType.SWORD, 1, 3, 10, Arrays.asList(
                 "Right click to charge up an iron hook,",

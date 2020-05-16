@@ -75,7 +75,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private int maxLevel, tempDefaultLevel, tokenCost;
 	private long id;
 	private boolean skipCooldownCheck, cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
-	private double cooldown, resetCooldown, energyCost;
+	private double cooldown, resetCooldown, energyCost, resetEnergy;
 	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
 	public Ability(long id, String name, ClassType classType, AbilityType abilityType, int tokenCost, int maxLevel, double cooldown, List<String> description) {
@@ -95,6 +95,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.id = id;
 		this.tokenCost = tokenCost;
 		this.energyCost = 0.00;
+		this.resetEnergy = energyCost;
 		this.description = new String[description.size()];
 		this.tempMaxCooldowns = new HashMap<>();
 		this.whileSilenced = false;
@@ -124,6 +125,8 @@ public abstract class Ability extends Cooldown implements Listener {
 
 		
 		if(b.getAbility(this.getAbilityType()) == null || b.getAbility(this.getAbilityType()).getIdLong() != this.getIdLong()) return false;
+		
+		resetEnergy = energyCost;
 		
 		/*
 		 * BOOSTER WEAPONS
@@ -225,8 +228,6 @@ public abstract class Ability extends Cooldown implements Listener {
 					((ITogglable) this).off(p);
 				}
 				return false;
-			} else {
-				user.consumeEnergy(this.energyCost);
 			}
 		}
 		
@@ -234,6 +235,9 @@ public abstract class Ability extends Cooldown implements Listener {
 		boolean success = this.execute(user, p, level, conditions);
 		
 		this.applyCooldown(p);
+		
+		user.consumeEnergy(this.energyCost);
+		this.setEnergyCost(resetEnergy);
 		return success;
 	}
 	
