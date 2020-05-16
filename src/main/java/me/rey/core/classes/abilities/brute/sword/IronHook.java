@@ -5,14 +5,17 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.players.User;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import me.rey.core.utils.BlockLocation;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -49,7 +52,6 @@ public class IronHook extends Ability {
                 public void run() {
 
                     IronHookObject ih = ironhook.get(p.getUniqueId());
-                    ih.maxchargeticks = (int) (5.5-0.5*level) * 20;
 
                     ih.updateLoc();
 
@@ -64,7 +66,8 @@ public class IronHook extends Ability {
                             applyCooldown(p);
                         }
 
-                        if (ih.collisioncheckticks >= ih.maxcollisioncheckticks) {
+                        if (ih.destroy() || ih.tooOld()) {
+                            ih.hook.remove();
                             ironhook.remove(p.getUniqueId());
                             this.cancel();
                             return;
@@ -87,23 +90,43 @@ public class IronHook extends Ability {
         Player p;
         int level;
         Location loc;
+        Vector direction;
 
-        int ticks;
         int chargeticks = 1;
+        double charge = 0.01;
         boolean charged;
 
-        int maxchargeticks = 60;
+        int maxchargeticks;
 
         boolean thrown = false;
         Item hook;
 
-        Entity hookedentity;
+        Entity hookedentity = null;
 
-        int collisioncheckticks = 0;
-        final int maxcollisioncheckticks = 50;
+        int ticksalive = 0;
+
+        /* Charging hook */
+        final double baseChargeCooldown = 5.5;
+        final double subtractPerLevel = 0.5;
+
+        /* Throwing the hook */
+        final double throwBaseV = 0.5;
+        final double throwChargeV = 0.5;
+        final double throwLevelMultiplier = 0.25;
+
+        /* Hook grabbing entity */
+        final double grabChargeV = 0.75;
+        final double grabLevelMultiplier = 0.25;
+        final double grabBaseKnockup = 0.5;
+        final double grabKnockupLevelMultiplier = 0.5;
+        final double hitbox = 0.5;
+
+        final int maxticksalive = 40;
 
         public IronHookObject(Player p, int level) {
             this.p = p;
+            this.level = level;
+            this.maxchargeticks = (int) (baseChargeCooldown-subtractPerLevel*level) * 20;
         }
 
         public void updateLoc() {
@@ -113,22 +136,34 @@ public class IronHook extends Ability {
         public void charge() {
             if(chargeticks < maxchargeticks) {
                 chargeticks++;
-                if(chargeticks+20 < maxchargeticks)
-                    p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1F, 2F*(((float) (chargeticks+20)/(float) maxchargeticks)));
+                charge = (double) chargeticks/(double) maxchargeticks;
+                if(chargeticks*2+20 < maxchargeticks)
+                    p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1F, 2F*(((float) (chargeticks*2+20)/(float) maxchargeticks)));
             }
         }
 
         public void throwHook() {
             if(thrown == false) {
                 hook = p.getWorld().dropItem(loc, new ItemStack(Material.TRIPWIRE_HOOK));
-                hook.setVelocity(p.getLocation().getDirection().multiply(1*(chargeticks/(maxchargeticks/(1.75+0.25*level)))).setY(0.2));
+                direction = p.getLocation().getDirection();
+                ItemStack is = hook.getItemStack();
+                ItemMeta im = is.getItemMeta();
+                im.setDisplayName(ChatColor.RED + "IronHook#" + p.getName());
+                is.setItemMeta(im);
+                hook.setItemStack(is);
+                hook.setVelocity(direction.normalize().multiply(throwBaseV+(throwChargeV*charge)*(1+level*throwLevelMultiplier)).setY(direction.getY() + 0.2));
                 thrown = true;
             }
         }
 
         public void checkForCollision() {
-            collisioncheckticks++;
-            for(Entity e : hook.getNearbyEntities(0.5, 0.5, 0.5)) {
+            ticksalive++;
+
+            if(hookedentity != null) {
+                return;
+            }
+
+            for(Entity e : hook.getNearbyEntities(hitbox, hitbox, hitbox)) {
                 if(e instanceof LivingEntity && hookedentity != e) {
 
                     if(e == p) {
@@ -136,14 +171,41 @@ public class IronHook extends Ability {
                     }
 
                     hookedentity = e;
-                    e.setVelocity(p.getLocation().getDirection().multiply(-1*(chargeticks/(maxchargeticks/(1.75+0.25*level)))).setY(0.7));
+                    hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(e.getLocation().getDirection().getY() + grabBaseKnockup+level*grabKnockupLevelMultiplier));
                     p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 2F);
                     break;
                 }
             }
         }
 
+        public boolean tooOld() {
+            if(ticksalive >= maxticksalive) {
+                return true;
+            }
+            return false;
+        }
 
+        public boolean destroy() {
+            if(hook.isOnGround()) {
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    @EventHandler
+    public void onPickUp(PlayerPickupItemEvent e) {
+        for(IronHookObject ih : ironhook.values()) {
+
+            if(e.getItem().getItemStack() == null || e.getItem().getItemStack().getItemMeta() == null || e.getItem().getItemStack().getItemMeta().getDisplayName() == null) {
+                return;
+            }
+
+            if(ih.hook.getItemStack().getItemMeta().getDisplayName() == e.getItem().getItemStack().getItemMeta().getDisplayName()) {
+                e.setCancelled(true);
+            }
+        }
     }
 
 }
