@@ -34,6 +34,7 @@ import me.rey.core.classes.abilities.bandit.axe.Blink;
 import me.rey.core.classes.abilities.bandit.axe.Leap;
 import me.rey.core.classes.abilities.bandit.passive_a.BruteForce;
 import me.rey.core.classes.abilities.bandit.passive_a.Recall;
+import me.rey.core.classes.abilities.bandit.passive_a.Scream;
 import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
 import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
@@ -235,6 +236,7 @@ public class Warriors extends JavaPlugin {
 				new Leap(),
 				new Recall(),
 				new RapidSuccession(),
+				new Scream(),
 				new SmokeBomb(),
 				
 				//NINJA

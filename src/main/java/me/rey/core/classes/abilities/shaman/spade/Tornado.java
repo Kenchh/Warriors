@@ -21,6 +21,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.effects.SoundEffect;
+import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.utils.BlockLocation;
@@ -36,7 +37,6 @@ public class Tornado extends Ability {
         		));
     }
 
-    public HashMap<UUID, Integer> prepareTornado = new HashMap<>();
     public HashMap<UUID, TornadoObject> tornado = new HashMap<>();
 
     public boolean run(Player p, ToolType toolType, boolean messages, Object... conditions) {
@@ -158,6 +158,8 @@ public class Tornado extends Ability {
             if(lastpreparetick != -1) {
                 lastpreparetick = ticks;
                 charge = ticks/maxchargeticks;
+                
+                ActionBar.getChargingBar(a.getName(), charge * 100).send(p);
             }
         }
 

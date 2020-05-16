@@ -739,25 +739,17 @@ public abstract class Ability extends Cooldown implements Listener {
 			
 			// Canceling if the cooldown is ignored or the player has 0 cooldown
 			if(this.ignoresCooldown || pCooldown == 0) continue;
-				
-			// DISPLAYING ACTION BAR
-			int bars = 15;
-			String barsString = "";
 			
-			double mult = bars / maxCooldown;
-			int toAdd = (int) Math.round((maxCooldown - pCooldown) * mult) + 1;
-
-			for(int i = 1; i <= bars; i++) {
-				barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "▌";
-			}
-			
+			String READY;
 			if(pCooldown <= 0.1) {
-				barsString = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
+				READY = ChatColor.GREEN + ChatColor.BOLD.toString() + "READY!";
+				new ActionBar(Text.color("&f&l" + this.getName() + " " + READY)).send(p);
+				continue;
 			} else {
-				barsString += " &f" + pCooldown + " Seconds";
+				READY = "&f" + pCooldown + " Seconds";
 			}
 			
-			new ActionBar(Text.color("&f&l" + this.getName() + " " + barsString)).send(p);
+			ActionBar.getChargingBar(this.getName(), pCooldown, maxCooldown, READY).send(p);
 		}
 	}
 	

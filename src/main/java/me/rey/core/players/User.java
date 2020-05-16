@@ -3,8 +3,10 @@ package me.rey.core.players;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
@@ -17,6 +19,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.commands.CommandType;
 import me.rey.core.database.SQLManager;
 import me.rey.core.energy.EnergyHandler;
+import me.rey.core.events.customevents.team.TeamProcessEvent;
 import me.rey.core.players.combat.PlayerHitCache;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.Build.BuildSet;
@@ -39,6 +42,13 @@ public class User {
 	
 	public Player getPlayer() {
 		return this.player;
+	}
+	
+	public Set<Player> getTeam(){
+		TeamProcessEvent event = new TeamProcessEvent(this.getPlayer());
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		return event.getTeammates();
 	}
 	 
 	public UUID getUniqueId() {
