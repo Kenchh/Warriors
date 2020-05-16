@@ -8,7 +8,6 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.gui.Gui;
 import me.rey.core.items.Throwable;
 import me.rey.core.players.User;
-import me.rey.core.utils.BlockLocation;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -175,7 +174,7 @@ public class IronHook extends Ability {
 
                     hookedentity = e;
                     if(hookedentity instanceof Player) {
-                        Eclipse.getInstance().api.setCheckMode((Player) hookedentity, "IronHook", 2);
+                        Eclipse.getInstance().api.setCheckMode((Player) hookedentity, "Iron Hook", 2);
                     }
                     hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(0.5 + direction.normalize().getY() * grabBaseKnockup+level*grabKnockupLevelMultiplier));
                     p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1.5F);

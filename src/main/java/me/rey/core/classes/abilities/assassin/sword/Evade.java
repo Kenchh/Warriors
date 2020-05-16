@@ -18,7 +18,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant;
 import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.players.User;
-import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.UtilBlock;
 
 public class Evade extends Ability implements IConstant {
 
@@ -131,10 +131,10 @@ public class Evade extends Ability implements IConstant {
         tpLoc.setY(damager.getLocation().getY());
         locInBetween.setY(damager.getLocation().getY());
 
-        if(damager.getLocation().getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(damager.getLocation().getBlock()).getType().isSolid() == false) {
-            if (locInBetween.getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(locInBetween.getBlock()).getType().isSolid() == false) {
+        if(damager.getLocation().getBlock().getType().isSolid() == false && UtilBlock.getBlockAbove(damager.getLocation().getBlock()).getType().isSolid() == false) {
+            if (locInBetween.getBlock().getType().isSolid() == false && UtilBlock.getBlockAbove(locInBetween.getBlock()).getType().isSolid() == false) {
 
-                if (tpLoc.getBlock().getType().isSolid() == false && BlockLocation.getBlockAbove(tpLoc.getBlock()).getType().isSolid() == false) {
+                if (tpLoc.getBlock().getType().isSolid() == false && UtilBlock.getBlockAbove(tpLoc.getBlock()).getType().isSolid() == false) {
                     damagee.teleport(tpLoc);
                     return;
                 }

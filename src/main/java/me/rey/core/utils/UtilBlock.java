@@ -2,6 +2,7 @@ package me.rey.core.utils;
 
 import java.util.HashMap;
 
+import me.rey.core.events.customevents.block.CustomBlockPlaceEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -9,7 +10,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class BlockLocation {
+public class UtilBlock {
+
+	public static void replaceBlock(CustomBlockPlaceEvent.PlaceCause cause, Block old, Block replace) {
+		CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(cause, old, replace);
+	}
 
 	public static Block getTargetBlock(Player player, int range) {
 		org.bukkit.Location loc = player.getEyeLocation();

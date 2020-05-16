@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
+import me.rey.core.utils.UtilBlock;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -23,7 +24,6 @@ import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
-import me.rey.core.utils.BlockLocation;
 import me.rey.core.utils.Text;
 import me.rey.core.utils.Utils;
 
@@ -101,16 +101,16 @@ public class Flash extends Ability implements IConstant {
 
         if(p.getLocation().getBlock().getType().isSolid() == false) { /* TODO Temporary Condition Solution for non-cubic blocks */
 
-            if (BlockLocation.atBlockGap(p, p.getLocation().getBlock()) == false && BlockLocation.atBlockGap(p, BlockLocation.getBlockAbove(p.getLocation().getBlock())) == false) {
+            if (UtilBlock.atBlockGap(p, p.getLocation().getBlock()) == false && UtilBlock.atBlockGap(p, UtilBlock.getBlockAbove(p.getLocation().getBlock())) == false) {
                 for (int i = 0; i < range; i++) {
 
-                    if (BlockLocation.atBlockGap(p, BlockLocation.getTargetBlock(p, i)) || BlockLocation.atBlockGap(p, BlockLocation.getBlockAbove(BlockLocation.getTargetBlock(p, i)))) {
-                        b = BlockLocation.getTargetBlock(p, i - 1);
+                    if (UtilBlock.atBlockGap(p, UtilBlock.getTargetBlock(p, i)) || UtilBlock.atBlockGap(p, UtilBlock.getBlockAbove(UtilBlock.getTargetBlock(p, i)))) {
+                        b = UtilBlock.getTargetBlock(p, i - 1);
                         break;
                     }
 
-                    if (BlockLocation.getTargetBlock(p, i).getType().isSolid() == false && BlockLocation.getBlockAbove(BlockLocation.getTargetBlock(p, i)).getType().isSolid() == false) {
-                        b = BlockLocation.getTargetBlock(p, i);
+                    if (UtilBlock.getTargetBlock(p, i).getType().isSolid() == false && UtilBlock.getBlockAbove(UtilBlock.getTargetBlock(p, i)).getType().isSolid() == false) {
+                        b = UtilBlock.getTargetBlock(p, i);
                     } else {
                         break;
                     }
@@ -135,7 +135,7 @@ public class Flash extends Ability implements IConstant {
 
                 Block tb = p.getTargetBlock((Set<Material>) null, 5);
                 float dir = (float)Math.toDegrees(Math.atan2(p.getLocation().getBlockX() - tb.getX(), tb.getZ() - p.getLocation().getBlockZ()));
-                BlockFace face = BlockLocation.getClosestFace(dir);
+                BlockFace face = UtilBlock.getClosestFace(dir);
 
                 if(face == BlockFace.NORTH || face == BlockFace.EAST || face == BlockFace.SOUTH || face == BlockFace.WEST) {
                     Location tloc = tb.getLocation();

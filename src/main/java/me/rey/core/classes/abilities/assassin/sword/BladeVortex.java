@@ -20,7 +20,7 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.players.User;
-import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.UtilBlock;
 import me.rey.core.utils.UtilEnt;
 
 public class BladeVortex extends Ability {
@@ -114,7 +114,7 @@ public class BladeVortex extends Ability {
         HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
 
         for(double degree=0; degree<=360; degree++) {
-            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(p, radius, degree));
+            maxmincords.put(degree, UtilBlock.getXZCordsFromDegree(p, radius, degree));
         }
 
         for(double degree=0;degree<=90;degree++) {
@@ -144,7 +144,7 @@ public class BladeVortex extends Ability {
         HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
 
         for(double degree=0; degree<=360; degree++) {
-            maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(location, rotated, radius, radius, degree));
+            maxmincords.put(degree, UtilBlock.getXZCordsFromDegree(location, rotated, radius, radius, degree));
         }
 
         for(double degree=0; degree<=360; degree+=4) {

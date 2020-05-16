@@ -24,7 +24,7 @@ import me.rey.core.effects.SoundEffect;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
-import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.UtilBlock;
 
 public class Tornado extends Ability {
     public Tornado() {
@@ -171,8 +171,8 @@ public class Tornado extends Ability {
                 double direction = p.getLocation().getYaw() + 90;
 
                 for(int i=0; i<=30; i++) {
-                    if(BlockLocation.getTargetBlock(p, i).getType().isSolid()) {
-                        targetblock = BlockLocation.getTargetBlock(p, i);
+                    if(UtilBlock.getTargetBlock(p, i).getType().isSolid()) {
+                        targetblock = UtilBlock.getTargetBlock(p, i);
                         break;
                     }
                 }
@@ -186,7 +186,7 @@ public class Tornado extends Ability {
                     }
                 }
 
-                cordsAdders = BlockLocation.getXZCordsMultipliersFromDegree(direction);
+                cordsAdders = UtilBlock.getXZCordsMultipliersFromDegree(direction);
                 SoundEffect.playCustomSound(loc, "tornado", 2F, 1F);
                 return true;
             }
@@ -196,8 +196,8 @@ public class Tornado extends Ability {
         public Location move() {
             if(lastpreparetick == -1) {
                 loc.setX(loc.getX() + cordsAdders[0] * travelspeed * charge);
-                if(BlockLocation.highestLocation(loc) != null) {
-                    loc.setY(BlockLocation.highestLocation(loc).getY());
+                if(UtilBlock.highestLocation(loc) != null) {
+                    loc.setY(UtilBlock.highestLocation(loc).getY());
                 }
                 loc.setZ(loc.getZ() + cordsAdders[1] * travelspeed * charge);
             }
@@ -209,7 +209,7 @@ public class Tornado extends Ability {
             HashMap<Double, double[]> dCords = new HashMap<Double, double[]>();
 
             for(double degree=0; degree<=720D; degree++) {
-                dCords.put(degree, BlockLocation.getXZCordsMultipliersFromDegree(degree-ticks*rotationspeed));
+                dCords.put(degree, UtilBlock.getXZCordsMultipliersFromDegree(degree-ticks*rotationspeed));
             }
 
             for(double degree=0; degree<=720D; degree+=particlecount) {
@@ -245,7 +245,7 @@ public class Tornado extends Ability {
                     HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
 
                     for (double degree = 0; degree <= 360; degree++) {
-                        maxmincords.put(degree, BlockLocation.getXZCordsFromDegree(loc, radius, degree));
+                        maxmincords.put(degree, UtilBlock.getXZCordsFromDegree(loc, radius, degree));
                     }
 
                     for (double degree = 0; degree <= 90; degree++) {
