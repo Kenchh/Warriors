@@ -175,7 +175,7 @@ public class IronHook extends Ability {
 
                     hookedentity = e;
                     if(hookedentity instanceof Player) {
-                        Eclipse.getInstance().api.setCheckMode(p, "IronHook", 2);
+                        Eclipse.getInstance().api.setCheckMode((Player) hookedentity, "IronHook", 2);
                     }
                     hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(0.5 + direction.normalize().getY() * grabBaseKnockup+level*grabKnockupLevelMultiplier));
                     p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1.5F);
