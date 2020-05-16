@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.rey.core.utils.UtilEnt;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -22,6 +21,7 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.players.User;
 import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.UtilEnt;
 
 public class BladeVortex extends Ability {
 
@@ -91,7 +91,10 @@ public class BladeVortex extends Ability {
                 double distance = p.getLocation().distance(e.getLocation());
                 if (inCircle(p, e)) {
                     LivingEntity le = (LivingEntity) e;
+                    
+                    
                     UtilEnt.damage(5+level, this.getName(), le, p);
+                    
                     le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * (1.0 + 0.5 * level)), 1));
                     if (distance < 2.6) {
                         pushAway(p, e);

@@ -17,7 +17,6 @@ public class Skill implements CommandExecutor {
 			
 			Player p = (Player) sender;
 			new User(p).sendListingClassSkills(new User(p).getWearingClass());
-			
 		}
 		
 		
