@@ -1,9 +1,12 @@
 package me.rey.core.classes.abilities.brute.sword;
 
+import me.kenchh.main.Eclipse;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
+import me.rey.core.gui.Gui;
+import me.rey.core.items.Throwable;
 import me.rey.core.players.User;
 import me.rey.core.utils.BlockLocation;
 import org.bukkit.*;
@@ -30,12 +33,12 @@ public class IronHook extends Ability {
                 "Right click to charge up an iron hook,",
                 "release hook by releasing right click.",
                 "",
-                "Fully Charged Iron Hook's have a velocity",
-                "<variable>1.75+0.25*l</variable> times greater than an uncharged hook.",
+                "Fully charging increases the hook's accuracy",
+                "and pull strength by <variable>25+25*l</variable>% (+25%).",
                 "",
-                "Charge up time: <variable>5.5-0.5*l</variable>",
+                "Charge time: <variable>5.5-0.5*l</variable> (-0.5)",
                 "",
-                "Recharge: <variable>10.5-0.5*l</variable>"
+                "Recharge: <variable>10.5-0.5*l</variable> (-0.5)"
         ));
     }
 
@@ -68,7 +71,7 @@ public class IronHook extends Ability {
                         }
 
                         if (ih.destroy() || ih.tooOld()) {
-                            ih.hook.remove();
+                            ih.hook.destroy();
                             ironhook.remove(p.getUniqueId());
                             this.cancel();
                             return;
@@ -100,7 +103,7 @@ public class IronHook extends Ability {
         int maxchargeticks;
 
         boolean thrown = false;
-        Item hook;
+        Throwable hook;
 
         Entity hookedentity = null;
 
@@ -111,15 +114,15 @@ public class IronHook extends Ability {
         final double subtractPerLevel = 0.5;
 
         /* Throwing the hook */
-        final double throwBaseV = 0.5;
+        final double throwBaseV = 0.75;
         final double throwChargeV = 0.5;
-        final double throwLevelMultiplier = 0.25;
+        final double throwLevelMultiplier = 0.5;
 
         /* Hook grabbing entity */
         final double grabChargeV = 0.75;
         final double grabLevelMultiplier = 0.25;
-        final double grabBaseKnockup = 0.5;
-        final double grabKnockupLevelMultiplier = 0.5;
+        final double grabBaseKnockup = 0.3;
+        final double grabKnockupLevelMultiplier = 0.10;
         final double hitbox = 0.5;
 
         final int maxticksalive = 40;
@@ -128,6 +131,7 @@ public class IronHook extends Ability {
             this.p = p;
             this.level = level;
             this.maxchargeticks = (int) (baseChargeCooldown-subtractPerLevel*level) * 20;
+            this.hook = new Throwable(new Gui.Item(Material.TRIPWIRE_HOOK), false);
         }
 
         public void updateLoc() {
@@ -145,14 +149,9 @@ public class IronHook extends Ability {
 
         public void throwHook() {
             if(thrown == false) {
-                hook = p.getWorld().dropItem(loc, new ItemStack(Material.TRIPWIRE_HOOK));
                 direction = p.getLocation().getDirection();
-                ItemStack is = hook.getItemStack();
-                ItemMeta im = is.getItemMeta();
-                im.setDisplayName(ChatColor.RED + "IronHook#" + p.getName());
-                is.setItemMeta(im);
-                hook.setItemStack(is);
-                hook.setVelocity(direction.normalize().multiply(throwBaseV+(throwChargeV*charge)*(1+level*throwLevelMultiplier)).setY(direction.getY() + 0.2));
+                p.getWorld().playSound(p.getLocation(), Sound.IRONGOLEM_THROW, 2f, 0.8f);
+                hook.fire(p.getEyeLocation(), direction,throwBaseV+(throwChargeV*charge)*(1+level*throwLevelMultiplier), direction.getY(), 0.2);
                 thrown = true;
             }
         }
@@ -164,7 +163,10 @@ public class IronHook extends Ability {
                 return;
             }
 
-            for(Entity e : hook.getNearbyEntities(hitbox, hitbox, hitbox)) {
+            hook.getEntityitem().getWorld().playSound(hook.getEntityitem().getLocation(), Sound.FIRE_IGNITE, 1.4F, 0.8F);
+            hook.getEntityitem().getWorld().spigot().playEffect(hook.getEntityitem().getLocation(), Effect.CRIT, 0, 0, 0, 0, 0, 0, 1, 50);
+
+            for(Entity e : hook.getEntityitem().getNearbyEntities(hitbox, hitbox, hitbox)) {
                 if(e instanceof LivingEntity && hookedentity != e) {
 
                     if(e == p) {
@@ -172,9 +174,11 @@ public class IronHook extends Ability {
                     }
 
                     hookedentity = e;
-                    hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(e.getLocation().getDirection().getY() + 0.7));
-                    Bukkit.broadcastMessage(e.getLocation().getDirection().getY() + " " + grabBaseKnockup + " " + grabKnockupLevelMultiplier);
-                    p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 2F);
+                    if(hookedentity instanceof Player) {
+                        Eclipse.getInstance().api.setCheckMode((Player) hookedentity, "IronHook", 2);
+                    }
+                    hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(0.5 + direction.normalize().getY() * grabBaseKnockup+level*grabKnockupLevelMultiplier));
+                    p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1.5F);
                     break;
                 }
             }
@@ -188,26 +192,12 @@ public class IronHook extends Ability {
         }
 
         public boolean destroy() {
-            if(hook.isOnGround()) {
+            if(hook.getEntityitem().isOnGround()) {
                 return true;
             }
             return false;
         }
 
-    }
-
-    @EventHandler
-    public void onPickUp(PlayerPickupItemEvent e) {
-        for(IronHookObject ih : ironhook.values()) {
-
-            if(e.getItem().getItemStack() == null || e.getItem().getItemStack().getItemMeta() == null || e.getItem().getItemStack().getItemMeta().getDisplayName() == null) {
-                return;
-            }
-
-            if(ih.hook.getItemStack().getItemMeta().getDisplayName() == e.getItem().getItemStack().getItemMeta().getDisplayName()) {
-                e.setCancelled(true);
-            }
-        }
     }
 
 }
