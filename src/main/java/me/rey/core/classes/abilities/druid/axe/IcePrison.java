@@ -3,7 +3,6 @@ package me.rey.core.classes.abilities.druid.axe;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +18,7 @@ import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.players.User;
-import me.rey.core.utils.BlockLocation;
+import me.rey.core.utils.UtilBlock;
 import me.rey.core.utils.UtilMath;
 
 public class IcePrison extends Ability {
@@ -62,7 +61,7 @@ public class IcePrison extends Ability {
 					loc.setZ(loc.getZ() + 0.5);
 					throwable.destroy();
 		
-					HashMap<Block, Double> blocks = BlockLocation.getBlocksInRadius(loc, 4.2D);
+					HashMap<Block, Double> blocks = UtilBlock.getBlocksInRadius(loc, 4.2D);
 					
 					for (Block cur : blocks.keySet()) {
 						if (air(cur)) {
