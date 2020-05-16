@@ -1,5 +1,6 @@
 package me.rey.core.classes.abilities.brute.sword;
 
+import me.kenchh.main.Eclipse;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
@@ -173,6 +174,9 @@ public class IronHook extends Ability {
                     }
 
                     hookedentity = e;
+                    if(hookedentity instanceof Player) {
+                        Eclipse.getInstance().api.setCheckMode(p, "IronHook", 2);
+                    }
                     hookedentity.setVelocity(direction.normalize().multiply(-((grabChargeV*charge)+level*grabLevelMultiplier)).setY(0.5 + direction.normalize().getY() * grabBaseKnockup+level*grabKnockupLevelMultiplier));
                     p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1.5F);
                     break;
