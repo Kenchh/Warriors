@@ -1,5 +1,6 @@
 package me.rey.core.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -7,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -282,6 +284,67 @@ public class UtilBlock {
 	
 	public static HashMap<Block, Double> getBlocksInRadius(Location loc, Double dR) {
 	    return getBlocksInRadius(loc, dR, 999.0D);
+	}
+
+	public static ArrayList<Entity> getEntitiesInCircle(Location loc, double radius) {
+
+		ArrayList<Entity> en = new ArrayList<Entity>();
+
+		for(Entity e : loc.getWorld().getNearbyEntities(loc, radius, radius, radius)) {
+			HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
+
+			for (double degree = 0; degree <= 360; degree++) {
+				maxmincords.put(degree, UtilBlock.getXZCordsFromDegree(loc, radius, degree));
+			}
+
+			for (double degree = 0; degree <= 90; degree++) {
+
+				double[] maxcords = maxmincords.get(degree);
+				double[] mincords = maxmincords.get(180 + degree);
+
+				double maxX = maxcords[0];
+				double maxZ = maxcords[1];
+
+				double minX = mincords[0];
+				double minZ = mincords[1];
+
+				if (e.getLocation().getX() <= maxX && e.getLocation().getZ() <= maxZ && e.getLocation().getX() >= minX && e.getLocation().getZ() >= minZ) {
+					en.add(e);
+				} else {
+					continue;
+				}
+			}
+		}
+
+		return en;
+	}
+
+	public static ArrayList<Location> circleLocations(Location loc, double radius) {
+		ArrayList<Location> cl = new ArrayList<Location>();
+
+		for(int degree=0; degree<=360; degree++) {
+
+			double x = getXZCordsFromDegree(loc, radius, degree)[0];
+			double z = getXZCordsFromDegree(loc, radius, degree)[1];
+
+			cl.add(new Location(loc.getWorld(), x, loc.getY(), z));
+		}
+
+		return cl;
+	}
+
+	public static ArrayList<Location> circleLocations(Location loc, double radius, double y) {
+		ArrayList<Location> cl = new ArrayList<Location>();
+
+		for(int degree=0; degree<=360; degree++) {
+
+			double x = getXZCordsFromDegree(loc, radius, degree)[0];
+			double z = getXZCordsFromDegree(loc, radius, degree)[1];
+
+			cl.add(new Location(loc.getWorld(), x, y, z));
+		}
+
+		return cl;
 	}
 
 }
