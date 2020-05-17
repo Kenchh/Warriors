@@ -27,8 +27,13 @@ public class Synthesis extends Ability {
         super(511, "Synthesis", ClassType.GREEN, AbilityType.AXE, 1, 3, 12, Arrays.asList(
                 "Summon the power of the sun, giving",
                 "allies within <variable>4.5+0.5*l</variable> blocks Strength for",
-                "<variable>2.5+0.5*l</variable> seconds"
+                "<variable>2.5+0.5*l</variable> seconds",
+                "",
+                "Energy Consumption: <variable>60</variable>",
+                "",
+                "Recharge: <variable>12</variable> seconds"
         ));
+        this.setEnergyCost(60);
     }
 
     public HashMap<UUID, Integer> synthTicks = new HashMap<UUID, Integer>();
@@ -36,12 +41,12 @@ public class Synthesis extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        u.consumeEnergy(60);
-
         double radius = 4.5+0.5*level;
         int duration = (int) (2.5+0.5*level)*20;
         Location loc = p.getLocation().clone();
+
         loc.getWorld().playSound(loc, Sound.CAT_HISS, 1F, 1.5F);
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -51,7 +56,7 @@ public class Synthesis extends Ability {
                         if (e instanceof Player) {
                             Player p = (Player) e;
                             if(u.getTeam().contains(p)) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, duration, 1));
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, duration, 0));
                             }
                         }
                     }
