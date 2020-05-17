@@ -110,9 +110,9 @@ public class ParticleEffect {
 	
 	public static class ColoredParticle extends ParticleEffect {
 
-		private int red, green, blue;
+		private float red, green, blue;
 		
-		public ColoredParticle(int red, int green, int blue) {
+		public ColoredParticle(float red, float green, float blue) {
 			super(Effect.COLOURED_DUST);
 			
 			this.red = red;
@@ -122,7 +122,7 @@ public class ParticleEffect {
 		
 		@Override
 		public void play(Location loc) {
-			loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
+			loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255F, green/255F, blue/255F, 1F, 0, 50);
 		}
 	}
 }
