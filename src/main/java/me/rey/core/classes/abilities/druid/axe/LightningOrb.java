@@ -106,8 +106,7 @@ public class LightningOrb extends Ability {
 				ent.addPotionEffect(slow);
 				new Shock().apply(ent, 2.0D);
 				
-				ParticleEffect effect = new ColoredParticle(3, 244, 252);
-				UtilParticle.makeParticlesBetween(item.getLocation(), ent.getLocation(), effect, 0.2D);
+				ent.getWorld().strikeLightningEffect(ent.getLocation());
 				UtilEnt.damage(5 + level, this.getName(), ent, responsible);
 			}
 			
