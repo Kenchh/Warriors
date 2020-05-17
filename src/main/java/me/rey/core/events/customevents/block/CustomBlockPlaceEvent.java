@@ -1,5 +1,6 @@
 package me.rey.core.events.customevents.block;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -9,7 +10,8 @@ public class CustomBlockPlaceEvent extends Event implements Cancellable {
 
     private PlaceCause cause;
     private Block oldBlock;
-    private Block replacementBlock;
+    private Material replacementBlock;
+    private byte data;
     private boolean isCancelled;
 
     @Override
@@ -26,10 +28,11 @@ public class CustomBlockPlaceEvent extends Event implements Cancellable {
         ABILITY, OTHER
     }
 
-    public CustomBlockPlaceEvent(PlaceCause cause, Block old, Block replace) {
+    public CustomBlockPlaceEvent(PlaceCause cause, Block old, Material replace, byte data) {
         this.cause = cause;
         this.oldBlock = old;
         this.replacementBlock = replace;
+        this.data = data;
     }
 
     public PlaceCause getCause() {
@@ -40,8 +43,12 @@ public class CustomBlockPlaceEvent extends Event implements Cancellable {
         return oldBlock;
     }
 
-    public Block getReplacementBlock() {
+    public Material getReplacementMaterial() {
         return replacementBlock;
+    }
+    
+    public byte getData() {
+    	return data;
     }
 
     public static HandlerList getHANDLERS() {

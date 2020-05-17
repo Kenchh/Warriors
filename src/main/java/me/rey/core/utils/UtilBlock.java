@@ -2,18 +2,30 @@ package me.rey.core.utils;
 
 import java.util.HashMap;
 
-import me.rey.core.events.customevents.block.CustomBlockPlaceEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import me.rey.core.events.customevents.block.CustomBlockPlaceEvent;
+
 public class UtilBlock {
 
-	public static void replaceBlock(CustomBlockPlaceEvent.PlaceCause cause, Block old, Block replace) {
-		CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(cause, old, replace);
+	@SuppressWarnings("deprecation")
+	public static boolean replaceBlock(CustomBlockPlaceEvent.PlaceCause cause, Block old, Material replace, byte data) {
+		CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(cause, old, replace, data);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		if(!event.isCancelled()) {
+			old.setType(replace);
+			old.setData(data);
+			return true;
+		}
+		
+		return false;
 	}
 
 	public static Block getTargetBlock(Player player, int range) {
