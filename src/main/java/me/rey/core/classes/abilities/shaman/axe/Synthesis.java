@@ -24,12 +24,12 @@ import java.util.UUID;
 
 public class Synthesis extends Ability {
     public Synthesis() {
-        super(511, "Synthesis", ClassType.GREEN, AbilityType.AXE, 1, 3, 12, Arrays.asList(
+        super(511, "Synthesis", ClassType.GREEN, AbilityType.AXE, 1, 4, 12, Arrays.asList(
                 "Summon the power of the sun, giving",
                 "allies within <variable>4.5+0.5*l</variable> blocks Strength for",
                 "<variable>2.5+0.5*l</variable> seconds",
                 "",
-                "Energy Consumption: <variable>60</variable>",
+                "Energy: <variable>60</variable>",
                 "",
                 "Recharge: <variable>12</variable> seconds"
         ));
@@ -70,7 +70,7 @@ public class Synthesis extends Ability {
                         synthTicks.replace(p.getUniqueId(), synthTicks.get(p.getUniqueId())+1);
                     }
 
-                    for(Location loc : UtilBlock.circleLocations(loc, radius*synthTicks.get(p.getUniqueId())/5)) {
+                    for(Location loc : UtilBlock.circleLocations(loc, radius*synthTicks.get(p.getUniqueId())/5, 5)) {
                         UtilParticle.playColoredParticle(loc, 250F, 250F, 120F);
                     }
 
