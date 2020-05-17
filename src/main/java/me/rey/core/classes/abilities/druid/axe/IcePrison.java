@@ -7,7 +7,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -97,7 +96,7 @@ public class IcePrison extends Ability {
 			@Override
 			public void run() {
 				
-				boolean check = checkForCollision(throwable);
+				boolean check = me.rey.core.items.Throwable.checkForBlockCollision(throwable) != null;
 				if (check) {
 					Block block = throwable.getEntityitem().getLocation().getBlock();
 					Location loc = block.getLocation();
@@ -140,20 +139,6 @@ public class IcePrison extends Ability {
 		this.setCooldown(20 - (level));
 		this.setEnergyCost(57 - (level * 3));
 		return true;
-	}
-
-	private boolean checkForCollision(me.rey.core.items.Throwable ice) {
-
-		if (ice == null)
-			return false;
-
-		Block self = ice.getEntityitem().getLocation().getBlock();
-
-		Block bOne = self.getRelative(BlockFace.UP), bTwo = self.getRelative(BlockFace.DOWN);
-		Block bThree = self.getRelative(BlockFace.WEST), bFour = self.getRelative(BlockFace.EAST);
-		Block bFive = self.getRelative(BlockFace.NORTH), bSix = self.getRelative(BlockFace.SOUTH);
-
-		return !solid(bOne) || !solid(bTwo) || !solid(bThree) || !solid(bFour) || !solid(bFive) || !solid(bSix);
 	}
 
 	private boolean solid(Block b) {

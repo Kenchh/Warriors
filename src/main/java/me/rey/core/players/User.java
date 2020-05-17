@@ -48,6 +48,7 @@ public class User {
 		TeamProcessEvent event = new TeamProcessEvent(this.getPlayer());
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
+		event.addTeammate(this.getPlayer());
 		return event.getTeammates();
 	}
 	 
