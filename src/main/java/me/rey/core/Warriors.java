@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import me.rey.core.classes.abilities.brute.sword.IronHook;
+import me.rey.core.classes.abilities.shaman.axe.Synthesis;
 import me.rey.core.combat.DamageHandler;
 import me.rey.core.players.combat.PlayerHitCache;
 import org.bukkit.Bukkit;
@@ -260,6 +261,7 @@ public class Warriors extends JavaPlugin {
 				//SHAMAN
 				new NullBlade(),
 				new Tornado(),
+				new Synthesis(),
 
 				//BERSERKER
 

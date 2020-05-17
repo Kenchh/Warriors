@@ -1,5 +1,6 @@
 package me.rey.core.utils;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -23,6 +24,14 @@ public class UtilParticle {
 			init.subtract(pvector);
 			pvector.normalize();
 		}
+	}
+
+	public static void playColoredParticle(Location loc, float red, float green, float blue) {
+		loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
+	}
+
+	public static void playColoredParticle(Location loc, float red, float green, float blue, int particlecount, int radius) {
+		loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, particlecount, radius);
 	}
 
 }
