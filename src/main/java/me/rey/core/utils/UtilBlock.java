@@ -333,6 +333,20 @@ public class UtilBlock {
 		return cl;
 	}
 
+	public static ArrayList<Location> circleLocations(Location loc, double radius, int iteratecount) {
+		ArrayList<Location> cl = new ArrayList<Location>();
+
+		for(int degree=0; degree<=360; degree += iteratecount) {
+
+			double x = getXZCordsFromDegree(loc, radius, degree)[0];
+			double z = getXZCordsFromDegree(loc, radius, degree)[1];
+
+			cl.add(new Location(loc.getWorld(), x, loc.getY(), z));
+		}
+
+		return cl;
+	}
+
 	public static ArrayList<Location> circleLocations(Location loc, double radius, double y) {
 		ArrayList<Location> cl = new ArrayList<Location>();
 

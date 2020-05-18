@@ -83,7 +83,7 @@ public class DamageHandler implements Listener {
 		ItemStack hold = damager instanceof LivingEntity ? ((LivingEntity) damager).getEquipment().getItemInHand() : null;
 		double rawDamage = this.getDamage(hold, hitType);
 		if(damager instanceof Player) e.setDamage(rawDamage);
-		
+
 		/*
 		 * CALL DAMAGE EVENT
 		 */
@@ -98,7 +98,10 @@ public class DamageHandler implements Listener {
 			
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
-			
+
+			// CALCULATE EFECTS
+			e.setDamage(calcEffects(e.getDamage(), (LivingEntity) damagee, (LivingEntity) damager));
+
 			playerDamager.setLevel((int) Math.round(e.getDamage()));
 			
 			((DamageEvent) damageEvent).storeCache();
@@ -115,9 +118,7 @@ public class DamageHandler implements Listener {
 			if(damageEvent.isCancelled())
 				e.setCancelled(true);
 		}
-		
-		// CALCULATE EFECTS
-		e.setDamage(calcEffects(e.getDamage(), (LivingEntity) damagee, (LivingEntity) damager));		
+
 		
 		// CALCULATING FINAL DAMAGE ON ARMOR
 		e.setDamage(calcArmor(e.getDamage(), (LivingEntity) damagee, e));
