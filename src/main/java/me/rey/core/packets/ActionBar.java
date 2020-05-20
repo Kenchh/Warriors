@@ -11,6 +11,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 public class ActionBar extends Packets {
 
 	private String text;
+	public static int maxChargeBars = 15;
 	
 	public ActionBar(String text) {
 		this.text = text;
@@ -24,7 +25,7 @@ public class ActionBar extends Packets {
 	}
 	
 	public static ActionBar getChargingBar(String name, double charge, double maxCharge, String... extraText) {
-		int bars = 15;
+		int bars = maxChargeBars;
 		String barsString = "";
 		
 		double mult = bars / maxCharge;
@@ -34,14 +35,14 @@ public class ActionBar extends Packets {
 			barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "▌";
 		}
 		
-		String newText = "&f&l" + name + " " + barsString + " &r";
+		String newText = (name.equals("") ? "": "&f&l" + name + " ") + barsString + " &r";
 		for(String s : extraText) newText += s;
 		
 		return new ActionBar(Text.color(newText));
 	}
 	
 	public static ActionBar getChargingBar(String name, double percentage, String... extraText) {
-		int bars = 15;
+		int bars = maxChargeBars;
 		String barsString = "";
 		
 		int toAdd = (int) Math.round(bars * percentage / 100);
@@ -50,7 +51,7 @@ public class ActionBar extends Packets {
 			barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "▌";
 		}
 		
-		String newText = "&f&l" + name + " " + barsString + " &r";
+		String newText = (name.equals("") ? "": "&f&l" + name + " ") + barsString + " &r";
 		for(String s : extraText) newText += s;
 		
 		return new ActionBar(Text.color(newText));

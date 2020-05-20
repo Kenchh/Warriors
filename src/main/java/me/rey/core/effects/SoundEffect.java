@@ -59,7 +59,7 @@ public class SoundEffect {
 	public void play(Player player) {
 		player.playSound(player.getLocation(), this.getSound(), 1.0F, this.getPitch());
 	}
-
+	
 	public static void playCustomSound(Location loc, String sound, float volume, float pitch) {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			p.playSound(loc, sound, volume, pitch);

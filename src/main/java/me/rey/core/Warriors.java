@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.shaman.axe.Synthesis;
+import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
 import me.rey.core.combat.DamageHandler;
 import me.rey.core.players.combat.PlayerHitCache;
 import org.bukkit.Bukkit;
@@ -259,6 +260,7 @@ public class Warriors extends JavaPlugin {
 				new Void(),
 
 				//SHAMAN
+				new Aromatherapy(),
 				new NullBlade(),
 				new Tornado(),
 				new Synthesis(),
