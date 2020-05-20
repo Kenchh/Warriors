@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
 import me.rey.core.classes.abilities.shaman.axe.Synthesis;
+import me.rey.core.classes.abilities.shaman.spade.Paralysis;
 import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
 import me.rey.core.combat.DamageHandler;
 import me.rey.core.players.combat.PlayerHitCache;
@@ -266,6 +267,7 @@ public class Warriors extends JavaPlugin {
 				new NullBlade(),
 				new Tornado(),
 				new Synthesis(),
+				new Paralysis(),
 
 				//BERSERKER
 
