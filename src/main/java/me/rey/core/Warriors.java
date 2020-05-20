@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import me.rey.core.classes.abilities.brute.sword.IronHook;
+import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
 import me.rey.core.classes.abilities.shaman.axe.Synthesis;
 import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
 import me.rey.core.combat.DamageHandler;
@@ -258,6 +259,7 @@ public class Warriors extends JavaPlugin {
 				new LightningOrb(),
 				new MagmaBlade(),
 				new Void(),
+				new ArcticZone(),
 
 				//SHAMAN
 				new Aromatherapy(),

@@ -33,6 +33,8 @@ public class Tornado extends Ability {
                 "that will knock up and slow all ",
                 "enemies for <variable>2+l</variable> (+1) Seconds hit by it.",
                 "",
+                "Tornado travels for a max distance of <variable>21+l*3</variable> blocks.",
+                "",
                 "Recharge: <variable>13.0 - l*2</variable> (-2) Seconds"
         		));
     }
@@ -238,7 +240,7 @@ public class Tornado extends Ability {
 
                     LivingEntity le = (LivingEntity) e;
 
-                    if(le.getName().equalsIgnoreCase(p.getName()) || knockUped.contains(le)) {
+                    if(knockUped.contains(le)) {
                         continue;
                     }
 
@@ -263,7 +265,9 @@ public class Tornado extends Ability {
                         	if(le instanceof Player) Eclipse.getInstance().api.setCheckMode((Player) le, "tornado", 1.5); /* ANTICHEAT CHECK */
 
                             le.setVelocity(le.getVelocity().setY(knockup*charge));
-                            (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slowduration, 0));
+                            if(le.getName().equalsIgnoreCase(p.getName()) == false) {
+                                (le).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slowduration, 0));
+                            }
                             knockUped.add(le);
                         } else {
                             continue;
