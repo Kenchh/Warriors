@@ -17,14 +17,11 @@ import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
-import me.rey.core.effects.ParticleEffect;
-import me.rey.core.effects.ParticleEffect.ColoredParticle;
 import me.rey.core.effects.repo.Shock;
 import me.rey.core.gui.Gui.Item;
 import me.rey.core.items.Throwable;
 import me.rey.core.players.User;
 import me.rey.core.utils.UtilEnt;
-import me.rey.core.utils.UtilParticle;
 
 public class LightningOrb extends Ability {
 

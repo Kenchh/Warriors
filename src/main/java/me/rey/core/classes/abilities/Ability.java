@@ -62,6 +62,8 @@ import net.md_5.bungee.api.ChatColor;
 
 public abstract class Ability extends Cooldown implements Listener {
 	
+	private final String USED;
+	
 	// Cooldowns
 	private HashMap<UUID, Double> tempMaxCooldowns;
 	
@@ -80,6 +82,8 @@ public abstract class Ability extends Cooldown implements Listener {
 	
 	public Ability(long id, String name, ClassType classType, AbilityType abilityType, int tokenCost, int maxLevel, double cooldown, List<String> description) {
 		super(Warriors.getInstance(), Text.format(name, "You can use &a" + name + "&7."));
+		
+		this.USED = Text.format(name, "You can use &a%s&7.");
 		
 		this.name = name;
 		this.classType = classType;
@@ -217,7 +221,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(abilityEvent.isCancelled()) return false;
 		}
 		
-		if(useEnergy && this.energyCost > 0) {
+		if(useEnergy) {
 			if(user.getEnergy() < this.energyCost) {
 
 				if(messages)
@@ -361,6 +365,11 @@ public abstract class Ability extends Cooldown implements Listener {
 	
 	public boolean sendUsedMessageToPlayer(Player p, String name) {
 		new User(p).sendMessageWithPrefix(this.getName(), "You used &a" + name + "&7.");
+		return true;
+	}
+	
+	public boolean sendReadyMessageToPlayer(Player p, String name) {
+		new User(p).sendMessage(this.USED.replace("%s", name));
 		return true;
 	}
 	
