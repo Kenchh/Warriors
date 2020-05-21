@@ -97,7 +97,7 @@ public class IcePrison extends Ability {
 			public void run() {
 				
 				boolean check = me.rey.core.items.Throwable.checkForBlockCollision(throwable) != null;
-				if (check) {
+				if (check || ticks > (10 * 20)) {
 					Block block = throwable.getEntityitem().getLocation().getBlock();
 					Location loc = block.getLocation();
 					loc.setX(loc.getX() + 0.5);
@@ -107,7 +107,7 @@ public class IcePrison extends Ability {
 					HashMap<Block, Double> blocks = UtilBlock.getBlocksInRadius(loc, 4.2D);
 					
 					for (Block cur : blocks.keySet()) {
-						if (solid(cur)) {
+						if (UtilBlock.air(cur)) {
 		
 							double offset = UtilMath.offset(block.getLocation(), cur.getLocation());
 							if (offset >= 2.8D && offset <= 4.1) {
@@ -125,12 +125,6 @@ public class IcePrison extends Ability {
 					return;
 				}
 				
-				if(ticks > (30 * 20)) {
-					throwable.destroy();
-					this.cancel();
-					return;
-				}
-				
 				ticks++;
 			}
 		}.runTaskTimer(Warriors.getInstance(), 0, 1);
@@ -140,14 +134,10 @@ public class IcePrison extends Ability {
 		this.setEnergyCost(57 - (level * 3));
 		return true;
 	}
-
-	private boolean solid(Block b) {
-		return b == null || b.getType().equals(Material.AIR) || !b.getType().isSolid() || !b.getType().isOccluding();
-	}
 	
 	@SuppressWarnings("deprecation")
 	public void FreezeBlock(Player p, Block freeze, Block mid, int level){
-	    if (!solid(freeze)) 
+	    if (!UtilBlock.air(freeze)) 
 	      return;
 	    
 	    double time = 4 + (1 * level);

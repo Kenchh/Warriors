@@ -360,5 +360,9 @@ public class UtilBlock {
 
 		return cl;
 	}
+	
+	public static boolean air(Block b) {
+		return b == null || b.getType().equals(Material.AIR) || (!b.getType().isSolid() || !b.getType().isOccluding()) ;
+	}
 
 }
