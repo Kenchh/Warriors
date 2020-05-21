@@ -261,10 +261,16 @@ public class DamageHandler implements Listener {
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
 		trajectory.multiply(0.05D * damage * 2D);
-		trajectory.setY(Math.abs(trajectory.getY()));
+
+
+		if(entity.isOnGround()) {
+			trajectory.setY(0.02D);
+		} else {
+			trajectory.setY(0D);
+		}
 		
 		UtilVelocity.velocity(entity,
-		          trajectory, 0.2D + trajectory.length() * 0.8D, false, 0.0D, Math.abs(0.2D * damage), 0.4D + 0.04D * damage, true);
+		          trajectory, 0.4D + trajectory.length() * 0.8D, false, 0.0D, Math.abs(0.2D * damage), 0.4D + 0.04D * damage, true);
 	}
 	
 	public static void playEntitySound(LivingEntity damagee) {
@@ -288,13 +294,14 @@ public class DamageHandler implements Listener {
 	    case MUSHROOM_COW: sound = Sound.COW_HURT; break;
 	    case OCELOT: sound = Sound.CAT_MEOW; break;
 	    case PIG: sound = Sound.PIG_IDLE; break;
-	    case PIG_ZOMBIE: sound = Sound.ZOMBIE_HURT; break;
+	    case PIG_ZOMBIE: sound = Sound.ZOMBIE_PIG_HURT; break;
 	    case SHEEP: sound = Sound.SHEEP_IDLE; break;
 	    case SILVERFISH: sound = Sound.SILVERFISH_HIT; break;
 	    case SKELETON: sound = Sound.SKELETON_HURT; break;
 	    case SLIME: sound = Sound.SLIME_ATTACK; break;
 	    case SNOWMAN: sound = Sound.STEP_SNOW; break;
 	    case SPIDER: sound = Sound.SPIDER_IDLE; break;
+	    case VILLAGER: sound = Sound.VILLAGER_HIT; break;
 	    case WITHER: sound = Sound.WITHER_HURT; break;
 	    case WOLF: sound = Sound.WOLF_HURT; break;
 	    case ZOMBIE: sound = Sound.ZOMBIE_HURT; break;

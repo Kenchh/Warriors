@@ -31,6 +31,9 @@ public class Throwable implements Listener {
     Item entityitem;
     boolean pickupable = false;
 
+    public boolean fired;
+    public boolean destroy;
+
     public Throwable(Gui.Item item, boolean pickupable) {
         this.item = item;
         if(!pickupable) {
@@ -42,38 +45,35 @@ public class Throwable implements Listener {
     }
 
     public void fire(Location loc, double multiplier, double addY) {
+        fired = true;
         this.entityitem = loc.getWorld().dropItem(loc, item.get());
         Vector direction = entityitem.getLocation().getDirection();
         this.entityitem.setVelocity(direction.normalize().multiply(multiplier).setY(direction.getY() + addY));
     }
 
     public void fire(Location loc, double multiplier, double baseY, double addY) {
+        fired = true;
         this.entityitem = loc.getWorld().dropItem(loc, item.get());
         Vector direction = entityitem.getLocation().getDirection();
         this.entityitem.setVelocity(direction.normalize().multiply(multiplier).setY(baseY + addY));
     }
 
     public void fire(Location loc, Vector direction, double multiplier, double addY) {
+        fired = true;
         this.entityitem = loc.getWorld().dropItem(loc, item.get());
         this.entityitem.setVelocity(direction.normalize().multiply(multiplier).setY(direction.getY() + addY));
     }
 
     public void fire(Location loc, Vector direction, double multiplier, double baseY, double addY) {
+        fired = true;
         this.entityitem = loc.getWorld().dropItem(loc, item.get());
         this.entityitem.setVelocity(direction.normalize().multiply(multiplier).setY(baseY + addY));
     }
 
     public void fire(Location loc, Vector v) {
+        fired = true;
         this.entityitem = loc.getWorld().dropItem(loc, item.get());
         this.entityitem.setVelocity(v);
-    }
-
-    public void drop(Location loc, boolean naturally) {
-        if(naturally) {
-            entityitem = loc.getWorld().dropItemNaturally(loc, item.get());
-        } else {
-            entityitem = loc.getWorld().dropItem(loc, item.get());
-        }
     }
 
     public Gui.Item getItem() {
@@ -100,7 +100,14 @@ public class Throwable implements Listener {
         this.pickupable = pickupable;
     }
 
+    public void destroyWhenOnGround() {
+        if(this.entityitem.isOnGround()) {
+            destroy();
+        }
+    }
+
     public void destroy() {
+        destroy = true;
         this.entityitem.remove();
     }
 
@@ -120,7 +127,7 @@ public class Throwable implements Listener {
         }
 
     }
-    
+
     public static Set<Block> checkForBlockCollision(me.rey.core.items.Throwable item) {
 
 		if (item == null)

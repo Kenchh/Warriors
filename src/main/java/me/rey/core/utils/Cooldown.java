@@ -86,7 +86,7 @@ public abstract class Cooldown {
 					this.cancel();
 					return;
 				}
-				cooldowns.put(player, Double.parseDouble(new DecimalFormat("#.#").format(cd)));
+				cooldowns.put(player, Double.parseDouble(new DecimalFormat("#.#").format(cd).replace(",", ".")));
 				cd = cd - (ticks / 20);
 			}
 		}.runTaskTimer(plugin, 0, (int) ticks);
