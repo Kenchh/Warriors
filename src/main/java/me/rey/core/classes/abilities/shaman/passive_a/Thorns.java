@@ -61,6 +61,7 @@ public class Thorns extends Ability implements IConstant, IConstant.ITogglable, 
                 loc.setY(loc.getY() + yp);
                 p.getWorld().spigot().playEffect(loc, Effect.CRIT);
             }
+
             p.playSound(p.getLocation(), Sound.CLICK, 0.5F, 1.2F);
 
         }
