@@ -27,7 +27,7 @@ public class UtilParticle {
 	}
 
 	public static void playColoredParticle(Location loc, float red, float green, float blue) {
-		loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 50);
+		loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, red/255, green/255, blue/255, 1F, 0, 30);
 	}
 
 	public static void playColoredParticle(Location loc, float red, float green, float blue, int particlecount, int radius) {
