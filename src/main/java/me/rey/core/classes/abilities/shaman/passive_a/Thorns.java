@@ -13,6 +13,8 @@ import me.rey.core.events.customevents.update.UpdateEvent;
 import me.rey.core.players.User;
 import me.rey.core.utils.UtilEnt;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -53,6 +55,13 @@ public class Thorns extends Ability implements IConstant, IConstant.ITogglable, 
             // Consuming energy
             if(!this.getEnabledPlayers().contains(p.getUniqueId())) return false;
             handler.togglePauseEnergy(State.ENABLED, p.getUniqueId());
+
+            for(double yp=0;yp<=2;yp+=0.25) {
+                Location loc = p.getLocation().clone();
+                loc.setY(loc.getY() + yp);
+                p.getWorld().spigot().playEffect(loc, Effect.CRIT);
+            }
+            p.playSound(p.getLocation(), Sound.CLICK, 0.5F, 1.2F);
 
         }
 
