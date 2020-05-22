@@ -112,7 +112,7 @@ public class DamageHandler implements Listener {
 		 * ENTITY DAMAGED PLAYER
 		 */
 		
-		if(damagee instanceof Player && damageEvent == null  && damager instanceof LivingEntity) {
+		if(damagee instanceof Player && damager instanceof LivingEntity) {
 			damageEvent = new DamagedByEntityEvent(hitType, (LivingEntity) damager, (Player) damagee, e.getDamage(), ((LivingEntity) damagee).getEquipment().getItemInHand());
 			Bukkit.getServer().getPluginManager().callEvent(damageEvent);
 			
@@ -201,8 +201,10 @@ public class DamageHandler implements Listener {
 			if(e != null && e.isApplicable(DamageModifier.ARMOR))
 				e.setDamage(DamageModifier.ARMOR, 0);
 			
-			if(wearing != null)
+			if(wearing != null) {
+				damage = Math.max(0, Math.min(damage, entity.getMaxHealth()));
 				return (entity.getMaxHealth() / wearing.getHealth()) * damage;
+			}
 		
 		}
 		return damage;
@@ -251,6 +253,7 @@ public class DamageHandler implements Listener {
 					damage = damage + (damagee.get(effect) * (types.get(effect) + 1));
 			}
 		}
+		damage = Math.max(0, Math.min(damage, ent.getMaxHealth()));
 		return damage;
 	}
 	
