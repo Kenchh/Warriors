@@ -56,6 +56,7 @@ import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
+import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.Cooldown;
 import me.rey.core.utils.Text;
 import net.md_5.bungee.api.ChatColor;
@@ -529,17 +530,14 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(!success) return;
 			
 			if(playersEnabled.contains(e.getPlayer().getUniqueId())) {
-				playersEnabled.remove(e.getPlayer().getUniqueId());
 				newState = State.DISABLED;
+				this.toggle(e.getPlayer(), newState);
 				((ITogglable) this).off(e.getPlayer());
 			} else {
-				playersEnabled.add(e.getPlayer().getUniqueId());
 				newState = State.ENABLED;
+				this.toggle(e.getPlayer(), newState);
 				((ITogglable) this).on(e.getPlayer());
 			}
-			
-			// SENDING MESSAGE IF NOT NULL
-			this.toggle(e.getPlayer(), newState);
 			
 		} else if (this instanceof IDroppable) {
 			ItemStack holding = e.getItemDrop().getItemStack();
@@ -762,7 +760,7 @@ public abstract class Ability extends Cooldown implements Listener {
 				READY = "&f" + pCooldown + " Seconds";
 			}
 			
-			ActionBar.getChargingBar(this.getName(), pCooldown, maxCooldown, READY).send(p);
+			ActionBar.getChargingBar(this.getName(), new ChargingBar(ChargingBar.ACTIONBAR_BARS, pCooldown, maxCooldown), READY).send(p);
 		}
 	}
 	

@@ -98,6 +98,13 @@ public class Throwable implements Listener {
 
     public void setPickupable(boolean pickupable) {
         this.pickupable = pickupable;
+    } 
+    
+    public void drop(Location loc, boolean naturally) {
+    	if(!naturally)
+    		this.entityitem = loc.getWorld().dropItem(loc, this.getItem().get());
+    	else
+    		this.entityitem = loc.getWorld().dropItemNaturally(loc, this.getItem().get());
     }
 
     public void destroyWhenOnGround() {

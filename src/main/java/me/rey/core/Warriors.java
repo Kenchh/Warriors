@@ -12,6 +12,7 @@ import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
 import me.rey.core.classes.abilities.shaman.axe.Overgrown;
 import me.rey.core.classes.abilities.shaman.axe.Synthesis;
+import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
 import me.rey.core.classes.abilities.shaman.passive_a.Thorns;
 import me.rey.core.classes.abilities.shaman.spade.Paralysis;
 import me.rey.core.combat.DamageHandler;
@@ -264,12 +265,13 @@ public class Warriors extends JavaPlugin {
 				new ArcticZone(),
 
 				//SHAMAN
+				new Aromatherapy(),
 				new NullBlade(),
-				new Tornado(),
-				new Synthesis(),
-				new Paralysis(),
 				new Overgrown(),
+				new Paralysis(),
+				new Synthesis(),
 				new Thorns(),
+				new Tornado(),
 
 				//BERSERKER
 

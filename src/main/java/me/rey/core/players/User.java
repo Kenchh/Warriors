@@ -264,6 +264,7 @@ public class User {
 		for(ClassType type : ClassType.values()) {
 			HashMap<ClassType, Build[]> builds = Warriors.buildCache.containsKey(this.getUniqueId()) && Warriors.buildCache.get(this.getUniqueId()).containsKey(type) ?
 					Warriors.buildCache.get(this.getUniqueId()) : Warriors.buildCache.put(this.getUniqueId(), new HashMap<ClassType, Build[]>());
+			
 			builds.put(type, this.sql.getPlayerBuilds(this.getUniqueId(), type).getArray());
 			Warriors.buildCache.replace(this.getUniqueId(), builds);
 		}

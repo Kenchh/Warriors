@@ -4,9 +4,9 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.Text;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
 
@@ -46,31 +46,8 @@ public class Title extends Packets {
 		}
 	}
 	
-	public static Title getChargingBar(String title, double charge, double maxCharge) {
-		int bars = maxChargeBars;
-		String barsString = "";
-		
-		double mult = bars / maxCharge;
-		int toAdd = (int) Math.round((maxCharge - charge) * mult) + 1;
-
-		for(int i = 1; i <= bars; i++) {
-			barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "|";
-		}
-		
-		return new Title(Text.color(title), Text.color(barsString), 0, 3, 0);
-	}
-	
-	public static Title getChargingBar(String title, double percentage) {
-		int bars = maxChargeBars;
-		String barsString = "";
-		
-		int toAdd = (int) Math.round(bars * percentage / 100);
-
-		for(int i = 1; i <= bars; i++) {
-			barsString += (i <= toAdd ? ChatColor.GREEN : ChatColor.RED) + ChatColor.BOLD.toString() + "|";
-		}
-		
-		return new Title(Text.color(title), Text.color(barsString), 0, 4, 0);
+	public static Title getChargingBar(String title, ChargingBar bar) {
+		return new Title(Text.color(title), bar.setChar('|').getBarString(), 0, 4, 0);
 	}
 
 }
