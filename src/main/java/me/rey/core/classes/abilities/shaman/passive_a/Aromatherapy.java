@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -49,7 +50,7 @@ import me.rey.core.packets.Title;
 import me.rey.core.players.User;
 import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.UtilBlock;
-import me.rey.core.utils.UtilParticle;
+import me.rey.core.utils.Utils;
 
 public class Aromatherapy extends Ability implements IConstant, ITogglable, IPlayerDamagedEntity {
 	
@@ -74,6 +75,7 @@ public class Aromatherapy extends Ability implements IConstant, ITogglable, IPla
 	private EnergyHandler handler = new EnergyHandler();
 	private HashMap<Player, Integer> ticks = new HashMap<>();
 	private HashMap<Player, Integer> blossomCharge = new HashMap<>();
+	private HashMap<Player, Set<LivingEntity>> healing = new HashMap<Player, Set<LivingEntity>>();
 	private Set<Player> onBlossomCooldown = new HashSet<>();
 	
 	final static double minHeartsToTransfer = 7.0D;
@@ -178,17 +180,57 @@ public class Aromatherapy extends Ability implements IConstant, ITogglable, IPla
 								if(!(next instanceof LivingEntity)) continue;
 								
 								LivingEntity ent = (LivingEntity) next;
+								if (this.getPlayerHealing(p).contains(ent)) continue;
 								
 								// are teamed
 								if(u.getTeam().contains(ent)) {
-									if (p == ent) continue;
+									if (p == ent || p.getHealth() < minHeartsToTransfer * 2) continue;
 									if (ent.getHealth() + healthToTransfer > ent.getMaxHealth()) continue;
 									
-									ent.setHealth(Math.min(ent.getHealth() + healthToTransfer, ent.getMaxHealth()));
-									p.setHealth(Math.max(0, Math.min(p.getMaxHealth(), p.getHealth() - healthToTransfer)));
 									
-									ParticleEffect hearts = new ParticleEffect(Effect.HEART);
-									UtilParticle.makeParticlesBetween(p.getEyeLocation(), ent.getEyeLocation(), hearts, 1);
+									final int secondsIntervalTicks = (int) (20*0.1);
+									final Location initial = p.getEyeLocation().clone();
+									addToHealing(p, ent);
+									new BukkitRunnable() {
+										
+										Location heartLoc = initial.clone();
+										final double particleSeparation = 0.2, hitbox = 0.3, offset = 0.8;
+										
+										@Override
+										public void run() {
+											if (ent == null || ent.isDead() || (ent instanceof Player && !((Player) ent).isOnline())) {
+												this.cancel();
+												return;
+											}
+											
+											if (ent.getLocation().distance(initial) > radius) {
+												this.cancel();
+												return;
+											}
+											
+											Vector pvector = Utils.getDirectionBetweenLocations(heartLoc, ent.getLocation());
+											pvector.multiply(particleSeparation);
+											heartLoc.add(pvector);
+											Location toSpawn = heartLoc.clone();
+											toSpawn.setY(toSpawn.getY() + offset);
+											
+											new ParticleEffect(Effect.HEART).play(toSpawn);
+											
+											if (toSpawn.clone().subtract(new Location(toSpawn.getWorld(), 0, offset, 0)).distance(ent.getLocation()) <= hitbox) {
+												if (p.getHealth() >= minHeartsToTransfer * 2) {
+													ent.setHealth(Math.min(ent.getHealth() + healthToTransfer, ent.getMaxHealth()));
+													p.setHealth(Math.max(0, Math.min(p.getMaxHealth(), p.getHealth() - healthToTransfer)));
+												}
+												removeFromHealing(p, ent);
+												this.cancel();
+												return;
+											}
+												
+											pvector.normalize();
+											
+										}
+									}.runTaskTimerAsynchronously(Warriors.getInstance(), 0, secondsIntervalTicks);
+									
 								}
 								
 							}
@@ -419,6 +461,30 @@ public class Aromatherapy extends Ability implements IConstant, ITogglable, IPla
 					e.setCancelled(true);
 					return;
 				}
+	}
+	
+	private Set<LivingEntity> getPlayerHealing(Player p){
+		return this.healing.containsKey(p) ? this.healing.get(p) : new HashSet<LivingEntity>();
+	}
+	
+	private void addToHealing(Player p, LivingEntity le) {
+		Set<LivingEntity> cur = this.getPlayerHealing(p);
+		cur.add(le);
+		
+		if(!this.healing.containsKey(p))
+			this.healing.put(p, cur);
+		else
+			this.healing.replace(p, cur);
+	}
+	
+	private void removeFromHealing(Player p, LivingEntity le) {
+		Set<LivingEntity> cur = this.getPlayerHealing(p);
+		cur.remove(le);
+		
+		if(!this.healing.containsKey(p))
+			this.healing.put(p, cur);
+		else
+			this.healing.replace(p, cur);
 	}
 
 }
