@@ -1,6 +1,5 @@
 package me.rey.core.classes.abilities;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +58,7 @@ import me.rey.core.pvp.ToolType.HitType;
 import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.Cooldown;
 import me.rey.core.utils.Text;
+import me.rey.core.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class Ability extends Cooldown implements Listener {
@@ -636,16 +636,11 @@ public abstract class Ability extends Cooldown implements Listener {
 	 * CHECK TO RUN
 	 */
 	private void runCheck(Action action, Player p, ItemStack hold, Block clicked, Event e) {
-		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
-				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
-				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
-				Material.ENDER_CHEST);
-
+		
 		boolean isAir = clicked == null || action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_AIR);
-		boolean result = isAir ? true : expected.contains(clicked.getType()) || clicked.getType().name().toLowerCase().contains("door") 
-				|| clicked.getType().name().toLowerCase().contains("fence")? true : false;
+		boolean isUsable = clicked != null && Utils.usableBlocks().contains(clicked.getType()) ? true : false;
 
-		if(result && !isAir) return;
+		if(isUsable && !isAir) return;
 		
 		// RIGHT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.RIGHT_CLICK)
