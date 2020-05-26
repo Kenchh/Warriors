@@ -46,6 +46,7 @@ import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
 import me.rey.core.classes.abilities.knight.axe.HoldPosition;
 import me.rey.core.classes.abilities.knight.sword.Immunity;
+import me.rey.core.classes.abilities.knight.sword.Thrust;
 import me.rey.core.classes.abilities.shaman.axe.Overgrown;
 import me.rey.core.classes.abilities.shaman.axe.Synthesis;
 import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
@@ -292,6 +293,7 @@ public class Warriors extends JavaPlugin {
 				//MARKSMAN
 				
 				//KNIGHT
+				new Thrust(),
 				new HoldPosition(),
 				new Immunity(),
 				

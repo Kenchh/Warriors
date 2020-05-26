@@ -8,13 +8,13 @@ import net.md_5.bungee.api.ChatColor;
 public class Text {
 	
 	public static String format(String prefix, String message) {
-		prefix = ChatColor.translateAlternateColorCodes('&', String.format("&9%s »&r", prefix));
-		message = ChatColor.translateAlternateColorCodes('&', "&7" + message);
+		prefix = Text.color(String.format("&9%s »&r", prefix));
+		message = Text.color(message);
 		return (prefix + " " + message);
 	}
 	
 	public static String color(String text) {
-		return ChatColor.translateAlternateColorCodes('&', text.replaceAll("&s", "&e").replaceAll("&r", "&7").replaceAll("&q", "&c&l").replaceAll("&w", "&a&l"));
+		return ChatColor.translateAlternateColorCodes('&', text.replaceAll("&g", "&a").replaceAll("&s", "&e").replaceAll("&r", "&7").replaceAll("&q", "&c&l").replaceAll("&w", "&a&l"));
 	}
 	
     public static void log(Plugin plugin, String msg) {
