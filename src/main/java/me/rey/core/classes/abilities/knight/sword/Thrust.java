@@ -32,7 +32,7 @@ public class Thrust extends Ability {
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
-		double RANGE = 3.5, ACCURACY = 0.1D;
+		double RANGE = 3., ACCURACY = 0.1D;
 		
 		double damage = 1 + 0.5 * level;
 		double slowness = 1 + 0.75 * level;
@@ -62,7 +62,7 @@ public class Thrust extends Ability {
 			if (toThrust == null || ent.getLocation().distance(p.getLocation()) < toThrust.getLocation().distance(p.getLocation()))
 				toThrust = ent;
 		
-		if (toThrust != null) {
+		if (toThrust != null && !u.getTeam().contains(toThrust)) {
 			UtilEnt.damage(damage, this.getName(), toThrust, p); /* DAMAGING */
 			toThrust.addPotionEffect(EFFECT);
 			
@@ -70,7 +70,7 @@ public class Thrust extends Ability {
 			this.sendUsedMessageToPlayer(p, this.getName()); /* SENDING USED MESSAGE */
 			
 			/* SENDING MESSAGE OF HIT IF THE ENTITY WAS A PLAYER */
-			if (toThrust instanceof Player) this.sendAbilityMessage(p, "&g" + p.getName() + " &rhit you with &g" + this.getName() + " " + level + "&r.");
+			if (toThrust instanceof Player) this.sendAbilityMessage(toThrust, "&s" + p.getName() + " &rhit you with &g" + this.getName() + " " + level + "&r.");
 		} else {
 			this.sendAbilityMessage(p, "You missed &g" + this.getName() + "&r.");
 		}
