@@ -34,6 +34,7 @@ import me.rey.core.events.customevents.combat.CustomDamageEvent;
 import me.rey.core.events.customevents.combat.CustomKnockbackEvent;
 import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.events.customevents.combat.DamagedByEntityEvent;
+import me.rey.core.events.customevents.combat.FinalEntityDamageEvent;
 import me.rey.core.players.User;
 import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.players.combat.PlayerHitCache;
@@ -123,6 +124,12 @@ public class DamageHandler implements Listener {
 		
 		// CALCULATING FINAL DAMAGE ON ARMOR
 		e.setDamage(calcArmor(e.getDamage(), (LivingEntity) damagee, e));
+		
+		FinalEntityDamageEvent end = new FinalEntityDamageEvent(hitType, (LivingEntity) damager, (LivingEntity) damagee, e.getDamage(), hold);
+		Bukkit.getServer().getPluginManager().callEvent(end);
+		
+		if(end.isCancelled())
+			e.setCancelled(true);
 		
 		if(!e.isCancelled()) {
 			

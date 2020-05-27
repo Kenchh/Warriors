@@ -50,7 +50,6 @@ public abstract class Consumable implements Listener {
 	
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		System.out.println(1);
 		if(this.cooldown.containsKey(e.getPlayer()) && System.currentTimeMillis() - this.cooldown.get(e.getPlayer()) <= cooldownInMillis) return;
 		
 		Action cur = e.getAction();
@@ -58,12 +57,10 @@ public abstract class Consumable implements Listener {
 				|| cur.equals(Action.LEFT_CLICK_BLOCK)))) && (e.getClickedBlock() == null || e.getClickedBlock().getType().equals(Material.AIR) ||
 				!Utils.usableBlocks().contains(e.getClickedBlock().getType())) && (e.getItem() != null && e.getItem().getType().equals(this.getMaterial()));
 
-		if(allow) { 
-			System.out.println(2);
+		if(allow) {
 			boolean success = this.ConsumeItem(e.getPlayer());
 			
 			if(success) {
-				System.out.println(3);
 				if(this.cooldown.containsKey(e.getPlayer()))
 					this.cooldown.replace(e.getPlayer(), System.currentTimeMillis());
 				else
