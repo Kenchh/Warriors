@@ -127,6 +127,7 @@ public class DamageHandler implements Listener {
 		
 		FinalEntityDamageEvent end = new FinalEntityDamageEvent(hitType, (LivingEntity) damager, (LivingEntity) damagee, e.getDamage(), hold);
 		Bukkit.getServer().getPluginManager().callEvent(end);
+		e.setDamage(end.getDamage());
 		
 		if(end.isCancelled())
 			e.setCancelled(true);

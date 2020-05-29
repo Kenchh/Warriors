@@ -15,7 +15,7 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 
 	protected final LivingEntity damager;
 	protected final LivingEntity damagee;
-	protected double damage, knockbackMult;
+	protected double originalDamage, damage, knockbackMult;
 	protected boolean isCancelled;
 	protected ItemStack item;
 	protected PlayerHit hit;
@@ -26,6 +26,7 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 		this.damager = damager;
 		this.damagee = damagee;
 		this.damage = damage;
+		this.originalDamage = damage;
 		this.isCancelled = false;
 		this.item = item;
 		this.knockbackMult = 1;
@@ -60,11 +61,15 @@ public abstract class CustomDamageEvent extends Event implements Cancellable {
 	}
 	
 	public double getOriginalDamage() {
-		return damage;
+		return originalDamage;
 	}
 	
 	public double getDamage() {
 		return damage;
+	}
+	
+	public void setDamage(double damage) {
+		this.damage = Math.max(0, damage);
 	}
 	
 	public void addMod(double damage) {
