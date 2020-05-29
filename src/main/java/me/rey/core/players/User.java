@@ -261,11 +261,14 @@ public class User {
 	}
 	
 	private void saveBuildsInCache() {
-		for(ClassType type : ClassType.values()) {
-			HashMap<ClassType, Build[]> builds = Warriors.buildCache.containsKey(this.getUniqueId()) && Warriors.buildCache.get(this.getUniqueId()).containsKey(type) ?
-					Warriors.buildCache.get(this.getUniqueId()) : Warriors.buildCache.put(this.getUniqueId(), new HashMap<ClassType, Build[]>());
+		if (!Warriors.buildCache.containsKey(this.getUniqueId())) Warriors.buildCache.put(this.getUniqueId(), new HashMap<>());
 			
-			builds.put(type, this.sql.getPlayerBuilds(this.getUniqueId(), type).getArray());
+		for(ClassType type : ClassType.values()) {
+			if (!Warriors.buildCache.get(this.getUniqueId()).containsKey(type)) Warriors.buildCache.get(this.getUniqueId()).put(type, new BuildSet().getArray());
+			
+			HashMap<ClassType, Build[]> builds = Warriors.buildCache.get(this.getUniqueId());
+			
+			builds.replace(type, this.sql.getPlayerBuilds(this.getUniqueId(), type).getArray());
 			Warriors.buildCache.replace(this.getUniqueId(), builds);
 		}
 	}
