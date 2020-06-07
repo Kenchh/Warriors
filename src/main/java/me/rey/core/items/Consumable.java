@@ -2,7 +2,6 @@ package me.rey.core.items;
 
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.rey.core.Warriors;
+import me.rey.core.gui.Gui.Item;
 import me.rey.core.utils.Utils;
 
 public abstract class Consumable implements Listener {
@@ -67,7 +66,11 @@ public abstract class Consumable implements Listener {
 					this.cooldown.put(e.getPlayer(), System.currentTimeMillis());
 				
 				e.setCancelled(true);
-				e.getPlayer().getItemInHand().setAmount(e.getPlayer().getItemInHand().getAmount() - 1);
+				
+				if (e.getPlayer().getItemInHand().getAmount() <= 1)
+					e.getPlayer().setItemInHand(new Item(Material.AIR).get());
+				else
+					e.getPlayer().getItemInHand().setAmount(e.getPlayer().getItemInHand().getAmount() - 1);
 			}
 		}
 				
