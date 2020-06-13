@@ -45,6 +45,8 @@ import me.rey.core.classes.abilities.druid.passive_b.NullBlade;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
 import me.rey.core.classes.abilities.knight.axe.HoldPosition;
+import me.rey.core.classes.abilities.knight.passive_a.Charge;
+import me.rey.core.classes.abilities.knight.passive_b.FatalBlow;
 import me.rey.core.classes.abilities.knight.passive_b.Lust;
 import me.rey.core.classes.abilities.knight.sword.Immunity;
 import me.rey.core.classes.abilities.knight.sword.Thrust;
@@ -55,6 +57,7 @@ import me.rey.core.classes.abilities.shaman.passive_a.Thorns;
 import me.rey.core.classes.abilities.shaman.spade.Paralysis;
 import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import me.rey.core.classes.conditions.ArcaneRepair;
+import me.rey.core.classes.conditions.Balanced;
 import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.combat.DamageHandler;
@@ -235,6 +238,7 @@ public class Warriors extends JavaPlugin {
 				new ArcaneRepair(),
 				// MARKSMAN
 				// KNIGHT
+				new Balanced(),
 				// BRUTE
 				// BLACK
 				new Lightweight()
@@ -294,6 +298,8 @@ public class Warriors extends JavaPlugin {
 				//MARKSMAN
 				
 				//KNIGHT
+				new Charge(),
+				new FatalBlow(),
 				new Thrust(),
 				new HoldPosition(),
 				new Immunity(),
