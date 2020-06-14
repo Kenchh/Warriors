@@ -24,7 +24,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -77,7 +76,8 @@ public abstract class Ability extends Cooldown implements Listener {
 	private String[] description;
 	private int maxLevel, tempDefaultLevel, tokenCost;
 	private long id;
-	private boolean skipCooldownCheck, cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
+	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
+	protected boolean skipCooldownCheck;
 	private double cooldown, resetCooldown, energyCost, resetEnergy;
 	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
@@ -625,11 +625,11 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.runCheck(e.getAction(), e.getPlayer(), e.getItem(), e.getClickedBlock(), e);
 	}
 
-	@EventHandler (priority = EventPriority.HIGHEST)
-	public void onEvent(PlayerInteractEntityEvent e) {
-
-		this.runCheck(Action.RIGHT_CLICK_AIR, e.getPlayer(), e.getPlayer().getItemInHand(), null, e);
-	}
+//	@EventHandler (priority = EventPriority.HIGHEST)
+//	public void onEvent(PlayerInteractEntityEvent e) {
+//
+//		this.runCheck(Action.RIGHT_CLICK_AIR, e.getPlayer(), e.getPlayer().getItemInHand(), null, e);
+//	}
 
 
 	/*

@@ -139,8 +139,10 @@ public class DamageHandler implements Listener {
 			 */
 			if(hitType == HitType.MELEE) {
 				e.setCancelled(true);
+				
 				((LivingEntity) e.getEntity()).setHealth(Math.max(0, Math.min(((LivingEntity) e.getEntity()).getHealth() - e.getDamage(),
 						((LivingEntity) e.getEntity()).getMaxHealth())));
+				
 				CombatManager.resetTime((LivingEntity) e.getEntity());
 			}
 			
@@ -148,7 +150,6 @@ public class DamageHandler implements Listener {
 			 * DISPLAY SOUNDS
 			 */
 			playEntitySound((LivingEntity) e.getEntity());
-			
 			
 			/*
 			 * KNOCKBACK

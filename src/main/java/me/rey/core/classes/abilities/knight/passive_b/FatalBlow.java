@@ -20,12 +20,14 @@ public class FatalBlow extends Ability implements IPlayerDamagedEntity {
 				"has half of your health or less causes",
 				"them to not be able to heal for <variable>2+l</variable> Seconds."
 				));
+		this.setIgnoresCooldown(true);
 	}
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
 		DamageEvent e = (DamageEvent) conditions[0];
 		
+		this.setMessage(null);
 		if(e.getDamagee().getHealth() <= p.getHealth() / 2) {
 			new Bleed(this.getName(), p).apply(e.getDamagee(), 2 + level);
 			return true;

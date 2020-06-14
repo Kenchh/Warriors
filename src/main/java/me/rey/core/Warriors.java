@@ -25,6 +25,7 @@ import me.rey.core.classes.abilities.assassin.bow.Disarm;
 import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
 import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
 import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
+import me.rey.core.classes.abilities.assassin.passive_b.BlitzStrikes;
 import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
 import me.rey.core.classes.abilities.assassin.sword.Evade;
 import me.rey.core.classes.abilities.bandit.axe.Blink;
@@ -267,8 +268,9 @@ public class Warriors extends JavaPlugin {
 				new Scream(),
 				new SmokeBomb(),
 				
-				//NINJA
+				//ASSASSIN
 				new Backstab(),
+				new BlitzStrikes(),
 				new Dash(),
 				new Flash(),
 				new Evade(),

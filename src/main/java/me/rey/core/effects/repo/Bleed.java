@@ -13,8 +13,8 @@ import me.rey.core.Warriors;
 import me.rey.core.effects.Effect;
 import me.rey.core.effects.EffectType;
 import me.rey.core.effects.SoundEffect;
-import me.rey.core.utils.UtilEnt;
 
+@SuppressWarnings("unused")
 public class Bleed extends Effect {
 	
 	private String cause;
@@ -36,6 +36,7 @@ public class Bleed extends Effect {
 
 	@Override
 	public void onApply(LivingEntity ent, double seconds) {
+		
 		BukkitTask runnable = new BukkitRunnable() {
 			
 			@SuppressWarnings("deprecation")
@@ -45,7 +46,7 @@ public class Bleed extends Effect {
 				loc.setY(loc.getY()-0.1);
 				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
 				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.REDSTONE_WIRE.getId(), 14);
-				UtilEnt.damage(2, cause, ent, damager);
+//				UtilEnt.damage(2, cause, ent, damager); REMOVED
 			}
 			
 		}.runTaskTimer(Warriors.getInstance(), 0, 20);
