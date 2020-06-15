@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import me.kenchh.main.Eclipse;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
@@ -274,10 +273,6 @@ public class DamageHandler implements Listener {
 		
 		Vector trajectory = entity.getLocation().toVector().subtract(hitter.getLocation().toVector()).multiply(multiplier);
 		trajectory.multiply(0.05D * damage * 2D);
-
-		if(entity instanceof Player) {
-			Eclipse.getInstance().api.setAirTicks((Player) entity, Eclipse.getInstance().api.getAirTicks((Player) entity)/2);
-		}
 
 		if(entity.isOnGround()) {
 			trajectory.setY(0.02D);
