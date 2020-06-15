@@ -24,7 +24,7 @@ import me.rey.core.players.User;
 
 public class FireBlast extends Ability {
 
-	private HashMap<UUID, Player> fireballs;
+	private HashMap<Fireball, Player> fireballs;
 	
 	public FireBlast() {
 		super(211, "Fire Blast", ClassType.GOLD, AbilityType.AXE, 1, 5, 12.00, Arrays.asList(
@@ -53,7 +53,7 @@ public class FireBlast extends Ability {
 		fireball.setIsIncendiary(false);
 		fireball.setVelocity(p.getEyeLocation().getDirection().multiply(1));
 		
-		this.fireballs.put(fireball.getUniqueId(), p);
+		this.fireballs.put(fireball, p);
 		
 		new BukkitRunnable() {
 			int seconds = 0;
@@ -83,9 +83,9 @@ public class FireBlast extends Ability {
 	public void onEntityDamage(ProjectileHitEvent e) {
 		if(!(e.getEntity() instanceof Fireball && e.getEntityType() == EntityType.FIREBALL)) return;
 		Fireball fireball = (Fireball) e.getEntity();
-		if(this.fireballs.containsKey(fireball.getUniqueId())) return;
+		if(!this.fireballs.containsKey(fireball)) return;
 		
-		Player p = this.fireballs.get(fireball.getUniqueId());
+		Player p = this.fireballs.get(fireball);
 		Location loc = e.getEntity().getLocation();
 		final List<Entity> entities = (List<Entity>)loc.getWorld().getNearbyEntities(loc, 5.0, 3.0, 5.0);
         for (final Entity d : entities) {
@@ -105,7 +105,7 @@ public class FireBlast extends Ability {
             }
         }
         
-        this.fireballs.remove(fireball.getUniqueId());
+        this.fireballs.remove(fireball);
 	}
 
 }

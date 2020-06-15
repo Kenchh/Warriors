@@ -37,7 +37,8 @@ public class ClassHandler extends BukkitRunnable {
 					continue;
 				}
 				
-				if(!Warriors.userCache.get(p).equals(user.getWearingClass())) {
+				if(Warriors.userCache != null && Warriors.userCache.get(p) != null && hasArmor(p)
+						&& !Warriors.userCache.get(p).equals(user.getWearingClass())) {
 					
 					Warriors.userCache.replace(p, user.getWearingClass());
 					user.resetEffects();

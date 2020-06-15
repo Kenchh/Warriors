@@ -34,6 +34,7 @@ import me.rey.core.events.customevents.combat.CustomDamageEvent;
 import me.rey.core.events.customevents.combat.CustomKnockbackEvent;
 import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.events.customevents.combat.DamagedByEntityEvent;
+import me.rey.core.events.customevents.combat.FinalEntityDamageEvent;
 import me.rey.core.players.User;
 import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.players.combat.PlayerHitCache;
@@ -124,6 +125,13 @@ public class DamageHandler implements Listener {
 		// CALCULATING FINAL DAMAGE ON ARMOR
 		e.setDamage(calcArmor(e.getDamage(), (LivingEntity) damagee, e));
 		
+		FinalEntityDamageEvent end = new FinalEntityDamageEvent(hitType, (LivingEntity) damager, (LivingEntity) damagee, e.getDamage(), hold);
+		Bukkit.getServer().getPluginManager().callEvent(end);
+		e.setDamage(end.getDamage());
+		
+		if(end.isCancelled())
+			e.setCancelled(true);
+		
 		if(!e.isCancelled()) {
 			
 			/*
@@ -131,8 +139,10 @@ public class DamageHandler implements Listener {
 			 */
 			if(hitType == HitType.MELEE) {
 				e.setCancelled(true);
+				
 				((LivingEntity) e.getEntity()).setHealth(Math.max(0, Math.min(((LivingEntity) e.getEntity()).getHealth() - e.getDamage(),
 						((LivingEntity) e.getEntity()).getMaxHealth())));
+				
 				CombatManager.resetTime((LivingEntity) e.getEntity());
 			}
 			
@@ -140,7 +150,6 @@ public class DamageHandler implements Listener {
 			 * DISPLAY SOUNDS
 			 */
 			playEntitySound((LivingEntity) e.getEntity());
-			
 			
 			/*
 			 * KNOCKBACK

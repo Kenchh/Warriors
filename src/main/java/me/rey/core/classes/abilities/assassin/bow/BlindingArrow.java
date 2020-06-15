@@ -48,9 +48,10 @@ public class BlindingArrow extends Ability implements IBowPreparable {
 			hit.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) Math.round(seconds * 20), 0, false, false));
 			hit.removePotionEffect(PotionEffectType.SLOW);
 			hit.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) Math.round(seconds * 20), 1, false, false));
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	@Override

@@ -24,6 +24,7 @@ import me.rey.core.effects.SoundEffect;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
 import me.rey.core.pvp.ToolType;
+import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.UtilBlock;
 
 public class Tornado extends Ability {
@@ -161,7 +162,7 @@ public class Tornado extends Ability {
                 lastpreparetick = ticks;
                 charge = ticks/maxchargeticks;
                 
-                ActionBar.getChargingBar(a.getName(), charge * 100).send(p);
+                ActionBar.getChargingBar(a.getName(), new ChargingBar(ChargingBar.ACTIONBAR_BARS, charge * 100)).send(p);
             }
         }
 

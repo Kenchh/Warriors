@@ -13,8 +13,8 @@ import me.rey.core.Warriors;
 import me.rey.core.effects.Effect;
 import me.rey.core.effects.EffectType;
 import me.rey.core.effects.SoundEffect;
-import me.rey.core.utils.UtilEnt;
 
+@SuppressWarnings("unused")
 public class Bleed extends Effect {
 	
 	private String cause;
@@ -29,23 +29,26 @@ public class Bleed extends Effect {
 	
 	@EventHandler
 	public void onHealthRegain(EntityRegainHealthEvent e) {
-		if(e.getEntity() instanceof LivingEntity && this.hasEffect((LivingEntity) e.getEntity()))
+		if(e.getEntity() instanceof LivingEntity && Effect.hasEffect(this.getClass(), (LivingEntity) e.getEntity()))
 				if((e.getRegainReason() == RegainReason.SATIATED || e.getRegainReason() == RegainReason.REGEN))
 					e.setCancelled(true);
 	}
 
 	@Override
 	public void onApply(LivingEntity ent, double seconds) {
+		
+		Class<? extends Effect> clazz = this.getClass();
 		BukkitTask runnable = new BukkitRunnable() {
 			
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
-				Location loc = ent.getLocation();
-				loc.setY(loc.getY()-0.1);
+				if(!Effect.hasEffect(clazz, ent)) this.cancel();
+				Location loc = ent.getEyeLocation().clone();
+				loc.setY(loc.getY()-0.4);
 				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
 				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.REDSTONE_WIRE.getId(), 14);
-				UtilEnt.damage(2, cause, ent, damager);
+//				UtilEnt.damage(2, cause, ent, damager); REMOVED
 			}
 			
 		}.runTaskTimer(Warriors.getInstance(), 0, 20);

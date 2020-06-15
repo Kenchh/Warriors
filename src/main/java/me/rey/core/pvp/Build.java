@@ -143,13 +143,12 @@ public class Build extends AbstractMap<Ability, Integer> {
 		public BuildSet(Build... builds) {			
 			this.list = new Build[0];
 			
-			for(Build b : builds) {
+			for(Build b : builds)
 				this.add(b);
-			}
 		}
 		
 		public Build[] getArray() {
-			return list.clone();
+			return list == null ? new Build[0] : list.clone();
 		}
 
 		@Override

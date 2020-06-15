@@ -1,6 +1,7 @@
 package me.rey.core.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,73 @@ import me.rey.core.classes.ClassType;
 import me.rey.core.pvp.ToolType;
 
 public class Utils {
+	
+	private static List<Material> usable = new ArrayList<>();
+	
+	public static List<Material> usableBlocks(){
+		if(usable.isEmpty()) {
+			usable = Arrays.asList(
+		            Material.ACACIA_DOOR,
+		            Material.ACACIA_FENCE_GATE,
+		            Material.ACACIA_FENCE,
+		            Material.ANVIL,
+		            Material.STANDING_BANNER,
+		            Material.BANNER,
+		            Material.WALL_BANNER,
+		            Material.BEACON,
+		            Material.BED,
+		            Material.BIRCH_DOOR,
+		            Material.BIRCH_FENCE_GATE,
+		            Material.BIRCH_FENCE,
+		            Material.BOAT,
+		            Material.BREWING_STAND,
+		            Material.COMMAND,
+		            Material.CHEST,
+		            Material.DARK_OAK_DOOR,
+		            Material.DARK_OAK_FENCE,
+		            Material.DARK_OAK_FENCE_GATE,
+		            Material.DAYLIGHT_DETECTOR,
+		            Material.DAYLIGHT_DETECTOR_INVERTED,
+		            Material.DISPENSER,
+		            Material.DROPPER,
+		            Material.ENCHANTMENT_TABLE,
+		            Material.ENDER_CHEST,
+		            Material.FENCE_GATE,
+		            Material.FENCE,
+		            Material.FURNACE,
+		            Material.HOPPER,
+		            Material.HOPPER_MINECART,
+		            Material.ITEM_FRAME,
+		            Material.IRON_DOOR,
+		            Material.IRON_DOOR_BLOCK,
+		            Material.IRON_TRAPDOOR,
+		            Material.JUNGLE_DOOR,
+		            Material.JUNGLE_FENCE,
+		            Material.JUNGLE_FENCE_GATE,
+		            Material.LEVER,
+		            Material.MINECART,
+		            Material.NOTE_BLOCK,
+		            Material.POWERED_MINECART,
+		            Material.REDSTONE_COMPARATOR,
+		            Material.REDSTONE_COMPARATOR_OFF,
+		            Material.REDSTONE_COMPARATOR_ON,
+		            Material.SIGN,
+		            Material.SIGN_POST,
+		            Material.SPRUCE_DOOR,
+		            Material.SPRUCE_FENCE,
+		            Material.SPRUCE_FENCE_GATE,
+		            Material.STORAGE_MINECART,
+		            Material.TRAP_DOOR,
+		            Material.TRAPPED_CHEST,
+		            Material.WALL_SIGN,
+		            Material.WOOD_BUTTON,
+		            Material.WOODEN_DOOR,
+		            Material.WOOD_DOOR
+		            );
+		}
+		
+		return usable;
+	}
 	
 	public static boolean compareItems(ItemStack a, ItemStack b) {
 		try {

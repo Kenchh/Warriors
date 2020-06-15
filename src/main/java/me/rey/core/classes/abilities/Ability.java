@@ -1,6 +1,5 @@
 package me.rey.core.classes.abilities;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +24,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +37,7 @@ import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IConstant.ITogglable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedByEntity;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
+import me.rey.core.effects.Effect;
 import me.rey.core.effects.repo.Silence;
 import me.rey.core.energy.IEnergyEditor;
 import me.rey.core.enums.AbilityFail;
@@ -56,8 +55,10 @@ import me.rey.core.players.combat.PlayerHit;
 import me.rey.core.pvp.Build;
 import me.rey.core.pvp.ToolType;
 import me.rey.core.pvp.ToolType.HitType;
+import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.Cooldown;
 import me.rey.core.utils.Text;
+import me.rey.core.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class Ability extends Cooldown implements Listener {
@@ -76,7 +77,8 @@ public abstract class Ability extends Cooldown implements Listener {
 	private String[] description;
 	private int maxLevel, tempDefaultLevel, tokenCost;
 	private long id;
-	private boolean skipCooldownCheck, cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
+	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
+	protected boolean skipCooldownCheck;
 	private double cooldown, resetCooldown, energyCost, resetEnergy;
 	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
@@ -142,7 +144,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		AbilityFailEvent event = null;
 		
 		// WHILE SILENCED
-		if(!whileSilenced && new Silence().hasEffect(p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
+		if(!whileSilenced && Effect.hasEffect(Silence.class, p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
 			if(!(conditions != null && conditions.length == 1 && (conditions[0] instanceof UpdateEvent || conditions[0] instanceof DamageEvent
 					|| conditions[0] instanceof DamagedByEntityEvent || conditions[0] instanceof EnergyUpdateEvent)) || this instanceof ITogglable) {
 				event = new AbilityFailEvent(AbilityFail.SILENCED, p, this, level);
@@ -529,17 +531,14 @@ public abstract class Ability extends Cooldown implements Listener {
 			if(!success) return;
 			
 			if(playersEnabled.contains(e.getPlayer().getUniqueId())) {
-				playersEnabled.remove(e.getPlayer().getUniqueId());
 				newState = State.DISABLED;
+				this.toggle(e.getPlayer(), newState);
 				((ITogglable) this).off(e.getPlayer());
 			} else {
-				playersEnabled.add(e.getPlayer().getUniqueId());
 				newState = State.ENABLED;
+				this.toggle(e.getPlayer(), newState);
 				((ITogglable) this).on(e.getPlayer());
 			}
-			
-			// SENDING MESSAGE IF NOT NULL
-			this.toggle(e.getPlayer(), newState);
 			
 		} else if (this instanceof IDroppable) {
 			ItemStack holding = e.getItemDrop().getItemStack();
@@ -627,27 +626,22 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.runCheck(e.getAction(), e.getPlayer(), e.getItem(), e.getClickedBlock(), e);
 	}
 
-	@EventHandler (priority = EventPriority.HIGHEST)
-	public void onEvent(PlayerInteractEntityEvent e) {
-
-		this.runCheck(Action.RIGHT_CLICK_AIR, e.getPlayer(), e.getPlayer().getItemInHand(), null, e);
-	}
+//	@EventHandler (priority = EventPriority.HIGHEST)
+//	public void onEvent(PlayerInteractEntityEvent e) {
+//
+//		this.runCheck(Action.RIGHT_CLICK_AIR, e.getPlayer(), e.getPlayer().getItemInHand(), null, e);
+//	}
 
 
 	/*
 	 * CHECK TO RUN
 	 */
 	private void runCheck(Action action, Player p, ItemStack hold, Block clicked, Event e) {
-		List<Material> expected = Arrays.asList(Material.WORKBENCH, Material.HOPPER, Material.FENCE, Material.CHEST, Material.TRAPPED_CHEST, Material.DROPPER,
-				Material.BURNING_FURNACE, Material.FURNACE, Material.FENCE_GATE, Material.BED, Material.BED_BLOCK, Material.WOODEN_DOOR, Material.IRON_DOOR,
-				Material.IRON_DOOR_BLOCK, Material.IRON_TRAPDOOR, Material.TRAP_DOOR, Material.DISPENSER, Material.LEVER, Material.STONE_BUTTON, Material.WOOD_BUTTON,
-				Material.ENDER_CHEST);
-
+		
 		boolean isAir = clicked == null || action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_AIR);
-		boolean result = isAir ? true : expected.contains(clicked.getType()) || clicked.getType().name().toLowerCase().contains("door") 
-				|| clicked.getType().name().toLowerCase().contains("fence")? true : false;
+		boolean isUsable = clicked != null && Utils.usableBlocks().contains(clicked.getType()) ? true : false;
 
-		if(result && !isAir) return;
+		if(isUsable && !isAir) return;
 		
 		// RIGHT CLICK ABILITIES
 		if(this.getAbilityType().getEventType().equals(EventType.RIGHT_CLICK)
@@ -762,7 +756,7 @@ public abstract class Ability extends Cooldown implements Listener {
 				READY = "&f" + pCooldown + " Seconds";
 			}
 			
-			ActionBar.getChargingBar(this.getName(), pCooldown, maxCooldown, READY).send(p);
+			ActionBar.getChargingBar(this.getName(), new ChargingBar(ChargingBar.ACTIONBAR_BARS, pCooldown, maxCooldown), READY).send(p);
 		}
 	}
 	

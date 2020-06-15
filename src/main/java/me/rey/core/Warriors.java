@@ -8,14 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import me.rey.core.classes.abilities.brute.sword.IronHook;
-import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
-import me.rey.core.classes.abilities.shaman.axe.Overgrown;
-import me.rey.core.classes.abilities.shaman.axe.Synthesis;
-import me.rey.core.classes.abilities.shaman.passive_a.Thorns;
-import me.rey.core.classes.abilities.shaman.spade.Paralysis;
-import me.rey.core.combat.DamageHandler;
-import me.rey.core.players.combat.PlayerHitCache;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -33,6 +25,7 @@ import me.rey.core.classes.abilities.assassin.bow.Disarm;
 import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
 import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
 import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
+import me.rey.core.classes.abilities.assassin.passive_b.BlitzStrikes;
 import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
 import me.rey.core.classes.abilities.assassin.sword.Evade;
 import me.rey.core.classes.abilities.bandit.axe.Blink;
@@ -42,20 +35,35 @@ import me.rey.core.classes.abilities.bandit.passive_a.Recall;
 import me.rey.core.classes.abilities.bandit.passive_a.Scream;
 import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
 import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
+import me.rey.core.classes.abilities.berserker.axe.Adrenaline;
+import me.rey.core.classes.abilities.berserker.bow.Premonition;
+import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
 import me.rey.core.classes.abilities.druid.axe.IcePrison;
 import me.rey.core.classes.abilities.druid.axe.LightningOrb;
+import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
 import me.rey.core.classes.abilities.druid.passive_a.Void;
 import me.rey.core.classes.abilities.druid.passive_b.MagmaBlade;
 import me.rey.core.classes.abilities.druid.passive_b.NullBlade;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
 import me.rey.core.classes.abilities.knight.axe.HoldPosition;
+import me.rey.core.classes.abilities.knight.passive_a.Charge;
+import me.rey.core.classes.abilities.knight.passive_b.FatalBlow;
+import me.rey.core.classes.abilities.knight.passive_b.Lust;
 import me.rey.core.classes.abilities.knight.sword.Immunity;
+import me.rey.core.classes.abilities.knight.sword.Thrust;
+import me.rey.core.classes.abilities.shaman.axe.Overgrown;
+import me.rey.core.classes.abilities.shaman.axe.Synthesis;
+import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
+import me.rey.core.classes.abilities.shaman.passive_a.Thorns;
+import me.rey.core.classes.abilities.shaman.spade.Paralysis;
 import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import me.rey.core.classes.conditions.ArcaneRepair;
+import me.rey.core.classes.conditions.Balanced;
 import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.classes.conditions.Vigour;
+import me.rey.core.combat.DamageHandler;
 import me.rey.core.commands.Equip;
 import me.rey.core.commands.Help;
 import me.rey.core.commands.Skill;
@@ -66,10 +74,12 @@ import me.rey.core.events.ClassHandler;
 import me.rey.core.events.DurabilityChangeEvent;
 import me.rey.core.events.PlayerDeathEvent;
 import me.rey.core.events.PlayerInteractChecker;
-import me.rey.core.events.UseSoupEvent;
 import me.rey.core.gui.GuiHelp;
+import me.rey.core.items.Consumable;
 import me.rey.core.items.Glow;
+import me.rey.core.items.custom.MushroomSoup;
 import me.rey.core.players.PlayerRunnableHandler;
+import me.rey.core.players.combat.PlayerHitCache;
 import me.rey.core.pvp.Build;
 import me.rey.core.utils.Text;
 
@@ -87,6 +97,7 @@ public class Warriors extends JavaPlugin {
 
 	// Cache
 	public static ArrayList<Ability> abilityCache;
+	public static ArrayList<Consumable> consumableCache;
 	public static ArrayList<ClassCondition> classConditions;
 	public static Map<Player, ClassType> userCache;
 	public static Map<UUID, HashMap<ClassType, Build[]>> buildCache;
@@ -115,6 +126,7 @@ public class Warriors extends JavaPlugin {
 
 		this.registerCommands();
 		this.registerListeners();
+		this.registerConsumables();
 
 
 		guiHelp = new GuiHelp(this);	
@@ -196,8 +208,19 @@ public class Warriors extends JavaPlugin {
 		pm.registerEvents(new PlayerDeathEvent(), this);
 		pm.registerEvents(new DurabilityChangeEvent(), this);
 		pm.registerEvents(new DamageHandler(), this);
-		pm.registerEvents(new UseSoupEvent(), this);
 		pm.registerEvents(new PlayerInteractChecker(), this);
+	}
+	
+	/*
+	 * Register Consumables
+	 */
+	public void registerConsumables() {
+		 consumableCache = new ArrayList<>(Arrays.asList(
+				 new MushroomSoup()
+				 ));
+		 
+		 for(Consumable cur : consumableCache)
+			 pm.registerEvents(cur, this);
 	}
 
 	/*
@@ -218,6 +241,7 @@ public class Warriors extends JavaPlugin {
 				new ArcaneRepair(),
 				// MARKSMAN
 				// KNIGHT
+				new Balanced(),
 				// BRUTE
 				// BLACK
 				new Lightweight()
@@ -246,8 +270,9 @@ public class Warriors extends JavaPlugin {
 				new Scream(),
 				new SmokeBomb(),
 				
-				//NINJA
+				//ASSASSIN
 				new Backstab(),
+				new BlitzStrikes(),
 				new Dash(),
 				new Flash(),
 				new Evade(),
@@ -264,20 +289,27 @@ public class Warriors extends JavaPlugin {
 				new ArcticZone(),
 
 				//SHAMAN
+				new Aromatherapy(),
 				new NullBlade(),
-				new Tornado(),
-				new Synthesis(),
-				new Paralysis(),
 				new Overgrown(),
+				new Paralysis(),
+				new Synthesis(),
 				new Thorns(),
+				new Tornado(),
 
 				//BERSERKER
+				new Adrenaline(),
+				new Premonition(),
 
 				//MARKSMAN
 				
 				//KNIGHT
+				new Charge(),
+				new FatalBlow(),
+				new Thrust(),
 				new HoldPosition(),
 				new Immunity(),
+				new Lust(),
 				
 				//BRUTE
 				new IronHook()
@@ -285,7 +317,10 @@ public class Warriors extends JavaPlugin {
 		
 		for(Ability ability : abilityCache) {
 			Bukkit.getPluginManager().registerEvents(ability, this);
-			Text.log(this, String.format("Successfully loaded ability [%s]", ability.getName()));
+			Text.log(this, String.format("Successfully loaded ability [%s] [ID: %s] [Class: %s]",
+					ability.getName(),
+					ability.getIdLong(),
+					ability.getClassType().getName()));
 		}
 	}
 	
