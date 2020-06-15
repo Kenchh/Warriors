@@ -80,13 +80,6 @@
   		<version>1.6.4</version>
   		<scope>compile</scope>
   	</dependency>
-	  <dependency>
-		  <groupId>me.kenchh</groupId>
-		  <artifactId>eclipse</artifactId>
-		  <version>1.2</version>
-		  <scope>system</scope>
-		  <systemPath>${basedir}/libs/Eclipse-1.2.jar</systemPath>
-	  </dependency>
   </dependencies>
   
   <properties>
