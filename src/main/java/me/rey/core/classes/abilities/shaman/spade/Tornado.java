@@ -15,7 +15,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.kenchh.main.Eclipse;
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
@@ -263,7 +262,6 @@ public class Tornado extends Ability {
                         double minZ = mincords[1];
 
                         if (le.getLocation().getX() <= maxX && le.getLocation().getZ() <= maxZ && le.getLocation().getX() >= minX && le.getLocation().getZ() >= minZ) {
-                        	if(le instanceof Player) Eclipse.getInstance().api.setCheckMode((Player) le, "tornado", 1.5); /* ANTICHEAT CHECK */
 
                             le.setVelocity(le.getVelocity().setY(knockup*charge));
                             if(le.getName().equalsIgnoreCase(p.getName()) == false) {
