@@ -1,11 +1,12 @@
 package me.rey.core.effects.repo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -13,32 +14,28 @@ import me.rey.core.Warriors;
 import me.rey.core.effects.Effect;
 import me.rey.core.effects.EffectType;
 import me.rey.core.effects.SoundEffect;
+import me.rey.core.events.customevents.combat.DamageEvent;
 
-@SuppressWarnings("unused")
-public class Bleed extends Effect {
+public class Marked extends Effect {
 	
-	private String cause;
-	private LivingEntity damager;
+	private static Map<LivingEntity, Double> marked = new HashMap<>();
+	private double extraDamage;
 
-	public Bleed(String cause, LivingEntity damager) {
-		super("Bleed", EffectType.BLEED);
+	public Marked(double extraDamage) {
+		super("Mark", EffectType.MARK);
 		
-		this.damager = damager;
-		this.cause = cause;
-	}
-	
-	@EventHandler
-	public void onHealthRegain(EntityRegainHealthEvent e) {
-		if(e.getEntity() instanceof LivingEntity && Effect.hasEffect(this.getClass(), (LivingEntity) e.getEntity()))
-				if((e.getRegainReason() == RegainReason.SATIATED || e.getRegainReason() == RegainReason.REGEN))
-					e.setCancelled(true);
+		this.extraDamage = extraDamage;
 	}
 
 	@Override
 	public void onApply(LivingEntity ent, double seconds) {
+		marked.put(ent, extraDamage);
 		
+		/*
+		 * BLOCK EFFECTS
+		 */
 		Class<? extends Effect> clazz = this.getClass();
-		BukkitTask runnable = new BukkitRunnable() {
+		BukkitTask runnable = new BukkitRunnable() {	
 			
 			@SuppressWarnings("deprecation")
 			@Override
@@ -46,9 +43,8 @@ public class Bleed extends Effect {
 				if(!Effect.hasEffect(clazz, ent)) this.cancel();
 				Location loc = ent.getEyeLocation().clone();
 				loc.setY(loc.getY()-0.4);
-				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
-				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.REDSTONE_WIRE.getId(), 14);
-//				UtilEnt.damage(2, cause, ent, damager); REMOVED
+				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.COAL_BLOCK.getId());
+				ent.getWorld().playEffect(loc, org.bukkit.Effect.STEP_SOUND, Material.OBSIDIAN.getId());
 			}
 			
 		}.runTaskTimer(Warriors.getInstance(), 0, 20);
@@ -58,9 +54,23 @@ public class Bleed extends Effect {
 			@Override
 			public void run() {
 				runnable.cancel();
+				marked.remove(ent);
 				return;
 			}
 		}.runTaskLater(Warriors.getInstance(), (int) (seconds * 20));
+	}
+	
+	@EventHandler
+	public void onDamageEnt(DamageEvent e) {
+		System.out.println(1);
+		if(!marked.containsKey(e.getDamagee())) return;
+		
+		System.out.println(2);
+		double extraDmg = marked.get(e.getDamagee());
+		marked.remove(e.getDamagee());
+		
+		e.addMod(extraDmg);
+		this.expireForcefully(e.getDamagee());
 	}
 
 	@Override
@@ -80,7 +90,7 @@ public class Bleed extends Effect {
 
 	@Override
 	public String expireMessage() {
-		return null;
+		return this.defaultExpireMessage;
 	}
 
 }

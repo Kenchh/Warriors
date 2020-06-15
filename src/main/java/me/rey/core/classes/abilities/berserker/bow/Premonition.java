@@ -1,34 +1,31 @@
-package me.rey.core.classes.abilities.assassin.bow;
+package me.rey.core.classes.abilities.berserker.bow;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import me.rey.core.classes.ClassType;
 import me.rey.core.classes.abilities.Ability;
 import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IBowPreparable;
-import me.rey.core.events.customevents.combat.CustomDamageEvent;
+import me.rey.core.effects.repo.Marked;
 import me.rey.core.events.customevents.combat.DamageEvent;
 import me.rey.core.players.User;
 
-public class BlindingArrow extends Ability implements IBowPreparable {
+public class Premonition extends Ability implements IBowPreparable {
 	
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
-	
-	public BlindingArrow() {
-		super(21, "Blinding Arrow", ClassType.LEATHER, AbilityType.BOW, 1, 3, 7.00, Arrays.asList(
-				"Prepare yourself to deal a Blindness",
-				"and Slowness 2 effect on your next",
-				"target with a duration of <variable>2.5+(0.5*l)</variable> (+0.5) Seconds.", "",
-				"Recharge: 7 Seconds"
+
+	public Premonition() {
+		super(721, "Premonition", ClassType.RED, AbilityType.BOW, 1, 3, 10, Arrays.asList(
+				"When hit, a player will take",
+				"<variable>4+(1.75*l)</variable> more damage on the next",
+				"melee attack.", "",
+				"Recharge: <variable>10-l</variable> Seconds"
 				));
 	}
 
@@ -41,14 +38,11 @@ public class BlindingArrow extends Ability implements IBowPreparable {
 		}
 		
 		if(conditions.length == 1 && conditions[0] instanceof DamageEvent) {
-			double seconds = 2.5 + (0.5 * level);
-			LivingEntity hit = ((CustomDamageEvent) conditions[0]).getDamagee();
+			DamageEvent e = (DamageEvent) conditions[0];
 			
-			hit.removePotionEffect(PotionEffectType.BLINDNESS);
-			hit.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) Math.round(seconds * 20), 0, false, false));
-			hit.removePotionEffect(PotionEffectType.SLOW);
-			hit.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) Math.round(seconds * 20), 1, false, false));
-			return true;
+			Marked effect = new Marked(4 + (1.75 * level));
+			effect.expireForcefully(e.getDamagee());
+			effect.apply(e.getDamagee(), 7.0D);
 		}
 		
 		return false;
@@ -83,5 +77,6 @@ public class BlindingArrow extends Ability implements IBowPreparable {
 	public boolean unshoot(Player player) {
 		return shot.remove(player.getUniqueId());
 	}
+	
 
 }

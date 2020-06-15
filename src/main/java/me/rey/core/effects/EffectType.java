@@ -4,7 +4,7 @@ import org.bukkit.entity.LivingEntity;
 
 public enum EffectType {
 	
-	SILENCE, BLEED, SHOCK;
+	SILENCE, BLEED, SHOCK, MARK;
 	
 	public interface Applyable {
 	

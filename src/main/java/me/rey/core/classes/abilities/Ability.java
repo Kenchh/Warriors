@@ -37,6 +37,7 @@ import me.rey.core.classes.abilities.IConstant.IDroppable;
 import me.rey.core.classes.abilities.IConstant.ITogglable;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedByEntity;
 import me.rey.core.classes.abilities.IDamageTrigger.IPlayerDamagedEntity;
+import me.rey.core.effects.Effect;
 import me.rey.core.effects.repo.Silence;
 import me.rey.core.energy.IEnergyEditor;
 import me.rey.core.enums.AbilityFail;
@@ -143,7 +144,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		AbilityFailEvent event = null;
 		
 		// WHILE SILENCED
-		if(!whileSilenced && new Silence().hasEffect(p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
+		if(!whileSilenced && Effect.hasEffect(Silence.class, p) && (Silence.silencedAbilities.contains(this.getAbilityType()) || this instanceof ITogglable)) {
 			if(!(conditions != null && conditions.length == 1 && (conditions[0] instanceof UpdateEvent || conditions[0] instanceof DamageEvent
 					|| conditions[0] instanceof DamagedByEntityEvent || conditions[0] instanceof EnergyUpdateEvent)) || this instanceof ITogglable) {
 				event = new AbilityFailEvent(AbilityFail.SILENCED, p, this, level);

@@ -18,11 +18,12 @@ public class Shock extends Effect {
 
 	@Override
 	public void onApply(LivingEntity ent, double seconds) {
+		Class<? extends Effect> clazz = this.getClass();
 		new BukkitRunnable() {
 			
 			@Override
 			public void run() {
-				if(!hasEffect(ent) || ent == null || (ent instanceof Player && !((Player) ent).isOnline())) {
+				if(!Effect.hasEffect(clazz, ent) || ent == null || (ent instanceof Player && !((Player) ent).isOnline())) {
 					this.cancel();
 					return;
 				}

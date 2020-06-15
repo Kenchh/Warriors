@@ -35,6 +35,8 @@ import me.rey.core.classes.abilities.bandit.passive_a.Recall;
 import me.rey.core.classes.abilities.bandit.passive_a.Scream;
 import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
 import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
+import me.rey.core.classes.abilities.berserker.axe.Adrenaline;
+import me.rey.core.classes.abilities.berserker.bow.Premonition;
 import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
 import me.rey.core.classes.abilities.druid.axe.IcePrison;
@@ -296,6 +298,8 @@ public class Warriors extends JavaPlugin {
 				new Tornado(),
 
 				//BERSERKER
+				new Adrenaline(),
+				new Premonition(),
 
 				//MARKSMAN
 				
@@ -313,7 +317,10 @@ public class Warriors extends JavaPlugin {
 		
 		for(Ability ability : abilityCache) {
 			Bukkit.getPluginManager().registerEvents(ability, this);
-			Text.log(this, String.format("Successfully loaded ability [%s]", ability.getName()));
+			Text.log(this, String.format("Successfully loaded ability [%s] [ID: %s] [Class: %s]",
+					ability.getName(),
+					ability.getIdLong(),
+					ability.getClassType().getName()));
 		}
 	}
 	
