@@ -20,3 +20,4 @@ To contribute within this repository, please direct yourself to the developer in
 
 * **Rey** - *Plugin Framework & Lead* - [@rey-dev](https://github.com/rey-dev) (@rey#7437)
 * **Kenchh** - *Contribution* - [@Kenchh](https://github.com/Kenchh) (@Kenchh#4306)
+* **Masked** - *Contribution* - [@DarkMG1](https://github.com/DarkMG1) (@Masked#7027)
