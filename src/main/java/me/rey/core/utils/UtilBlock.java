@@ -2,6 +2,7 @@ package me.rey.core.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -286,9 +287,9 @@ public class UtilBlock {
 	    return getBlocksInRadius(loc, dR, 999.0D);
 	}
 
-	public static ArrayList<Entity> getEntitiesInCircle(Location loc, double radius) {
+	public static HashSet<Entity> getEntitiesInCircle(Location loc, double radius) {
 
-		ArrayList<Entity> en = new ArrayList<Entity>();
+		HashSet<Entity> en = new HashSet<Entity>();
 
 		for(Entity e : loc.getWorld().getNearbyEntities(loc, radius, radius, radius)) {
 			HashMap<Double, double[]> maxmincords = new HashMap<Double, double[]>();
