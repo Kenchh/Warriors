@@ -2,6 +2,7 @@ package me.rey.core.classes.conditions;
 
 import java.util.Iterator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -23,20 +24,19 @@ public class Balanced extends ClassCondition {
 
 	@Override
 	protected void execute(User user, Player player) {
-		Iterator<Entity> le = UtilBlock.getEntitiesInCircle(player.getLocation(), 5F).iterator();
-		
+
 		int playerCount = 0;
-		while(le.hasNext()) {
-			Entity next = le.next();
+		for(Entity e : UtilBlock.getEntitiesInCircle(player.getLocation(), 5F)) {
 			
-			if(!(next instanceof Player)) continue;
+			if(!(e instanceof Player)) continue;
 			
-			Player ent = (Player) next;
+			Player ent = (Player) e;
 			if(user.getTeam().contains(ent)) continue;
-			
+
+			if(player != ent)
 			playerCount++;
 		}
-		
+		Bukkit.broadcastMessage(UtilBlock.getEntitiesInCircle(player.getLocation(), 5F).size() + " s");
 		if(playerCount == 1) {
 
 			// GIVE STRENGTH
