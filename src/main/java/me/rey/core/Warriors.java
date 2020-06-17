@@ -49,8 +49,10 @@ import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
 import me.rey.core.classes.abilities.knight.axe.HoldPosition;
 import me.rey.core.classes.abilities.knight.passive_a.Charge;
+import me.rey.core.classes.abilities.knight.passive_b.Advantage;
 import me.rey.core.classes.abilities.knight.passive_b.FatalBlow;
 import me.rey.core.classes.abilities.knight.passive_b.Lust;
+import me.rey.core.classes.abilities.knight.passive_b.Revenge;
 import me.rey.core.classes.abilities.knight.sword.Immunity;
 import me.rey.core.classes.abilities.knight.sword.Thrust;
 import me.rey.core.classes.abilities.shaman.axe.Overgrown;
@@ -304,12 +306,14 @@ public class Warriors extends JavaPlugin {
 				//MARKSMAN
 				
 				//KNIGHT
+				new Advantage(),
 				new Charge(),
 				new FatalBlow(),
-				new Thrust(),
 				new HoldPosition(),
 				new Immunity(),
 				new Lust(),
+				new Revenge(),
+				new Thrust(),
 				
 				//BRUTE
 				new IronHook()
