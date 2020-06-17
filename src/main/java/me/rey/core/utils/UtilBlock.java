@@ -243,6 +243,24 @@ public class UtilBlock {
 		return xzCords;
 	}
 
+	public static double getYCordsMultiplierByPitch(double pitchdegree) {
+		return Math.sin(Math.toRadians(-pitchdegree));
+	}
+
+	public static Location getMidPoint(Location loc1, Location loc2) {
+		Location midpoint = loc1.clone();
+
+		double midx = (loc1.getX() + loc2.getX()) / 2;
+		double midy = (loc1.getY() + loc2.getY()) / 2;
+		double midz = (loc1.getZ() + loc2.getZ()) / 2;
+
+		midpoint.setX(midx);
+		midpoint.setY(midy);
+		midpoint.setZ(midz);
+
+		return midpoint;
+	}
+
 	public static Location highestLocation(Location locat) {
 		double blockY = locat.getBlockY();
 
