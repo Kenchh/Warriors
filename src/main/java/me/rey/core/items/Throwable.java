@@ -24,6 +24,7 @@ import org.bukkit.util.Vector;
 
 import me.rey.core.Warriors;
 import me.rey.core.gui.Gui;
+import me.rey.core.utils.UtilBlock;
 
 public class Throwable implements Listener {
 
@@ -152,7 +153,7 @@ public class Throwable implements Listener {
 		Set<Block> toReturn = new HashSet<Block>();
 		
 		for(Block b : list) {
-			if(!solid(b))
+			if(!UtilBlock.airFoliage(b))
 				toReturn.add(b);
 		}
 		
@@ -179,9 +180,5 @@ public class Throwable implements Listener {
 		
 		return toReturn.isEmpty() ? null : toReturn;
     }
-    
-	public static boolean solid(Block b) {
-		return b == null || b.getType().equals(Material.AIR) || !b.getType().isSolid() || !b.getType().isOccluding();
-	}
 
 }

@@ -107,7 +107,7 @@ public class IcePrison extends Ability {
 					HashMap<Block, Double> blocks = UtilBlock.getBlocksInRadius(loc, 4.2D);
 					
 					for (Block cur : blocks.keySet()) {
-						if (UtilBlock.air(cur)) {
+						if (UtilBlock.airFoliage(cur)) {
 		
 							double offset = UtilMath.offset(block.getLocation(), cur.getLocation());
 							if (offset >= 2.8D && offset <= 4.1) {
@@ -137,7 +137,7 @@ public class IcePrison extends Ability {
 	
 	@SuppressWarnings("deprecation")
 	public void FreezeBlock(Player p, Block freeze, Block mid, int level){
-	    if (!UtilBlock.air(freeze)) 
+	    if (!UtilBlock.airFoliage(freeze)) 
 	      return;
 	    
 	    double time = 4 + (1 * level);

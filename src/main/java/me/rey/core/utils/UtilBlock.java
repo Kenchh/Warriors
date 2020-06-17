@@ -16,6 +16,8 @@ import org.bukkit.util.Vector;
 import me.rey.core.events.customevents.block.CustomBlockPlaceEvent;
 
 public class UtilBlock {
+	
+	private static HashSet<Byte> blockAirFoliageSet = new HashSet<>();
 
 	@SuppressWarnings("deprecation")
 	public static boolean replaceBlock(CustomBlockPlaceEvent.PlaceCause cause, Block old, Material replace, byte data) {
@@ -362,8 +364,37 @@ public class UtilBlock {
 		return cl;
 	}
 	
-	public static boolean air(Block b) {
-		return b == null || b.getType().equals(Material.AIR) || (!b.getType().isSolid() || !b.getType().isOccluding()) ;
-	}
+	@SuppressWarnings("deprecation")
+	public static boolean airFoliage(Block block) {
+	    if (block == null) return false;
+	    return airFoliage(block.getTypeId());
+	  }
+	  
+	  public static boolean airFoliage(int block) {
+	    return airFoliage((byte)block);
+	  }
+	  
+	  public static boolean airFoliage(byte block) {
+	    if (blockAirFoliageSet.isEmpty())
+	    {
+	      blockAirFoliageSet.add(Byte.valueOf((byte)0));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)6));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)31));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)32));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)37));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)38));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)39));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)40));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)51));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)59));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)104));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)105));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)115));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)-115));
+	      blockAirFoliageSet.add(Byte.valueOf((byte)-114));
+	    }
+	    
+	    return blockAirFoliageSet.contains(Byte.valueOf(block));
+	  }
 
 }

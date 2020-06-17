@@ -36,7 +36,7 @@ public class Balanced extends ClassCondition {
 			if(player != ent)
 			playerCount++;
 		}
-		Bukkit.broadcastMessage(UtilBlock.getEntitiesInCircle(player.getLocation(), 5F).size() + " s");
+		
 		if(playerCount == 1) {
 
 			// GIVE STRENGTH
