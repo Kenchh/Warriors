@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -284,6 +285,7 @@ public class Warriors extends JavaPlugin {
 				new FireBlast(),
 				new IcePrison(),
 				new LightningOrb(),
+				new LightningBolt(),
 				new MagmaBlade(),
 				new Void(),
 				new ArcticZone(),
