@@ -39,7 +39,6 @@ public class BlitzStrikes extends Ability implements IPlayerDamagedEntity {
 		
 		if(!this.onCooldown.contains(p)) {
 			onCooldown.add(p);
-			new Bleed(this.getName(), p).apply(e.getDamagee(), bleedTime);
 			
 			new BukkitRunnable() {
 				@Override

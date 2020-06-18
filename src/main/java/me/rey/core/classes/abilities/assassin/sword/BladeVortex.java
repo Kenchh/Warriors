@@ -35,10 +35,9 @@ public class BladeVortex extends Ability {
                 "Create a blade vortex, pulling players into you",
                 "and casting players near you afar.",
                 "",
-                "Players hit with the blade vortex take <variable>5+l</variable> damage",
-                "as well as receive slowness for <variable>1.0 + 0.5*l</variable> seconds.",
+                "Players hit with the blade vortex take <variable>3+l</variable> damage.",
                 "",
-                "Recharge: <variable>10.5 - l</variable>"
+                "Recharge: <variable>12-(0.5*l)</variable> Seconds."
         ));
     }
 
@@ -47,7 +46,7 @@ public class BladeVortex extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setCooldown(10.5 - level);
+        this.setCooldown(12 - (level * 0.5));
 
         if(vortexing.containsKey(p.getUniqueId()) == false) {
             vortexing.put(p.getUniqueId(), 0D);
@@ -93,9 +92,8 @@ public class BladeVortex extends Ability {
                     LivingEntity le = (LivingEntity) e;
                     
                     
-                    UtilEnt.damage(5+level, this.getName(), le, p);
+                    UtilEnt.damage(3+level, this.getName(), le, p);
                     
-                    le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * (1.0 + 0.5 * level)), 1));
                     if (distance < 2.6) {
                         pushAway(p, e);
                     } else {
