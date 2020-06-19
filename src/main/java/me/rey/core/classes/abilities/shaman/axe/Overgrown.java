@@ -78,7 +78,7 @@ public class Overgrown extends Ability {
 
                 p.getWorld().playSound(p.getLocation(), Sound.CREEPER_HISS, 1F, 0.3F);
 
-                for(int degree=0; degree<=360; degree += 5) {
+                for(int degree=0; degree<=360; degree += 40) {
 
                     Location loc = p.getLocation().clone();
 

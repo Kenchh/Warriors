@@ -106,7 +106,7 @@ public class Paralysis extends Ability {
                     le.getLocation().getWorld().playSound(le.getLocation(), Sound.DIG_GRASS, 1F, 1F);
                     le.getLocation().getWorld().playSound(le.getLocation(), Sound.DIG_GRASS, 1F, 1F);
                     for(double radius=2; radius>=1; radius-=0.25) {
-                        for (Location loc : UtilBlock.circleLocations(le.getLocation(), radius, 5)) {
+                        for (Location loc : UtilBlock.circleLocations(le.getLocation(), radius, 40)) {
                             loc.getWorld().spigot().playEffect(loc, Effect.CRIT, 0, 0, 0, 0, 0, 0, 0, 30);
                         }
                     }

@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import me.rey.core.classes.abilities.druid.sword.LightningBolt;
+import me.rey.core.classes.abilities.shaman.spade.Miasma;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -300,6 +301,7 @@ public class Warriors extends JavaPlugin {
 				new Synthesis(),
 				new Thorns(),
 				new Tornado(),
+				new Miasma(),
 
 				//BERSERKER
 				new Adrenaline(),
