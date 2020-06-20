@@ -13,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.rey.core.Warriors;
@@ -23,16 +24,15 @@ import me.rey.core.players.User;
 import me.rey.core.utils.UtilBlock;
 import me.rey.core.utils.UtilEnt;
 
-public class BladeVortex extends Ability {
+public class Vortex extends Ability {
 
     private final double radius = 5.5;
 
     HashMap<UUID, Double> vortexing = new HashMap<UUID, Double>();
-    HashMap<UUID, Integer> vortexingS = new HashMap<UUID, Integer>();
 
-    public BladeVortex() {
-        super(1, "Blade Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 10.5, Arrays.asList(
-                "Create a blade vortex, pulling players into you",
+    public Vortex() {
+        super(1, "Vortex", ClassType.LEATHER, AbilityType.SWORD, 1, 3, 12.0, Arrays.asList(
+                "Create a vortex, pulling players into you",
                 "and casting players near you afar.",
                 "",
                 "Players hit with the blade vortex take <variable>3+l</variable> damage.",
@@ -40,8 +40,6 @@ public class BladeVortex extends Ability {
                 "Recharge: <variable>12-(0.5*l)</variable> Seconds."
         ));
     }
-
-    int S = 0;
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
@@ -52,20 +50,15 @@ public class BladeVortex extends Ability {
             vortexing.put(p.getUniqueId(), 0D);
         }
 
-        S = Bukkit.getScheduler().scheduleSyncRepeatingTask(Warriors.getPlugin(Warriors.class), new Runnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
-
-                if(vortexingS.containsKey(p.getUniqueId()) == false) {
-                    vortexingS.put(p.getUniqueId(), S);
-                }
 
                 if(vortexing.containsKey(p.getUniqueId())) {
 
                     if (vortexing.get(p.getUniqueId()) >= 4D) {
 
-                        Bukkit.getScheduler().cancelTask(S);
-                        vortexingS.remove(p.getUniqueId());
+                        this.cancel();
                         vortexing.remove(p.getUniqueId());
 
                     } else {
@@ -82,7 +75,7 @@ public class BladeVortex extends Ability {
                     }
                 }
             }
-        }, 1L, 1L);
+        }.runTaskTimer(Warriors.getInstance(), 1L, 1L);
 
 
         for(Entity e : p.getNearbyEntities(radius, 4, radius)) {
