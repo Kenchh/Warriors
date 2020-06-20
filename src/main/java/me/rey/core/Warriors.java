@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.druid.sword.Blaze;
 import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
 import org.bukkit.Bukkit;
@@ -292,6 +293,7 @@ public class Warriors extends JavaPlugin {
 				new MagmaBlade(),
 				new Void(),
 				new ArcticZone(),
+				new Blaze(),
 
 				//SHAMAN
 				new Aromatherapy(),

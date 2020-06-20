@@ -26,9 +26,9 @@ import java.util.*;
 public class LightningBolt extends Ability implements IConstant {
 
     public LightningBolt() {
-        super(200, "Lightning Bolt", ClassType.GOLD, AbilityType.SWORD, 1, 5, 0.0, Arrays.asList(
+        super(201, "Lightning Bolt", ClassType.GOLD, AbilityType.SWORD, 1, 5, 0.0, Arrays.asList(
                 "Charge up an electric beam, piercing and dealing ",
-                "<variable>4.5+0.5*l (+0.5)</variable> + stacks/2 damage to all enemies hit by it.",
+                "<variable>4.5+0.5*l</variable> (+0.5) + stacks/2 damage to all enemies hit by it.",
                 "",
                 "Every time an enemy is hit, a stack is gained up to ",
                 "a maximum of 5 stacks.",
@@ -37,7 +37,7 @@ public class LightningBolt extends Ability implements IConstant {
                 "stacks will decay over time or will disappear",
                 "upon missing a fired bolt.",
                 "",
-                "Energy: <variable>39-l*3 (-3)</variable>"
+                "Energy: <variable>39-l*3</variable> (-3)"
         ));
         setIgnoresCooldown(true);
     }
