@@ -50,11 +50,6 @@ public enum ClassType {
 			new DefaultBuild(),
 			Utils.getColoredArmor(Material.LEATHER_HELMET, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 39, 174, 96),
 			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 39, 174, 96), Utils.getColoredArmor(Material.LEATHER_BOOTS, 39, 174, 96)
-			),
-	RED(36, "Berserker", SoundEffect.TANK_C,
-			new DefaultBuild(),
-			Utils.getColoredArmor(Material.LEATHER_HELMET, 231, 76, 60), Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, 231, 76, 60),
-			Utils.getColoredArmor(Material.LEATHER_LEGGINGS, 231, 76, 60), Utils.getColoredArmor(Material.LEATHER_BOOTS, 231, 76, 60)
 			);
 	
 	private String name;
