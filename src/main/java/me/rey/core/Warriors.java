@@ -67,6 +67,8 @@ import me.rey.core.classes.abilities.shaman.spade.Tornado;
 import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.classes.conditions.Balanced;
 import me.rey.core.classes.conditions.Lightweight;
+import me.rey.core.classes.conditions.SummoningDarkEnergy;
+import me.rey.core.classes.conditions.ThePowerOfNature;
 import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.combat.DamageHandler;
 import me.rey.core.commands.Equip;
@@ -240,15 +242,17 @@ public class Warriors extends JavaPlugin {
 	 */
 	public void initConditionCache() {
 		classConditions = new ArrayList<>(Arrays.asList(
+				//SHAMAN
+				new ThePowerOfNature(),
 				// NINJA
 				new Vigour(),
-				// WIZARD
-				new ArcaneRepair(),
+				// DRUID
+				new SummoningDarkEnergy(),
 				// MARKSMAN
 				// KNIGHT
 				new Balanced(),
 				// BRUTE
-				// BLACK
+				// BANDIT
 				new Lightweight()
 				));
 

@@ -10,11 +10,12 @@ public class EnergyUpdateEvent extends Event {
 	
 	private static final HandlerList HANDLERS = new HandlerList();
 	
-	private double energy, extraCapacity, extraSpeed;
+	private double energy, extraCapacity, extraSpeed, increment;
 	private Player player;
 	private EnergyHandler handler;
 	
-	public EnergyUpdateEvent(Player player, double energy, EnergyHandler handler) {
+	public EnergyUpdateEvent(double incrementPerTick, Player player, double energy, EnergyHandler handler) {
+		this.increment = incrementPerTick;
 		this.player = player;
 		this.energy = energy;
 		this.extraCapacity = 0;
@@ -29,6 +30,14 @@ public class EnergyUpdateEvent extends Event {
 	
 	public static HandlerList getHandlerList() {
 		return HANDLERS;
+	}
+	
+	public double getIncrement() {
+		return increment;
+	}
+	
+	public void setIncrement(double incrementPerTick) {
+		this.increment = incrementPerTick;
 	}
 	
 	public Player getPlayer() {
