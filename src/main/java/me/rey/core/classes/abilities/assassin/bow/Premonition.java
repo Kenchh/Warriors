@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.berserker.bow;
+package me.rey.core.classes.abilities.assassin.bow;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,7 +21,7 @@ public class Premonition extends Ability implements IBowPreparable {
 	private Set<UUID> prepared = new HashSet<>(), shot = new HashSet<UUID>();
 
 	public Premonition() {
-		super(721, "Premonition", ClassType.RED, AbilityType.BOW, 1, 3, 10, Arrays.asList(
+		super(021, "Premonition", ClassType.LEATHER, AbilityType.BOW, 1, 3, 10, Arrays.asList(
 				"When hit, a player will take",
 				"<variable>4+(1.75*l)</variable> more damage on the next",
 				"melee attack.", "",
