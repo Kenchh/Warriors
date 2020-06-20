@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.druid.axe;
+package me.rey.core.classes.abilities.druid.spade;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -33,7 +33,7 @@ public class LightningOrb extends Ability {
 	final double throwLevelMultiplier = 0.1;
 	
 	public LightningOrb() {
-		super(214, "Lightning Orb", ClassType.GOLD, AbilityType.AXE, 1, 5, 0.00, Arrays.asList(
+		super(224, "Lightning Orb", ClassType.GOLD, AbilityType.SPADE, 1, 5, 0.00, Arrays.asList(
 				"Throw an orb that strikes lightning",
 				"on all nearby players within a radius",
 				"of <variable>3.5+(0.5*l)</variable> blocks.",

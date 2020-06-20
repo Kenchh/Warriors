@@ -43,7 +43,7 @@ import me.rey.core.classes.abilities.berserker.bow.Premonition;
 import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
 import me.rey.core.classes.abilities.druid.axe.IcePrison;
-import me.rey.core.classes.abilities.druid.axe.LightningOrb;
+import me.rey.core.classes.abilities.druid.spade.LightningOrb;
 import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
 import me.rey.core.classes.abilities.druid.passive_a.Void;
 import me.rey.core.classes.abilities.druid.passive_b.MagmaBlade;
