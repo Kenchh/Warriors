@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.berserker.axe;
+package me.rey.core.classes.abilities.brute.axe;
 
 import java.util.Arrays;
 
@@ -16,7 +16,7 @@ import me.rey.core.players.User;
 public class Adrenaline extends Ability {
 
 	public Adrenaline() {
-		super(711, "Adrenaline", ClassType.RED, AbilityType.AXE, 1, 5, 10.0D, Arrays.asList(
+		super(611, "Adrenaline", ClassType.DIAMOND, AbilityType.AXE, 1, 5, 10.0D, Arrays.asList(
 				"Clear all your status effects and",
 				"gain Resistance 1 and Speed 1 for",
 				"<variable>5+(0.5*l)</variable> Seconds."
