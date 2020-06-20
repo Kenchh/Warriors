@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.assassin.sword.Vortex;
 import me.rey.core.classes.abilities.druid.sword.Blaze;
 import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
@@ -29,7 +30,6 @@ import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
 import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
 import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
 import me.rey.core.classes.abilities.assassin.passive_b.BlitzStrikes;
-import me.rey.core.classes.abilities.assassin.sword.BladeVortex;
 import me.rey.core.classes.abilities.assassin.sword.Evade;
 import me.rey.core.classes.abilities.bandit.axe.Blink;
 import me.rey.core.classes.abilities.bandit.axe.Leap;
@@ -281,7 +281,7 @@ public class Warriors extends JavaPlugin {
 				new Dash(),
 				new Flash(),
 				new Evade(),
-				new BladeVortex(),
+				new Vortex(),
 				
 				//DRUID
 				new EnergyRegeneration(),
