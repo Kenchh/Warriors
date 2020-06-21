@@ -24,14 +24,14 @@ public class ThePowerOfNature extends ClassCondition {
 	@EventHandler
 	public void onDamage(DamageEvent e) {
 		if(!e.getHitType().equals(HitType.MELEE)) return;
-		if(!new User(e.getDamager()).getWearingClass().equals(this.getClassType())) return;
+		if(new User(e.getDamager()).getWearingClass() != this.getClassType()) return;
 		
 		new User(e.getDamager()).addEnergy(5D);
 	}
 	
 	@EventHandler
 	public void onEnergyUpdate(EnergyUpdateEvent e) {
-		if(!new User(e.getPlayer()).getWearingClass().equals(this.getClassType())) return;
+		if(new User(e.getPlayer()).getWearingClass() != this.getClassType()) return;
 		
 		e.setIncrement(8D / 20);
 	}

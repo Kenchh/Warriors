@@ -25,14 +25,14 @@ public class SummoningDarkEnergy extends ClassCondition {
 	public void onKill(DeathEvent e) {
 		if (e.getLastHit() == null || !e.getLastHit().isCausedByPlayer()) return;
 		Player hitter = Bukkit.getServer().getPlayer(e.getLastHit().getDamager());
-		if (!new User(hitter).getWearingClass().equals(this.getClassType())) return;
+		if (new User(hitter).getWearingClass() != this.getClassType()) return;
 		
 		new User(hitter).addEnergy(50D);
 	}
 	
 	@EventHandler
 	public void onEnergyUpdate(EnergyUpdateEvent e) {
-		if(!new User(e.getPlayer()).getWearingClass().equals(this.getClassType())) return;
+		if(new User(e.getPlayer()).getWearingClass() != this.getClassType()) return;
 		
 		e.setIncrement(10D / 20);
 	}
