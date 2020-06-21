@@ -50,6 +50,10 @@ public class Text {
     }
     
     public static double eval(final String str) {
+    	return eval("N/A", str);
+    }
+    
+    public static double eval(String cause, final String str) {
         return new Object() {
             int pos = -1, ch;
 
@@ -69,7 +73,7 @@ public class Text {
             double parse() {
                 nextChar();
                 double x = parseExpression();
-                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
+                if (pos < str.length()) throw new RuntimeException("Cause: " + cause + " | Unexpected: " + (char)ch);
                 return x;
             }
 
