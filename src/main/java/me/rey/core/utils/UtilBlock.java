@@ -18,6 +18,85 @@ import me.rey.core.events.customevents.block.CustomBlockPlaceEvent;
 public class UtilBlock {
 	
 	private static HashSet<Byte> blockAirFoliageSet = new HashSet<>();
+	private static HashSet<Byte> blockPassSet = new HashSet<>();
+	
+	public static Block getLowestBlockFrom(Block start) {
+		for (int i = start.getY(); i > 0; i--)
+			if (UtilBlock.solid(new Location(start.getWorld(), start.getX(), i, start.getZ()).getBlock()))
+					return new Location(start.getWorld(), start.getX(), i, start.getZ()).getBlock();
+		
+		return new Location(start.getWorld(), start.getX(), 0, start.getZ()).getBlock();
+	}
+	  
+	@SuppressWarnings("deprecation")
+	public static boolean solid(Block block) {
+	  if (block == null) return false;
+	  return solid(block.getTypeId());
+	}
+	
+	public static boolean solid(int block) {
+		return solid((byte)block);
+	}
+	  
+	public static boolean solid(byte block) {
+	  if (blockPassSet.isEmpty()) {
+	      blockPassSet.add(Byte.valueOf((byte)0));
+	      blockPassSet.add(Byte.valueOf((byte)6));
+	      blockPassSet.add(Byte.valueOf((byte)8));
+	      blockPassSet.add(Byte.valueOf((byte)9));
+	      blockPassSet.add(Byte.valueOf((byte)10));
+	      blockPassSet.add(Byte.valueOf((byte)11));
+	      blockPassSet.add(Byte.valueOf((byte)26));
+	      blockPassSet.add(Byte.valueOf((byte)27));
+	      blockPassSet.add(Byte.valueOf((byte)28));
+	      blockPassSet.add(Byte.valueOf((byte)30));
+	      blockPassSet.add(Byte.valueOf((byte)31));
+	      blockPassSet.add(Byte.valueOf((byte)32));
+	      blockPassSet.add(Byte.valueOf((byte)37));
+	      blockPassSet.add(Byte.valueOf((byte)38));
+	      blockPassSet.add(Byte.valueOf((byte)39));
+	      blockPassSet.add(Byte.valueOf((byte)40));
+	      blockPassSet.add(Byte.valueOf((byte)50));
+	      blockPassSet.add(Byte.valueOf((byte)51));
+	      blockPassSet.add(Byte.valueOf((byte)55));
+	      blockPassSet.add(Byte.valueOf((byte)59));
+	      blockPassSet.add(Byte.valueOf((byte)63));
+	      blockPassSet.add(Byte.valueOf((byte)64));
+	      blockPassSet.add(Byte.valueOf((byte)65));
+	      blockPassSet.add(Byte.valueOf((byte)66));
+	      blockPassSet.add(Byte.valueOf((byte)68));
+	      blockPassSet.add(Byte.valueOf((byte)69));
+	      blockPassSet.add(Byte.valueOf((byte)70));
+	      blockPassSet.add(Byte.valueOf((byte)71));
+	      blockPassSet.add(Byte.valueOf((byte)72));
+	      blockPassSet.add(Byte.valueOf((byte)75));
+	      blockPassSet.add(Byte.valueOf((byte)76));
+	      blockPassSet.add(Byte.valueOf((byte)77));
+	      blockPassSet.add(Byte.valueOf((byte)78));
+	      blockPassSet.add(Byte.valueOf((byte)83));
+	      blockPassSet.add(Byte.valueOf((byte)90));
+	      blockPassSet.add(Byte.valueOf((byte)92));
+	      blockPassSet.add(Byte.valueOf((byte)93));
+	      blockPassSet.add(Byte.valueOf((byte)94));
+	      blockPassSet.add(Byte.valueOf((byte)96));
+	      blockPassSet.add(Byte.valueOf((byte)101));
+	      blockPassSet.add(Byte.valueOf((byte)102));
+	      blockPassSet.add(Byte.valueOf((byte)104));
+	      blockPassSet.add(Byte.valueOf((byte)105));
+	      blockPassSet.add(Byte.valueOf((byte)106));
+	      blockPassSet.add(Byte.valueOf((byte)107));
+	      blockPassSet.add(Byte.valueOf((byte)111));
+	      blockPassSet.add(Byte.valueOf((byte)115));
+	      blockPassSet.add(Byte.valueOf((byte)116));
+	      blockPassSet.add(Byte.valueOf((byte)117));
+	      blockPassSet.add(Byte.valueOf((byte)118));
+	      blockPassSet.add(Byte.valueOf((byte)119));
+	      blockPassSet.add(Byte.valueOf((byte)120));
+	      blockPassSet.add(Byte.valueOf((byte)-85));
+	  }
+	    
+	  return !blockPassSet.contains(Byte.valueOf(block));
+	}
 
 	@SuppressWarnings("deprecation")
 	public static boolean replaceBlock(CustomBlockPlaceEvent.PlaceCause cause, Block old, Material replace, byte data) {

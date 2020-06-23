@@ -264,7 +264,7 @@ public abstract class Ability extends Cooldown implements Listener {
 			int finds = 0;
 			while(m2.find()) {
 				String match = m2.group(finds).replaceAll("\\s+", "").toLowerCase().replaceAll("l", level + "");
-				String result = String.valueOf(Text.eval(match));
+				String result = String.valueOf(Text.eval(this.getName(), match));
 				
 				s = s.replace(m2.group(), result.replace(".0", ""));
 				finds++;
