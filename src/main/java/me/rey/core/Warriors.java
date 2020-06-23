@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import me.rey.core.classes.abilities.assassin.sword.Vortex;
 import me.rey.core.classes.abilities.druid.sword.Blaze;
 import me.rey.core.classes.abilities.druid.sword.LightningBolt;
+import me.rey.core.classes.abilities.druid.sword.SnowFlurry;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -294,6 +295,7 @@ public class Warriors extends JavaPlugin {
 				new Void(),
 				new ArcticZone(),
 				new Blaze(),
+				new SnowFlurry(),
 
 				//SHAMAN
 				new Aromatherapy(),
