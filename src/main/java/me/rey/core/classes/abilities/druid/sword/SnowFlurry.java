@@ -25,19 +25,20 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class SnowFlurry extends Ability implements IConstant {
-    public SnowFlurry() {
-        super(203, "Snow Flurry", ClassType.GOLD, AbilityType.SWORD, 1, 3, 0.0, Arrays.asList(
-                "Fire a pile of <variable>l</variable> snowballs, pushing hit",
-                "enemies into the air.",
-                "",
-                "Energy: <variable>(31-l)/20</variable> per second."
-        ));
-        this.setIgnoresCooldown(true);
-        this.setEnergyCost(31/20);
-    }
 
     final double baseAmount = 0;
     final double amountPerLevel = 1;
+
+    public SnowFlurry() {
+        super(203, "Snow Flurry", ClassType.GOLD, AbilityType.SWORD, 1, 3, 0.0, Arrays.asList(
+                "Fire a pile of <variable>1*l</variable> (+1) snowballs, pushing hit",
+                "enemies into the air.",
+                "",
+                "Energy: <variable>40-l*2</variable> (-2) per second."
+        ));
+        this.setIgnoresCooldown(true);
+        this.setEnergyCost(40/20);
+    }
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
@@ -48,7 +49,7 @@ public class SnowFlurry extends Ability implements IConstant {
             return false;
         }
 
-        this.setEnergyCost((31 - level)/20);
+        this.setEnergyCost((40 - level*2)/20);
 
         for(int i=1; i<=baseAmount+amountPerLevel*level; i++)
             new FlurryObject(p, u, level);
