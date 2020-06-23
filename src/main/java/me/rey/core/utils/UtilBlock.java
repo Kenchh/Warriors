@@ -20,6 +20,14 @@ public class UtilBlock {
 	private static HashSet<Byte> blockAirFoliageSet = new HashSet<>();
 	private static HashSet<Byte> blockPassSet = new HashSet<>();
 	
+	public static Block getHighestClosestAir(Block start) {
+		for (int i = start.getY(); i < 250; i++)
+			if (UtilBlock.airFoliage(new Location(start.getWorld(), start.getX(), i, start.getZ()).getBlock()))
+					return new Location(start.getWorld(), start.getX(), i, start.getZ()).getBlock();
+		
+		return new Location(start.getWorld(), start.getX(), 250, start.getZ()).getBlock();
+	}
+	
 	public static Block getLowestBlockFrom(Block start) {
 		for (int i = start.getY(); i > 0; i--)
 			if (UtilBlock.solid(new Location(start.getWorld(), start.getX(), i, start.getZ()).getBlock()))

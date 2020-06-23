@@ -273,7 +273,7 @@ public class Aromatherapy extends Ability implements IConstant, ITogglable, IPla
 			
 			if(!new User(p).isUsingAbility(this)) continue;
 			
-			if((p.getHealth() > minHeartsToTransfer * 2 && !this.blossomCharge.containsKey(p)) || this.onBlossomCooldown.contains(p)) continue;
+			if((!this.blossomCharge.containsKey(p)) || this.onBlossomCooldown.contains(p)) continue;
 			
 			if(!toRestore.containsKey(p)) toRestore.put(p, new HashMap<Block, Object[]>());
 			

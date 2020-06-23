@@ -65,6 +65,7 @@ import me.rey.core.classes.abilities.shaman.passive_a.Thorns;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
 import me.rey.core.classes.abilities.shaman.spade.Paralysis;
 import me.rey.core.classes.abilities.shaman.spade.Tornado;
+import me.rey.core.classes.abilities.shaman.sword.Tremor;
 import me.rey.core.classes.conditions.Balanced;
 import me.rey.core.classes.conditions.Lightweight;
 import me.rey.core.classes.conditions.SummoningDarkEnergy;
@@ -302,6 +303,7 @@ public class Warriors extends JavaPlugin {
 				new Void(),
 
 				//SHAMAN
+				new Tremor(),
 				new Aromatherapy(),
 				new Miasma(),
 				new NullBlade(),

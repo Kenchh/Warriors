@@ -19,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -179,6 +180,7 @@ public class DamageHandler implements Listener {
 		
 		cache.addToPlayerCache(target, new PlayerHit(target, damager, e.getDamage(), null));
 		
+		if (e.getCause() == DamageCause.FALL) return;
 		// armor values
 		e.setDamage(calcEffects(e.getDamage(), target, null));
 		e.setDamage(calcArmor(e.getDamage(), target, e));

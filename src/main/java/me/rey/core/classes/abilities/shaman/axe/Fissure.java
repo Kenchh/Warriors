@@ -47,6 +47,8 @@ public class Fissure extends Ability {
 				"Energy: <variable>50-(3*l)</variable>",
 				"Recharge: <variable>12-l</variable> Seconds"
 				));
+		
+		this.setWhileInAir(false);
 	}
 
 	@Override
@@ -100,6 +102,7 @@ public class Fissure extends Ability {
 			this.degree = degree + 90D;
 			this.level = level;
 			this.slownessSeconds = slownessSeconds;
+
 		}
 		
 		public void start() {
@@ -175,8 +178,8 @@ public class Fissure extends Ability {
 				Object[] array = {b.getType(), b.getData()};
 				blockData.put(b, array);
 				
-				b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getTypeId());
 				UtilBlock.replaceBlock(PlaceCause.ABILITY, b, mat, data);
+				b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getTypeId());
 				Fissure.unbreakable.add(b);
 				
 				new BukkitRunnable() {
