@@ -1,8 +1,5 @@
 package me.rey.core.classes.conditions;
 
-import java.util.Iterator;
-
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;

@@ -9,7 +9,7 @@ import me.rey.core.enums.State;
 
 public class EnergyHandler {
 
-	public static double MAX_ENERGY = 180, INCREMENT = 0.4;
+	public static double MAX_ENERGY = 180, INCREMENT = 0.4, PER_SECOND = INCREMENT * 20;
 	private static HashMap<UUID, Double> energy = new HashMap<>(), extraCapacity = new HashMap<>(), energySpeed = new HashMap<>();
 	private static Set<UUID> paused = new HashSet<>();
 	

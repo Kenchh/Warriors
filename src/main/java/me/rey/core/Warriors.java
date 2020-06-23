@@ -13,6 +13,8 @@ import me.rey.core.classes.abilities.druid.sword.Blaze;
 import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.druid.sword.SnowFlurry;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
+
+
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -27,11 +29,13 @@ import me.rey.core.classes.abilities.assassin.axe.Dash;
 import me.rey.core.classes.abilities.assassin.axe.Flash;
 import me.rey.core.classes.abilities.assassin.bow.BlindingArrow;
 import me.rey.core.classes.abilities.assassin.bow.Disarm;
+import me.rey.core.classes.abilities.assassin.bow.Premonition;
 import me.rey.core.classes.abilities.assassin.bow.WitheredArrow;
 import me.rey.core.classes.abilities.assassin.passive_a.HiddenAssault;
 import me.rey.core.classes.abilities.assassin.passive_a.SmokeBomb;
 import me.rey.core.classes.abilities.assassin.passive_b.BlitzStrikes;
 import me.rey.core.classes.abilities.assassin.sword.Evade;
+import me.rey.core.classes.abilities.assassin.sword.Vortex;
 import me.rey.core.classes.abilities.bandit.axe.Blink;
 import me.rey.core.classes.abilities.bandit.axe.Leap;
 import me.rey.core.classes.abilities.bandit.passive_a.BruteForce;
@@ -40,17 +44,18 @@ import me.rey.core.classes.abilities.bandit.passive_a.Scream;
 import me.rey.core.classes.abilities.bandit.passive_b.Backstab;
 import me.rey.core.classes.abilities.bandit.passive_b.RapidSuccession;
 import me.rey.core.classes.abilities.brute.axe.Adrenaline;
-import me.rey.core.classes.abilities.assassin.bow.Premonition;
 import me.rey.core.classes.abilities.brute.sword.IronHook;
 import me.rey.core.classes.abilities.druid.axe.FireBlast;
 import me.rey.core.classes.abilities.druid.axe.IcePrison;
-import me.rey.core.classes.abilities.druid.spade.LightningOrb;
 import me.rey.core.classes.abilities.druid.passive_a.ArcticZone;
 import me.rey.core.classes.abilities.druid.passive_a.Void;
 import me.rey.core.classes.abilities.druid.passive_b.MagmaBlade;
 import me.rey.core.classes.abilities.druid.passive_b.NullBlade;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
+import me.rey.core.classes.abilities.druid.spade.LightningOrb;
+import me.rey.core.classes.abilities.druid.sword.Blaze;
+import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.knight.axe.HoldPosition;
 import me.rey.core.classes.abilities.knight.passive_a.Charge;
 import me.rey.core.classes.abilities.knight.passive_b.Advantage;
@@ -59,15 +64,18 @@ import me.rey.core.classes.abilities.knight.passive_b.Lust;
 import me.rey.core.classes.abilities.knight.passive_b.Revenge;
 import me.rey.core.classes.abilities.knight.sword.Immunity;
 import me.rey.core.classes.abilities.knight.sword.Thrust;
+import me.rey.core.classes.abilities.shaman.axe.Fissure;
 import me.rey.core.classes.abilities.shaman.axe.Overgrown;
 import me.rey.core.classes.abilities.shaman.axe.Synthesis;
 import me.rey.core.classes.abilities.shaman.passive_a.Aromatherapy;
 import me.rey.core.classes.abilities.shaman.passive_a.Thorns;
+import me.rey.core.classes.abilities.shaman.spade.Miasma;
 import me.rey.core.classes.abilities.shaman.spade.Paralysis;
 import me.rey.core.classes.abilities.shaman.spade.Tornado;
-import me.rey.core.classes.conditions.ArcaneRepair;
 import me.rey.core.classes.conditions.Balanced;
 import me.rey.core.classes.conditions.Lightweight;
+import me.rey.core.classes.conditions.SummoningDarkEnergy;
+import me.rey.core.classes.conditions.ThePowerOfNature;
 import me.rey.core.classes.conditions.Vigour;
 import me.rey.core.combat.DamageHandler;
 import me.rey.core.commands.Equip;
@@ -241,15 +249,17 @@ public class Warriors extends JavaPlugin {
 	 */
 	public void initConditionCache() {
 		classConditions = new ArrayList<>(Arrays.asList(
+				// SHAMAN
+				new ThePowerOfNature(),
 				// NINJA
 				new Vigour(),
-				// WIZARD
-				new ArcaneRepair(),
+				// DRUID
+				new SummoningDarkEnergy(),
 				// MARKSMAN
 				// KNIGHT
 				new Balanced(),
 				// BRUTE
-				// BLACK
+				// BANDIT
 				new Lightweight()
 				));
 
@@ -269,47 +279,50 @@ public class Warriors extends JavaPlugin {
 				new BruteForce(),
 				new Disarm(),
 				new HiddenAssault(),
-				new WitheredArrow(),
 				new Leap(),
 				new Recall(),
 				new RapidSuccession(),
 				new Scream(),
 				new SmokeBomb(),
+				new WitheredArrow(),
 				
 				//ASSASSIN
 				new Backstab(),
 				new BlitzStrikes(),
 				new Dash(),
-				new Flash(),
 				new Evade(),
+				new Flash(),
+				new Premonition(),
 				new Vortex(),
 				
 				//DRUID
+				new ArcticZone(),
+				new Blaze(),
 				new EnergyRegeneration(),
 				new EnergyPool(),
 				new FireBlast(),
+				new Fissure(),
 				new IcePrison(),
 				new LightningOrb(),
 				new LightningBolt(),
 				new MagmaBlade(),
 				new Void(),
+
 				new ArcticZone(),
 				new Blaze(),
 				new SnowFlurry(),
 
 				//SHAMAN
 				new Aromatherapy(),
+				new Miasma(),
 				new NullBlade(),
 				new Overgrown(),
 				new Paralysis(),
 				new Synthesis(),
 				new Thorns(),
 				new Tornado(),
-				new Miasma(),
 
 				//BERSERKER
-				new Adrenaline(),
-				new Premonition(),
 
 				//MARKSMAN
 				
@@ -324,6 +337,7 @@ public class Warriors extends JavaPlugin {
 				new Thrust(),
 				
 				//BRUTE
+				new Adrenaline(),
 				new IronHook()
 				));
 		
