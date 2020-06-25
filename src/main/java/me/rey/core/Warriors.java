@@ -308,9 +308,6 @@ public class Warriors extends JavaPlugin {
 				new LightningBolt(),
 				new MagmaBlade(),
 				new Void(),
-
-				new ArcticZone(),
-				new Blaze(),
 				new SnowFlurry(),
 
 				//SHAMAN
