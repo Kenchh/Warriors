@@ -37,7 +37,7 @@ public class FireBlast extends Ability {
 				"Recharge: <variable>0-1*l+13</variable> (-1) Seconds"));
 		
 		this.fireballs = new HashMap<>();
-		this.setEnergyCost(40);
+		this.setEnergyCost(40, 0);
 	}
 
 	@Override

@@ -44,6 +44,7 @@ public class LightningOrb extends Ability {
 				"Energy: <variable>56-(l*3)</variable> (-3)",
 				"Recharge: <variable>12-l</variable>(-1) Seconds"
 				));
+		this.setEnergyCost(56, 3);
 	}
 
 	@Override
@@ -81,8 +82,7 @@ public class LightningOrb extends Ability {
 			}
 			
 		}.runTaskTimer(Warriors.getInstance(), 0, 2);
-		
-		this.setEnergyCost(56 - (level * 3));
+
 		this.setCooldown(12-level);
 		return true;
 	}

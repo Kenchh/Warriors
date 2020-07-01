@@ -44,6 +44,7 @@ public class IcePrison extends Ability {
 				"Energy: <variable>57-(3*l)</variable> (-3)",
 				"Recharge: <variable>20-l</variable> (-1) Seconds"
 				));
+		this.setEnergyCost(57, 3);
 	}
 
 	@Override
@@ -131,7 +132,6 @@ public class IcePrison extends Ability {
 
 		
 		this.setCooldown(20 - (level));
-		this.setEnergyCost(57 - (level * 3));
 		return true;
 	}
 	

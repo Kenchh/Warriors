@@ -33,7 +33,7 @@ public class Synthesis extends Ability {
                 "",
                 "Recharge: <variable>12</variable> seconds"
         ));
-        this.setEnergyCost(60);
+        this.setEnergyCost(60, 0);
     }
 
     public HashMap<UUID, Integer> synthTicks = new HashMap<UUID, Integer>();

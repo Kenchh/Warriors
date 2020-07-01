@@ -47,7 +47,7 @@ public class ArcticZone extends Ability implements IConstant, IConstant.ITogglab
                 "",
                 "Energy: <variable>12-l</variable> Per Second."
         ));
-        this.setEnergyCost(energyPerSecond / 20);
+        this.setEnergyCost(energyPerSecond / 20, 1/20);
         this.setIgnoresCooldown(true);
         this.setInLiquid(true);
     }
@@ -59,7 +59,6 @@ public class ArcticZone extends Ability implements IConstant, IConstant.ITogglab
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
         Object arg = conditions[0];
-        this.setEnergyCost((energyPerSecond-level) / 20);
 
         double radius = 3+level;
 

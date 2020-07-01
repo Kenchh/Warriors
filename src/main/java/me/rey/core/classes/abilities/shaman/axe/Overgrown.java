@@ -38,6 +38,7 @@ public class Overgrown extends Ability {
                 "",
                 "Recharge: <variable>10.5-0.5*l</variable>"
         ));
+        this.setEnergyCost(10.5, 0.5);
     }
 
     public HashMap<UUID, Integer> ticks = new HashMap<UUID, Integer>();
@@ -45,7 +46,7 @@ public class Overgrown extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
         this.setCooldown(10.5-0.5*level);
-        this.setEnergyCost(10.5-0.5*level);
+
         double radius=4.5+0.5*level;
 
         for(Entity e : UtilBlock.getEntitiesInCircle(p.getLocation(), radius)) {

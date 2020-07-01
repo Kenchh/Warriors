@@ -37,19 +37,19 @@ public class SnowFlurry extends Ability implements IConstant {
                 "Energy: <variable>40-l*2</variable> (-2) per second."
         ));
         this.setIgnoresCooldown(true);
-        this.setEnergyCost(40/20);
+        this.setEnergyCost(40/20, 2/20);
     }
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setEnergyCost(0);
+        this.setEnergyCost(0, 0);
 
         if(!p.isBlocking()) {
             return false;
         }
 
-        this.setEnergyCost((40 - level*2)/20);
+        this.setEnergyCost(40/20, 2/20);
 
         for(int i=1; i<=baseAmount+amountPerLevel*level; i++)
             new FlurryObject(p, u, level);

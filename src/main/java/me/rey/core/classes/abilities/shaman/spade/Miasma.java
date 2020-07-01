@@ -24,7 +24,7 @@ public class Miasma extends Ability {
         super(523, "Miasma", ClassType.GREEN, AbilityType.SPADE, 1, 4, 10, Arrays.asList(
                 "Miasma"
         ));
-        this.setEnergyCost(55);
+        this.setEnergyCost(55, 2);
     }
 
     private HashMap<UUID, Integer> particleticks = new HashMap<UUID, Integer>();
@@ -32,7 +32,6 @@ public class Miasma extends Ability {
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
 
-        this.setEnergyCost(55-2*level);
         u.consumeEnergy(55-2*level);
 
         double radius = 5 + level;
