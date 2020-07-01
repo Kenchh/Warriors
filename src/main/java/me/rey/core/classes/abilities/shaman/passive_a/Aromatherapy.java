@@ -102,7 +102,7 @@ public class Aromatherapy extends Ability implements IConstant, ITogglable, IPla
 				));
 		
 		this.setIgnoresCooldown(true);
-		this.setEnergyCost(1);
+		this.setEnergyCost(1, 0);
 	}
 
 	@Override
@@ -241,7 +241,7 @@ public class Aromatherapy extends Ability implements IConstant, ITogglable, IPla
 		
 					// Consume energy
 					int energyPerSecond = 10 - level;
-					this.setEnergyCost(energyPerSecond / 20D);
+					this.setEnergyCost(energyPerSecond / 20D, 0);
 					
 					// Updating their in the ticks map
 					ticks.replace(p, ticks.get(p)+1);

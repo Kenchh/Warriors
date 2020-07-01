@@ -79,7 +79,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private long id;
 	private boolean cooldownCanceled, ignoresCooldown, inLiquid, whileSlowed, inAir, whileSilenced;
 	protected boolean skipCooldownCheck;
-	private double cooldown, resetCooldown, energyCost, resetEnergy;
+	private double cooldown, resetCooldown, energyCost, energyReductionPerLevel, resetEnergy;
 	protected String MAIN = "&7", VARIABLE = "&a", SECONDARY = "&e";
 	
 	public Ability(long id, String name, ClassType classType, AbilityType abilityType, int tokenCost, int maxLevel, double cooldown, List<String> description) {
@@ -131,13 +131,14 @@ public abstract class Ability extends Cooldown implements Listener {
 
 		
 		if(b.getAbility(this.getAbilityType()) == null || b.getAbility(this.getAbilityType()).getIdLong() != this.getIdLong()) return false;
-		
-		resetEnergy = energyCost;
+
+		int level = b.getAbilityLevel(this.getAbilityType());
+
+		resetEnergy = energyCost-energyReductionPerLevel*level;
 		
 		/*
 		 * BOOSTER WEAPONS
 		 */
-		int level = b.getAbilityLevel(this.getAbilityType());
 		if(this.getAbilityType().supportsBoosters() && toolType != null && this.matchesAbilityTool(toolType) && toolType.isBooster())
 			level = Math.min(this.getMaxLevel() + 1, level + 2);
 				
@@ -224,7 +225,7 @@ public abstract class Ability extends Cooldown implements Listener {
 		}
 		
 		if(useEnergy) {
-			if(user.getEnergy() < this.energyCost) {
+			if(user.getEnergy() < this.energyCost-energyReductionPerLevel*level) {
 
 				if(messages)
 					user.sendMessageWithPrefix("Error", String.format("You don't have enough energy to use &a%s&7!", this.getName()));
@@ -242,8 +243,8 @@ public abstract class Ability extends Cooldown implements Listener {
 		
 		this.applyCooldown(p);
 		
-		user.consumeEnergy(this.energyCost);
-		this.setEnergyCost(resetEnergy);
+		user.consumeEnergy(this.energyCost-energyReductionPerLevel*level);
+		this.setEnergyCost(resetEnergy, this.energyReductionPerLevel);
 		return success;
 	}
 	
@@ -400,8 +401,9 @@ public abstract class Ability extends Cooldown implements Listener {
 		this.skipCooldownCheck = canceled;
 	}
 	
-	public void setEnergyCost(double energy) {
+	public void setEnergyCost(double energy, double energyReductionPerLevel) {
 		this.energyCost = energy;
+		this.energyReductionPerLevel = energyReductionPerLevel;
 	}
 	
 	public Set<UUID> getEnabledPlayers(){

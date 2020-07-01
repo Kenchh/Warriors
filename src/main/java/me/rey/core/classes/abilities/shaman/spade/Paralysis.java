@@ -37,12 +37,12 @@ public class Paralysis extends Ability {
                 "",
                 "Recharge: <variable>8.25-0.25*l</variable>"
         ));
-        this.setEnergyCost(42);
+        this.setEnergyCost(42, 2);
     }
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
-        this.setEnergyCost(42-2*level);
+
         this.setCooldown(8.25-level*0.25);
 
         ParalysisObject slimeball = new ParalysisObject(p, u);

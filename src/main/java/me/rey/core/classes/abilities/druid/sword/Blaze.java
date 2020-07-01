@@ -34,19 +34,19 @@ public class Blaze extends Ability implements IConstant {
                 "",
                 "Energy: <variable>32-l</variable>"
         ));
-        this.setEnergyCost(32);
+        this.setEnergyCost(32/20, 1/20);
         this.setIgnoresCooldown(true);
     }
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
-        this.setEnergyCost(0);
+        this.setEnergyCost(0, 0);
 
         if(!p.isBlocking()) {
             return false;
         }
 
-        this.setEnergyCost((32-level)/20);
+        this.setEnergyCost(32/20, 1/20);
         u.consumeEnergy((32-level)/20);
 
         p.getWorld().playSound(p.getLocation(), Sound.GHAST_FIREBALL, 0.5F, 1.2F);

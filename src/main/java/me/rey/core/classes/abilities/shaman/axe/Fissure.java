@@ -49,12 +49,12 @@ public class Fissure extends Ability {
 				));
 		
 		this.setWhileInAir(false);
+		this.setEnergyCost(50, 3);
 	}
 
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
 		this.setCooldown(12-level);
-		this.setEnergyCost(50 - (3 * level));
 		
 		FissureObject fissure = new FissureObject(u, p.getLocation(), p.getLocation().getYaw(), level, 2.5 + 0.5 * level);
 		fissure.start();

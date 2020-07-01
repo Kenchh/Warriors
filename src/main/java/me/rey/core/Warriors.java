@@ -12,6 +12,7 @@ import me.rey.core.classes.abilities.assassin.sword.Vortex;
 import me.rey.core.classes.abilities.druid.sword.Blaze;
 import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.druid.sword.SnowFlurry;
+import me.rey.core.classes.abilities.marksman.sword.Escape;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
 
 
@@ -324,6 +325,7 @@ public class Warriors extends JavaPlugin {
 				//BERSERKER
 
 				//MARKSMAN
+				new Escape(),
 				
 				//KNIGHT
 				new Advantage(),

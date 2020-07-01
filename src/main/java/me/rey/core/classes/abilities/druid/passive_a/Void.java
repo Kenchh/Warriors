@@ -39,7 +39,7 @@ public class Void extends Ability implements IConstant, ITogglable, IDamageTrigg
 				));
 		
 		this.setIgnoresCooldown(true);
-		this.setEnergyCost(energyPerSecond / 20); // PER TICK
+		this.setEnergyCost(energyPerSecond / 20, 0); // PER TICK
 	}
 
 	@Override

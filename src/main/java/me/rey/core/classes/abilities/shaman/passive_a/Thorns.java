@@ -39,14 +39,14 @@ public class Thorns extends Ability implements IConstant, IConstant.ITogglable, 
                 "",
                 "Energy: <variable>42-2*l</variable>"
         ));
-        this.setEnergyCost(40 / 20);
+        this.setEnergyCost(40 / 20, 2/20);
         this.setIgnoresCooldown(true);
         this.setInLiquid(true);
     }
 
     @Override
     protected boolean execute(User u, Player p, int level, Object... conditions) {
-        this.setEnergyCost((double) (40-level*2) / 20);
+
         double damage = 0.5+0.5*level;
 
         Object arg = conditions[0];
