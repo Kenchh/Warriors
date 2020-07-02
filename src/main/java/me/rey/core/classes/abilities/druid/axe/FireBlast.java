@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import me.rey.core.utils.UtilBlock;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -67,6 +69,11 @@ public class FireBlast extends Ability {
 
 		Player p = fp.shooter;
 
+		for(Location cloc : UtilBlock.circleLocations(fp.fireball.getLocation(), 3.0 + (double) fp.level/2, 30)) {
+			for(int i=0;i<10;i++)
+				cloc.getWorld().spigot().playEffect(cloc, Effect.FLAME);
+		}
+
 		Location loc = e.getEntity().getLocation();
 		final List<Entity> entities = (List<Entity>)loc.getWorld().getNearbyEntities(loc, 3.0 + (double) fp.level/2, 3.0, 3.0 + (double) fp.level/2);
         for (final Entity d : entities) {
@@ -81,6 +88,10 @@ public class FireBlast extends Ability {
                 } else {
 					dc.damage(4, p);
 					dc.setFireTicks((2+fp.level*2)*20);
+				}
+
+				for(Location cloc : UtilBlock.circleLocations(fp.fireball.getLocation(), 1, 45)) {
+					cloc.getWorld().spigot().playEffect(cloc, Effect.LAVA_POP);
 				}
 
                 final Vector vc = dc.getLocation().toVector().subtract(loc.toVector());

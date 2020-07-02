@@ -7,6 +7,7 @@ import me.rey.core.classes.abilities.AbilityType;
 import me.rey.core.classes.abilities.IConstant;
 import me.rey.core.effects.SoundEffect;
 import me.rey.core.events.customevents.update.UpdateEvent;
+import me.rey.core.gui.Gui;
 import me.rey.core.packets.ActionBar;
 import me.rey.core.players.User;
 import me.rey.core.utils.ChargingBar;
@@ -15,6 +16,7 @@ import me.rey.core.utils.UtilEnt;
 import me.rey.core.utils.UtilParticle;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -64,7 +66,7 @@ public class LightningBolt extends Ability implements IConstant {
                 maxstacks = 5;
             }
 
-            if(bolts.containsKey(p.getUniqueId()) == false)
+            if(bolts.containsKey(p.getUniqueId()) == false && this.matchesAbilityTool(this.match(p.getItemInHand() == null ? new Gui.Item(Material.AIR).get() : p.getItemInHand())))
                 showStacks(maxstacks, p);
 
             if(stacks.get(p.getUniqueId()) == 1 && !p.isBlocking())
