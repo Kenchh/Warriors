@@ -24,57 +24,27 @@ import me.rey.core.players.User;
 
 public class FireBlast extends Ability {
 
-	private HashMap<Fireball, Player> fireballs;
+	private HashMap<UUID, FireProfile> fireballs;
 	
 	public FireBlast() {
 		super(211, "Fire Blast", ClassType.GOLD, AbilityType.AXE, 1, 5, 12.00, Arrays.asList(
 				"Launch a fireball which explodes on impact",
 				"dealing large knockback to enemies within",
-				"<variable>0.5*l+6</variable> (+0.5) Blocks range. Also ignites enemies",
+				"<variable>0.5*l+3</variable> (+0.5) Blocks range. Also ignites enemies",
 				"for up to <variable>2*l+2</variable> (+2) seconds.",
 				"",
 				"Energy: <variable>0-4*l+54</variable> (-4)",
 				"Recharge: <variable>0-1*l+13</variable> (-1) Seconds"));
 		
 		this.fireballs = new HashMap<>();
-		this.setEnergyCost(40, 0);
+		this.setEnergyCost(54, 4);
 	}
 
 	@Override
 	protected boolean execute(User u, final Player p, int level, Object... conditions) {
-		Location direction = p.getEyeLocation().toVector().add(p.getLocation().getDirection().multiply(1)).toLocation(p.getWorld(),
-				p.getLocation().getYaw(), p.getLocation().getPitch());
-		final Fireball fireball = p.launchProjectile(Fireball.class);
-		
-		fireball.setVelocity(direction.getDirection());
-		fireball.setShooter(p);
-		fireball.setFireTicks(0);
-		fireball.setYield(0F);
-		fireball.setIsIncendiary(false);
-		fireball.setVelocity(p.getEyeLocation().getDirection().multiply(1));
-		
-		this.fireballs.put(fireball, p);
-		
-		new BukkitRunnable() {
-			int seconds = 0;
-			@Override
-			public void run() {
-				if(fireball.isDead()) {
-					this.cancel();
-					return;
-				}
-				
-				if(seconds >= 10) {
-					this.cancel();
-					fireball.remove();
-				} else {
-					fireball.setTicksLived(1);
-				}
-				seconds++;
-			}
-			
-		}.runTaskTimer(Warriors.getPlugin(Warriors.class), 0, 20);
-		
+
+		fireballs.put(p.getUniqueId(), new FireProfile(p, u, level));
+
 		this.setCooldown(-1*level+13);
 		return true;
 	}
@@ -83,29 +53,90 @@ public class FireBlast extends Ability {
 	public void onEntityDamage(ProjectileHitEvent e) {
 		if(!(e.getEntity() instanceof Fireball && e.getEntityType() == EntityType.FIREBALL)) return;
 		Fireball fireball = (Fireball) e.getEntity();
-		if(!this.fireballs.containsKey(fireball)) return;
 		
-		Player p = this.fireballs.get(fireball);
+		FireProfile fp = null;
+		for(UUID u : fireballs.keySet()) {
+			if(fireballs.get(u).fireball == fireball) {
+				fp = fireballs.get(u);
+			}
+		}
+
+		if(fp == null) {
+			return;
+		}
+
+		Player p = fp.shooter;
+
 		Location loc = e.getEntity().getLocation();
-		final List<Entity> entities = (List<Entity>)loc.getWorld().getNearbyEntities(loc, 5.0, 3.0, 5.0);
+		final List<Entity> entities = (List<Entity>)loc.getWorld().getNearbyEntities(loc, 3.0 + (double) fp.level/2, 3.0, 3.0 + (double) fp.level/2);
         for (final Entity d : entities) {
             if (d instanceof LivingEntity) {
                 final LivingEntity dc = (LivingEntity)d;
                 if (dc instanceof Player) {
                     final Player z2 = (Player)dc;
-                    if (z2 == p) {
-                        continue;
-                    }
-                }
-                
-                dc.damage(4, p);
+                    if (z2 != p && fp.u.getTeam().contains(z2) == false) {
+						dc.damage(4, p);
+						dc.setFireTicks((2+fp.level*2)*20);
+					}
+                } else {
+					dc.damage(4, p);
+					dc.setFireTicks((2+fp.level*2)*20);
+				}
+
                 final Vector vc = dc.getLocation().toVector().subtract(loc.toVector());
-                dc.setVelocity(vc.normalize().multiply(1.2));
-                dc.setVelocity(new Vector(dc.getVelocity().getX(), 1.4, dc.getVelocity().getZ()));
+                dc.setVelocity(vc.normalize().multiply(0.6));
+                dc.setVelocity(new Vector(dc.getVelocity().getX(), 1, dc.getVelocity().getZ()));
             }
         }
         
-        this.fireballs.remove(fireball);
+        this.fireballs.remove(p.getUniqueId());
+	}
+
+	class FireProfile {
+
+		Player shooter;
+		User u;
+		int level;
+		Fireball fireball;
+
+		public FireProfile(Player p, User u, int level) {
+
+			shooter = p;
+			this.u = u;
+			this.level = level;
+
+			Location direction = p.getEyeLocation().toVector().add(p.getLocation().getDirection().multiply(1)).toLocation(p.getWorld(),
+					p.getLocation().getYaw(), p.getLocation().getPitch());
+			fireball = p.launchProjectile(Fireball.class);
+
+			fireball.setVelocity(direction.getDirection());
+			fireball.setShooter(p);
+			fireball.setFireTicks(0);
+			fireball.setYield(0F);
+			fireball.setIsIncendiary(false);
+			fireball.setVelocity(p.getEyeLocation().getDirection().multiply(1));
+
+			new BukkitRunnable() {
+				int seconds = 0;
+				@Override
+				public void run() {
+					if(fireball.isDead()) {
+						this.cancel();
+						return;
+					}
+
+					if(seconds >= 10) {
+						this.cancel();
+						fireball.remove();
+					} else {
+						fireball.setTicksLived(1);
+					}
+					seconds++;
+				}
+
+			}.runTaskTimer(Warriors.getPlugin(Warriors.class), 0, 20);
+		}
+
 	}
 
 }
