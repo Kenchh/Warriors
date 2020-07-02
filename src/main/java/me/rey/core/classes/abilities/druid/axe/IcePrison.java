@@ -36,7 +36,7 @@ public class IcePrison extends Ability {
 	final double throwLevelMultiplier = 0.1;
 
 	public IcePrison() {
-		super(213, "Ice Prison", ClassType.GOLD, AbilityType.AXE, 1, 5, 20.00, Arrays.asList(
+		super(212, "Ice Prison", ClassType.GOLD, AbilityType.AXE, 1, 5, 20.00, Arrays.asList(
 				"Spawn a sphere of ice that can",
 				"last up to <variable>4+l</variable> (+1) Seconds. Using",
 				"Shift-Right Click will destroy all",
