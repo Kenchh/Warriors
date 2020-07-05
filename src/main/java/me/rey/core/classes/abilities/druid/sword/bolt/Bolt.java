@@ -1,4 +1,4 @@
-package me.rey.core.classes.abilities.druid.sword;
+package me.rey.core.classes.abilities.druid.sword.bolt;
 
 import me.rey.core.Warriors;
 import me.rey.core.classes.ClassType;
@@ -14,10 +14,7 @@ import me.rey.core.utils.ChargingBar;
 import me.rey.core.utils.UtilBlock;
 import me.rey.core.utils.UtilEnt;
 import me.rey.core.utils.UtilParticle;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,10 +22,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class LightningBolt extends Ability implements IConstant {
+public class Bolt extends Ability implements IConstant {
 
-    public LightningBolt() {
-        super(201, "Lightning Bolt", ClassType.GOLD, AbilityType.SWORD, 1, 5, 0.0, Arrays.asList(
+    public Bolt() {
+        super(201, "Bolt", ClassType.GOLD, AbilityType.SWORD, 1, 5, 0.0, Arrays.asList(
                 "Charge up an electric beam, piercing and dealing ",
                 "<variable>4.5+0.5*l</variable> (+0.5) + stacks/2 damage to all enemies hit by it.",
                 "",
@@ -44,7 +41,7 @@ public class LightningBolt extends Ability implements IConstant {
         setIgnoresCooldown(true);
     }
 
-    public HashMap<UUID, BoltObject> bolts = new HashMap<UUID, BoltObject>();
+    public HashMap<UUID, BoltProfile> bolts = new HashMap<UUID, BoltProfile>();
     public HashMap<UUID, Integer> stacks = new HashMap<UUID, Integer>();
     public HashMap<UUID, Long> stackdecay = new HashMap<>();
     public ArrayList<UUID> cooldown = new ArrayList<>();
@@ -102,11 +99,11 @@ public class LightningBolt extends Ability implements IConstant {
             return false;
 
         if(bolts.containsKey(p.getUniqueId()) == false) {
-            BoltObject bolt = new BoltObject(p, u, level);
+            BoltProfile bolt = new BoltProfile(p, u, level);
             bolts.put(p.getUniqueId(), bolt);
         }
 
-        BoltObject bolt = bolts.get(p.getUniqueId());
+        BoltProfile bolt = bolts.get(p.getUniqueId());
 
         if(bolt.stopcharge)
             return false;
@@ -254,208 +251,7 @@ public class LightningBolt extends Ability implements IConstant {
         new ActionBar(stackstring).send(p);
     }
 
-    class Bolt {
-
-        BoltObject bo;
-
-        Location loc;
-        Location origin;
-
-        boolean onlyvisual;
-
-        boolean incurve = false;
-
-        Location locWithNoCurve;
-        double travelDistance = 20;
-        double travelledDistanceSinceLastCurve = 0;
-        double maxCurveDistance = 5;
-
-        ArrayList<UUID> damagedplayers = new ArrayList<UUID>();
-
-        public Bolt(BoltObject bo, boolean onlyvisual, Location origin) {
-            this.bo = bo;
-            this.onlyvisual = onlyvisual;
-            this.origin = origin;
-            this.loc = origin.clone();
-
-            this.travelDistance = bo.maxTravelDistance * (bo.charge/bo.maxcharge);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(!destroy()) {
-                        tick();
-                    } else {
-                        this.cancel();
-                    }
-                }
-            }.runTaskTimer(Warriors.getInstance(), 1L, 1L);
-
-        }
-
-        public void tick() {
-
-            if(!onlyvisual) {
-                Random randomsound = new Random();
-                int rs = randomsound.nextInt(3) + 1;
-                SoundEffect.playCustomSound(loc, "lightningbolt" + rs, 1F, 1F + 0.2F*(stacks.get(bo.shooter.getUniqueId())-1));
-            }
-
-            if(destroy()) {
-                return;
-            }
-
-            double addX = UtilBlock.getXZCordsMultipliersFromDegree(loc.getYaw() + 90)[0] / bo.particledensity;
-            double addY = UtilBlock.getYCordsMultiplierByPitch(loc.getPitch());
-            double addZ = UtilBlock.getXZCordsMultipliersFromDegree(loc.getYaw() + 90)[1] / bo.particledensity;
-
-            if(!incurve) {
-
-                locWithNoCurve = loc.clone();
-
-                while(travelledDistanceSinceLastCurve <= bo.maxDistanceUntilCurve) {
-
-                    travelledDistanceSinceLastCurve = locWithNoCurve.distance(loc);
-
-                    loc.setX(loc.getX() + addX);
-                    loc.setY(loc.getY() + addY);
-                    loc.setZ(loc.getZ() + addZ);
-
-                    if(destroy()) {
-                        return;
-                    }
-
-                    checkCollision();
-
-                    for(int i=1;i<=5;i++) {
-                        UtilParticle.playColoredParticle(loc, 255, 255-20*stacks.get(bo.shooter.getUniqueId()), 102-20*stacks.get(bo.shooter.getUniqueId()));
-                        UtilParticle.playColoredParticle(loc, 255, 255-20*stacks.get(bo.shooter.getUniqueId()), 255-20*stacks.get(bo.shooter.getUniqueId()));
-                    }
-                }
-
-                incurve = true;
-
-            } else {
-                Location bloc = loc.clone(); /* Setting start break point */
-
-                Random rd = new Random();
-                double randomaddDegree = rd.nextInt(8) + 5; /* Minimum curve 10, max 25 */
-                Random positive = new Random();
-                if (!positive.nextBoolean()) {
-                    randomaddDegree = -randomaddDegree;
-                }
-                double degree = (loc.getYaw() + 90) + randomaddDegree;
-
-                while(bloc.distance(loc) <= maxCurveDistance) {
-                    double curveaddX = UtilBlock.getXZCordsMultipliersFromDegree(degree)[0];
-                    double curveaddZ = UtilBlock.getXZCordsMultipliersFromDegree(degree)[1];
-
-                    loc.setX(loc.getX() + curveaddX);
-                    loc.setY(loc.getY() + addY);
-                    loc.setZ(loc.getZ() + curveaddZ);
-
-                    if(destroy()) {
-                        return;
-                    }
-
-                    checkCollision();
-
-                    for(int i=1;i<=5;i++) {
-                        UtilParticle.playColoredParticle(loc, 255, 255-20*stacks.get(bo.shooter.getUniqueId()), 102-20*stacks.get(bo.shooter.getUniqueId()));
-                        UtilParticle.playColoredParticle(loc, 255, 255-20*stacks.get(bo.shooter.getUniqueId()), 255-20*stacks.get(bo.shooter.getUniqueId()));
-                    }
-                }
-
-                bloc = loc.clone(); /* Setting middle break point */
-                degree = (loc.getYaw() + 90) - randomaddDegree*2; /* Reflection */
-
-                while(bloc.distance(loc) <= maxCurveDistance) {
-                    double curveaddX = UtilBlock.getXZCordsMultipliersFromDegree(degree)[0];
-                    double curveaddZ = UtilBlock.getXZCordsMultipliersFromDegree(degree)[1];
-
-                    loc.setX(loc.getX() + curveaddX);
-                    loc.setY(loc.getY() + addY);
-                    loc.setZ(loc.getZ() + curveaddZ);
-
-                    if(destroy()) {
-                        return;
-                    }
-
-                    checkCollision();
-
-                    for(int i=1;i<=5;i++) {
-                        UtilParticle.playColoredParticle(loc, 255, 255-20*stacks.get(bo.shooter.getUniqueId()), 102-20*stacks.get(bo.shooter.getUniqueId()));
-                        UtilParticle.playColoredParticle(loc, 255, 255-20*stacks.get(bo.shooter.getUniqueId()), 255-20*stacks.get(bo.shooter.getUniqueId()));
-                    }
-                }
-
-                travelledDistanceSinceLastCurve = 0;
-                incurve = false;
-            }
-
-        }
-
-        public void checkCollision() {
-
-            if(onlyvisual) {
-                return;
-            }
-
-            Location collisionloc = loc.clone();
-            collisionloc.setY(loc.getY() - 2.0);
-            for(Entity e : collisionloc.getWorld().getNearbyEntities(collisionloc, bo.hitbox, bo.hitbox + 1, bo.hitbox)) {
-                if(e instanceof LivingEntity) {
-                    if(e == bo.shooter || damagedplayers.contains(e.getUniqueId()))
-                        continue;
-
-                    if(e instanceof Player) {
-                        Player p = (Player) e;
-                        if(bo.user.getTeam().contains(p)) {
-                            continue;
-                        }
-                    }
-
-                    damagedplayers.add(e.getUniqueId());
-
-                    if(stacks.containsKey(bo.shooter.getUniqueId())) {
-                        if(stacks.get(bo.shooter.getUniqueId()) < bo.maxstacks) {
-                            stacks.replace(bo.shooter.getUniqueId(), stacks.get(bo.shooter.getUniqueId()) + 1);
-                        }
-                    }
-
-                    if(stackdecay.containsKey(bo.shooter.getUniqueId()) == false) {
-                        stackdecay.put(bo.shooter.getUniqueId(), 100L);
-                    } else {
-                        stackdecay.replace(bo.shooter.getUniqueId(), 100L);
-                    }
-                    UtilEnt.damage(bo.baseDamage+bo.level*bo.damagePerLevel+bo.damagePerStack*stacks.get(bo.shooter.getUniqueId()), "Lightning Bolt", (LivingEntity) e, bo.shooter);
-                }
-            }
-        }
-
-        public boolean destroy() {
-
-            if((UtilBlock.airFoliage(loc.getBlock()) && loc.distance(origin) < travelDistance) || (loc.getBlock().isLiquid() && loc.distance(origin) < travelDistance)) {
-
-                return false;
-            }
-
-            if(!onlyvisual) {
-                if (damagedplayers.isEmpty()) {
-                    stacks.replace(bo.shooter.getUniqueId(), 1);
-                }
-            }
-
-            return true;
-        }
-
-    }
-
-    /* TODO:
-        Water 
-    */
-
-    class BoltObject {
+    class BoltProfile {
 
         Player shooter;
         User user;
@@ -479,7 +275,7 @@ public class LightningBolt extends Ability implements IConstant {
         final double damagePerLevel = 0.5;
         final double damagePerStack = 0.5;
 
-        public BoltObject(Player shooter, User u, int level) {
+        public BoltProfile(Player shooter, User u, int level) {
             this.shooter = shooter;
             this.user = u;
             this.level = level;
@@ -498,11 +294,10 @@ public class LightningBolt extends Ability implements IConstant {
                 stacks.put(shooter.getUniqueId(), 1);
             }
 
-            new Bolt(this, false, origin);
+            new DefaultBolt(this, stacks, stackdecay, false, origin);
 
-            /* Extra Bolts but only visuals */
-            for(int i=1; i<stacks.get(shooter.getUniqueId()); i++)
-                new Bolt(this, true, origin);
+            /* Visuals */
+            new DefaultBolt(this, stacks, stackdecay, true, origin);
 
         }
 

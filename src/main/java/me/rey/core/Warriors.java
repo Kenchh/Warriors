@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 
 import me.rey.core.classes.abilities.assassin.sword.Vortex;
 import me.rey.core.classes.abilities.druid.sword.Blaze;
-import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.druid.sword.SnowFlurry;
+import me.rey.core.classes.abilities.druid.sword.bolt.Bolt;
 import me.rey.core.classes.abilities.marksman.sword.Escape;
 import me.rey.core.classes.abilities.shaman.spade.Miasma;
 
@@ -56,7 +56,6 @@ import me.rey.core.classes.abilities.druid.passive_c.EnergyPool;
 import me.rey.core.classes.abilities.druid.passive_c.EnergyRegeneration;
 import me.rey.core.classes.abilities.druid.spade.LightningOrb;
 import me.rey.core.classes.abilities.druid.sword.Blaze;
-import me.rey.core.classes.abilities.druid.sword.LightningBolt;
 import me.rey.core.classes.abilities.knight.axe.HoldPosition;
 import me.rey.core.classes.abilities.knight.passive_a.Charge;
 import me.rey.core.classes.abilities.knight.passive_b.Advantage;
@@ -306,7 +305,7 @@ public class Warriors extends JavaPlugin {
 				new Fissure(),
 				new IcePrison(),
 				new LightningOrb(),
-				new LightningBolt(),
+				new Bolt(),
 				new MagmaBlade(),
 				new Void(),
 				new SnowFlurry(),
