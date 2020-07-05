@@ -71,7 +71,7 @@ public class FireBlast extends Ability {
 
 		for(Location cloc : UtilBlock.circleLocations(fp.fireball.getLocation(), 3.0 + (double) fp.level/2, 30)) {
 			for(int i=0;i<10;i++)
-				cloc.getWorld().spigot().playEffect(cloc, Effect.FLAME);
+				cloc.getWorld().spigot().playEffect(cloc, Effect.FLAME, 0, 0, 0, 0, 0, 1F, 1, 30);
 		}
 
 		Location loc = e.getEntity().getLocation();
