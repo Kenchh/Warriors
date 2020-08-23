@@ -25,7 +25,8 @@ public class BlitzStrikes extends Ability implements IPlayerDamagedEntity {
 	
 	public BlitzStrikes() {
 		super(041, "Blitz Strikes", ClassType.LEATHER, AbilityType.PASSIVE_B, 1, 3, 0.00, Arrays.asList(
-				"test desc"
+				"Each hit shocks your current enemy",
+				"for <variable>1+l</variable> Seconds!"
 				));
 		
 		this.setIgnoresCooldown(true);
@@ -34,8 +35,7 @@ public class BlitzStrikes extends Ability implements IPlayerDamagedEntity {
 	@Override
 	protected boolean execute(User u, Player p, int level, Object... conditions) {
 		DamageEvent e = ((DamageEvent) conditions[0]);
-		double bleedTime = 1+level;
-		double shockTime = 1;
+		double shockTime = 1+level;
 		
 		if(!this.onCooldown.contains(p)) {
 			onCooldown.add(p);

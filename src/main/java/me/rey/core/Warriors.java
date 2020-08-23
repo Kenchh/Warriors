@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import me.rey.core.classes.abilities.assassin.passive_b.SickeningStrikes;
 import me.rey.core.classes.abilities.assassin.sword.Vortex;
 import me.rey.core.classes.abilities.druid.sword.Blaze;
 import me.rey.core.classes.abilities.druid.sword.SnowFlurry;
@@ -294,6 +295,7 @@ public class Warriors extends JavaPlugin {
 				new Evade(),
 				new Flash(),
 				new Premonition(),
+				new SickeningStrikes(),
 				new Vortex(),
 				
 				//DRUID

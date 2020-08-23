@@ -641,7 +641,7 @@ public abstract class Ability extends Cooldown implements Listener {
 	private void runCheck(Action action, Player p, ItemStack hold, Block clicked, Event e) {
 		
 		boolean isAir = clicked == null || action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_AIR);
-		boolean isUsable = clicked != null && Utils.usableBlocks().contains(clicked.getType()) ? true : false;
+		boolean isUsable = clicked != null && Utils.usableBlocks().contains(clicked.getType());
 
 		if(isUsable && !isAir) return;
 		
