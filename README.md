@@ -13,4 +13,4 @@
 ## Authors
 
 * **Rey** - *Plugin Framework & Lead* - [@rey-dev](https://github.com/rey-dev) (@rey#7437)
-* **Kenchh** - *Contribution* - [@Kenchh](https://github.com/Kenchh) (@Kenchh#4306)
+* **Amelia Jabir** - *Contribution* - [@amelia-jabir](https://github.com/amelia-jabir)
