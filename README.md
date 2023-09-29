@@ -12,5 +12,5 @@
 
 ## Authors
 
-* **Rey** - *Plugin Framework & Lead* - [@rey-dev](https://github.com/rey-dev) (@rey#7437)
+* **Braulio** - *Plugin Framework & Lead* - [@braulio-dev](https://github.com/braulio-dev)
 * **Amelia Jabir** - *Contribution* - [@amelia-jabir](https://github.com/amelia-jabir)
